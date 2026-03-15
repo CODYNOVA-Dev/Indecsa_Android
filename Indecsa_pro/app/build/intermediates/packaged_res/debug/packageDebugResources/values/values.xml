@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="azul_fondo">#061340</color>
+    <color name="black">#FF000000</color>
+    <color name="text_hint">#BDBDBD</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">Indecsa_pro</string>
+    <style name="Base.Theme.Indecsa_pro" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+    </style>
+    <style name="Theme.Indecsa_pro" parent="Base.Theme.Indecsa_pro"/>
+</resources>
