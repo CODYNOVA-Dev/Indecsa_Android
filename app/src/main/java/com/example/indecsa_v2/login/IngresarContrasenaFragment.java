@@ -1,4 +1,4 @@
-package com.example.indecsa_v2;
+package com.example.indecsa_v2.login;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.indecsa_v2.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class IngresarContrasenaFragment extends Fragment {

@@ -1,8 +1,10 @@
-package com.example.indecsa_v2;
+package com.example.indecsa_v2.login;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.indecsa_v2.R;
 
 public class CorreoLoginActivity extends AppCompatActivity {
 
