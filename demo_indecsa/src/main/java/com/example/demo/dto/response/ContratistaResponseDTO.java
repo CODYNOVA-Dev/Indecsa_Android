@@ -1,6 +1,6 @@
 package com.example.demo.dto.response;
 
-import com.indecsa.model.Contratista.EstadoContratista;
+import com.example.demo.model.Contratista.EstadoContratista;
 import lombok.Builder;
 import lombok.Data;
 

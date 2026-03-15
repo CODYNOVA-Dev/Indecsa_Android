@@ -63,7 +63,7 @@ public class ContratistaServiceImpl implements ContratistaService {
         }
         Contratista contratista = new Contratista();
         mapDtoToEntity(dto, contratista);
-        contratista.setContrasenia_contratista(passwordEncoder.encode(dto.getContraseniaContratista()));
+        contratista.setContraseniaContratista(passwordEncoder.encode(dto.getContraseniaContratista()));
         contratista.setEstadoContratista(EstadoContratista.ACTIVO);
         return toResponse(contratistaRepository.save(contratista));
     }
@@ -85,7 +85,7 @@ public class ContratistaServiceImpl implements ContratistaService {
                     "Ya existe un contratista con el RFC: " + dto.getRfcContratista());
         }
         mapDtoToEntity(dto, contratista);
-        contratista.setContrasenia_contratista(passwordEncoder.encode(dto.getContraseniaContratista()));
+        contratista.setContraseniaContratista(passwordEncoder.encode(dto.getContraseniaContratista()));
         return toResponse(contratistaRepository.save(contratista));
     }
 

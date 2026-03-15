@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/holawe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <!-- Título -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="FICHAS POR ESTADO"
+        android:textAlignment="center"
+        android:textSize="32sp"
+        android:textStyle="bold"/>
+
+    <!-- Contenedor de botones con imagen y texto -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="40dp">
+
+        <!-- Botón 1 con imagen y texto -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginHorizontal="8dp">
+
+            <ImageButton
+                android:id="@+id/btnImagen1"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/img"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:contentDescription="Estado Activo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hidalgo"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+        <!-- Botón 2 con imagen y texto -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginHorizontal="8dp">
+
+            <ImageButton
+                android:id="@+id/btnImagen2"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/img_3"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:contentDescription="Estado Pendiente" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CDMX"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+        <!-- Botón 3 con imagen y texto -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginHorizontal="8dp">
+
+            <ImageButton
+                android:id="@+id/btnImagen3"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/img_2"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:contentDescription="Estado Inactivo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Puebla"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

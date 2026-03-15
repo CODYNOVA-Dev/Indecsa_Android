@@ -2,7 +2,7 @@ package com.example.demo.dto.response;
 
 import com.example.demo.dto.response.ProyectoResponseDTO;
 import com.example.demo.dto.response.ContratistaResponseDTO;
-import com.indecsa.model.AsignacionTrabajadorProyecto.EstatusAsignacion;
+import com.example.demo.model.AsignacionTrabajadorProyecto.EstatusAsignacion;
 import lombok.Builder;
 import lombok.Data;
 

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- AÑADE ESTE EditText para NSS -->
+    <EditText
+        android:id="@+id/etNssSimple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="NSS (11 dígitos) *"
+        android:inputType="number"
+        android:maxLength="11" />
+
+    <EditText
+        android:id="@+id/etNombreSimple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre *"
+        android:layout_marginTop="8dp"
+        android:inputType="textPersonName"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/etEspecialidadSimple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Especialidad *"
+        android:layout_marginTop="8dp"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/etEstadoSimple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Estado *"
+        android:layout_marginTop="8dp"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/etDescripcionSimple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descripción"
+        android:layout_marginTop="8dp"
+        android:inputType="textMultiLine"
+        android:lines="3" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancelarSimple"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancelar" />
+
+        <Button
+            android:id="@+id/btnGuardarSimple"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Guardar" />
+
+    </LinearLayout>
+
+</LinearLayout>

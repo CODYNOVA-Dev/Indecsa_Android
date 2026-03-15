@@ -1,6 +1,6 @@
 package com.example.demo.dto.request;
 
-import com.indecsa.model.Rol.NombreRol;
+import com.example.demo.model.Rol.NombreRol;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

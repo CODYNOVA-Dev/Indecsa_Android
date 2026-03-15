@@ -1,6 +1,6 @@
 package com.example.demo.dto.response;
 
-import com.indecsa.model.Proyecto.EstatusProyecto;
+import com.example.demo.model.Proyecto.EstatusProyecto;
 import lombok.Builder;
 import lombok.Data;
 

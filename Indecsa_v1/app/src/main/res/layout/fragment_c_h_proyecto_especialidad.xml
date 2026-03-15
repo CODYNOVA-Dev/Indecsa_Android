@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".c_h_proyecto_especialidad">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#D9D9D9"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="20dp">
+
+        <!-- Título principal -->
+        <TextView
+            android:id="@+id/txtTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ESPECIALIDAD DE PROYECTOS"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_marginBottom="40dp"
+            android:textAlignment="center" />
+
+        <!-- Botones -->
+        <Button
+            android:id="@+id/btnProObra"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:text="OBRA"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:background="#5A5A5A"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/btnProRemodelacion"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:text="REMODELACION"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:background="#5A5A5A"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/btnProVenta"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:text="VENTA DE MOBILIARIO"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:background="#5A5A5A"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/btnProInstalacion"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:text="INSTALACION DE MOBILIARIO"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:background="#5A5A5A"
+            android:layout_marginBottom="30dp" />
+
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:src="@drawable/img_1"/>
+
+    </LinearLayout>
+
+</FrameLayout>

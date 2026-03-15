@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/txtTituloObra"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PROYECTOS EN CURSO"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_marginBottom="15dp" />
+
+    <!-- Botón Nuevo Proyecto -->
+    <Button
+        android:id="@+id/btnNuevoProyecto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+ NUEVO PROYECTO"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="10dp"
+        android:elevation="4dp"
+        android:textAllCaps="false" />
+
+    <!-- Lista de proyectos -->
+    <ListView
+        android:id="@+id/listaTrabajador"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:scrollbars="vertical" />
+
+</LinearLayout>

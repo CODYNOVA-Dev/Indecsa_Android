@@ -1,6 +1,6 @@
 package com.example.demo.dto.response;
 
-import com.indecsa.model.Trabajador.EstadoTrabajador;
+import com.example.demo.model.Trabajador.EstadoTrabajador;
 import lombok.Builder;
 import lombok.Data;
 

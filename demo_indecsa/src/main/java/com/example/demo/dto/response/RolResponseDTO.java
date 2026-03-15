@@ -1,5 +1,5 @@
 package com.example.demo.dto.response;
-import com.indecsa.model.Rol.NombreRol;
+import com.example.demo.model.Rol.NombreRol;
 import lombok.Builder;
 import lombok.Data;
 

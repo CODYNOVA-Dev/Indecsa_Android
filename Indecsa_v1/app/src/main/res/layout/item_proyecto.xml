@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    android:padding="8dp">
+
+    <!-- Tarjeta principal -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:elevation="5dp"
+        android:layout_marginBottom="15dp"
+        android:clipToPadding="false"
+        android:clipToOutline="true"
+        android:backgroundTint="#FFFFFF"
+        android:shape="rectangle"
+        android:layout_marginHorizontal="5dp"
+        android:background="@drawable/ba_card_round">
+
+        <!-- Encabezado -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FICHA DE PROYECTO:"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+        <!-- Contenido -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="12dp">
+
+            <!-- Imagen del proyecto -->
+            <ImageView
+                android:id="@+id/imgProyecto"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/usuario"
+                android:scaleType="centerCrop"
+                android:background="#DDDDDD"
+                android:layout_marginRight="12dp"
+                android:clipToOutline="true"
+                android:padding="2dp"
+                android:backgroundTint="#DDDDDD"
+                android:outlineProvider="background" />
+
+            <!-- Datos del proyecto -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtNombreProyecto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre del Proyecto"
+                    android:textStyle="bold"
+                    android:textSize="17sp"
+                    android:textColor="#000" />
+
+                <TextView
+                    android:id="@+id/txtDescripcionProyecto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Descripción del Proyecto"
+                    android:textSize="14sp"
+                    android:textColor="#555" />
+
+                <TextView
+                    android:id="@+id/txtContratistaProyecto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Contratista Asignado"
+                    android:textSize="14sp"
+                    android:textColor="#555" />
+
+                <TextView
+                    android:id="@+id/txtEspecialidadProyecto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Especialidad: "
+                    android:textSize="14sp"
+                    android:textColor="#555" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- TRES BOTONES EN UNA SOLA FILA -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="12dp">
+
+            <!-- BOTÓN VER DETALLES -->
+            <Button
+                android:id="@+id/btnVerDetalles"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:text="VER"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:elevation="4dp"
+                android:layout_marginRight="4dp" />
+
+            <!-- BOTÓN EDITAR -->
+            <Button
+                android:id="@+id/btnEditar"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:text="EDITAR"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:elevation="4dp"
+                android:layout_marginRight="4dp" />
+
+            <!-- BOTÓN ELIMINAR -->
+            <Button
+                android:id="@+id/btnEliminar"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:text="ELIMINAR"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:elevation="4dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

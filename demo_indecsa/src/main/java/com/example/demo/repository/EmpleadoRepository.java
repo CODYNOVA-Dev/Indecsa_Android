@@ -16,5 +16,5 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 
     List<Empleado> findByRol_IdRol(Integer idRol);
 
-    List<Empleado> findByRol_NombreRol(com.indecsa.model.Rol.NombreRol nombreRol);
+    List<Empleado> findByRol_NombreRol(com.example.demo.model.Rol.NombreRol nombreRol);
 }

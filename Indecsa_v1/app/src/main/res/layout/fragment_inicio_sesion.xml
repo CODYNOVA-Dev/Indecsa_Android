@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="20dp"
+    android:orientation="vertical"
+    tools:context=".Inicio_sesion">
+
+    <!-- Formulario de login -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="INICIO DE SESION"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textStyle="normal"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Campo correo -->
+    <EditText
+        android:id="@+id/etCorreo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:hint="Ingresa el correo"
+        android:layout_marginBottom="16dp"
+        android:inputType="textEmailAddress" />
+
+    <!-- Campo contraseña -->
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:layout_marginBottom="32dp"
+        android:hint="Ingresa la contraseña"
+        android:inputType="textPassword" />
+
+    <!-- Botones -->
+    <Button
+        android:id="@+id/btnInicio_sesion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Iniciar sesion" />
+
+    <Button
+        android:id="@+id/btnCrear_cuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Crear cuenta" />
+
+</LinearLayout>
