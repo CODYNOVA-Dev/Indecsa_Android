@@ -48,8 +48,8 @@
 
     <!-- Input Background -->
     <color name="input_background">#F5F7FA</color>
-    <color name="raya_amarilla">#C8A96E</color>
+    <color name="raya_amarilla">#D9A97E</color>
     <color name="fondo_claro">#001244</color>
-    <color name="fondo_mas_claro">#000264</color>
+    <color name="fondo_mas_claro">#152D50</color>
 
 </resources>

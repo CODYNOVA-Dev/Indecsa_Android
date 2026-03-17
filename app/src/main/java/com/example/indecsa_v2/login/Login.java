@@ -28,7 +28,7 @@ public class Login extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.contenedor_frags_login, new LoginFragment())
+                    .replace(R.id.contenedor_frags_login, new IngresarCorreoFragment())
                     .commit();
         }
     }

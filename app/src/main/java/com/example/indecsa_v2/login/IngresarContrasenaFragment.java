@@ -1,5 +1,6 @@
 package com.example.indecsa_v2.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.models.LoginRequestAdmin;
+import com.example.indecsa_v2.models.LoginRequestCapHum;
+import com.example.indecsa_v2.models.LoginResponse;
+import com.example.indecsa_v2.network.RetrofitClient;
 import com.google.android.material.textfield.TextInputEditText;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class IngresarContrasenaFragment extends Fragment {
 
@@ -24,7 +33,6 @@ public class IngresarContrasenaFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_ingresar_contrasena, container, false);
 
-        // Recibe el correo del fragment anterior
         String correo = getArguments() != null ? getArguments().getString("correo", "") : "";
 
         TextView tvCorreoMostrado = view.findViewById(R.id.tvCorreoMostrado);
@@ -40,8 +48,53 @@ public class IngresarContrasenaFragment extends Fragment {
                 return;
             }
 
-            // 🔐 Aquí irá la lógica de autenticación con correo + pass
-            Toast.makeText(getContext(), "Autenticando...", Toast.LENGTH_SHORT).show();
+            // Intenta login como Admin primero
+            LoginRequestAdmin reqAdmin = new LoginRequestAdmin(correo, pass);
+            RetrofitClient.getApiService().loginAdmin(reqAdmin).enqueue(new Callback<LoginResponse>() {
+                @Override
+                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                    if (response.isSuccessful() && response.body() != null
+                            && response.body().isSuccess()
+                            && response.body().getAdmin() != null) {
+
+                        // ✅ Es Admin → ir a Admin
+                        startActivity(new Intent(requireActivity(), Admin.class));
+                        requireActivity().finish();
+
+                    } else {
+                        // No es Admin → intenta como Capital Humano
+                        LoginRequestCapHum reqCapHum = new LoginRequestCapHum(correo, pass);
+                        RetrofitClient.getApiService().loginCapHum(reqCapHum).enqueue(new Callback<LoginResponse>() {
+                            @Override
+                            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                                if (response.isSuccessful() && response.body() != null
+                                        && response.body().isSuccess()
+                                        && response.body().getCapitalHumano() != null) {
+
+                                    // ✅ Es Capital Humano → ir a CapitalHumano
+                                    startActivity(new Intent(requireActivity(), CapitalHumano.class));
+                                    requireActivity().finish();
+
+                                } else {
+                                    Toast.makeText(getContext(),
+                                            "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                                Toast.makeText(getContext(),
+                                        "Error de conexión", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LoginResponse> call, Throwable t) {
+                    Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         return view;
