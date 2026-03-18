@@ -1,74 +1,69 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class TrabajadorDto {
+
+    @SerializedName("idTrabajador")
     private Integer idTrabajador;
-    private String nssTrabajador;
+
+    @SerializedName("nombreTrabajador")
     private String nombreTrabajador;
+
+    @SerializedName("nssTrabajador")
+    private String nssTrabajador;
+
+    @SerializedName("experiencia")
+    private String experiencia;
+
+    @SerializedName("telefonoTrabajador")
+    private String telefonoTrabajador;
+
+    @SerializedName("correoTrabajador")
+    private String correoTrabajador;
+
+    @SerializedName("especialidadTrabajador")
     private String especialidadTrabajador;
+
+    // Valores posibles: "ACTIVO", "INACTIVO", "VACACIONES", "BAJA"
+    @SerializedName("estadoTrabajador")
     private String estadoTrabajador;
+
+    @SerializedName("descripcionTrabajador")
     private String descripcionTrabajador;
 
-    public TrabajadorDto() {
-    }
+    @SerializedName("calificacionTrabajador")
+    private Integer calificacionTrabajador;
 
-    public TrabajadorDto(Integer idTrabajador, String nssTrabajador,
-                         String nombreTrabajador, String especialidadTrabajador,
-                         String estadoTrabajador, String descripcionTrabajador) {
-        this.idTrabajador = idTrabajador;
-        this.nssTrabajador = nssTrabajador;
-        this.nombreTrabajador = nombreTrabajador;
-        this.especialidadTrabajador = especialidadTrabajador;
-        this.estadoTrabajador = estadoTrabajador;
-        this.descripcionTrabajador = descripcionTrabajador;
-    }
+    @SerializedName("fechaIngreso")
+    private String fechaIngreso; // formato ISO: "2021-03-01"
 
-    public Integer getIdTrabajador() {
-        return idTrabajador;
-    }
+    // Valores posibles: "CDMX", "Hidalgo", "Puebla"
+    @SerializedName("ubicacionTrabajador")
+    private String ubicacionTrabajador;
 
-    public void setIdTrabajador(Integer idTrabajador) {
-        this.idTrabajador = idTrabajador;
-    }
+    public Integer getIdTrabajador()          { return idTrabajador; }
+    public String getNombreTrabajador()       { return nombreTrabajador; }
+    public String getNssTrabajador()          { return nssTrabajador; }
+    public String getExperiencia()            { return experiencia; }
+    public String getTelefonoTrabajador()     { return telefonoTrabajador; }
+    public String getCorreoTrabajador()       { return correoTrabajador; }
+    public String getEspecialidadTrabajador() { return especialidadTrabajador; }
+    public String getEstadoTrabajador()       { return estadoTrabajador; }
+    public String getDescripcionTrabajador()  { return descripcionTrabajador; }
+    public Integer getCalificacionTrabajador(){ return calificacionTrabajador; }
+    public String getFechaIngreso()           { return fechaIngreso; }
+    public String getUbicacionTrabajador()    { return ubicacionTrabajador; }
 
-    public String getNssTrabajador() {
-        return nssTrabajador;
-    }
-
-    public void setNssTrabajador(String nssTrabajador) {
-        this.nssTrabajador = nssTrabajador;
-    }
-
-    public String getNombreTrabajador() {
-        return nombreTrabajador;
-    }
-
-    public void setNombreTrabajador(String nombreTrabajador) {
-        this.nombreTrabajador = nombreTrabajador;
-    }
-
-    public String getEspecialidadTrabajador() {
-        return especialidadTrabajador;
-    }
-
-    public void setEspecialidadTrabajador(String especialidadTrabajador) {
-        this.especialidadTrabajador = especialidadTrabajador;
-    }
-
-    public String getEstadoTrabajador() {
-        return estadoTrabajador;
-    }
-
-    public void setEstadoTrabajador(String estadoTrabajador) {
-        this.estadoTrabajador = estadoTrabajador;
-    }
-
-    public String getDescripcionTrabajador() {
-        return descripcionTrabajador;
-    }
-
-    public void setDescripcionTrabajador(String descripcionTrabajador) {
-        this.descripcionTrabajador = descripcionTrabajador;
-    }
-
-
+    public void setNombreTrabajador(String v)       { this.nombreTrabajador = v; }
+    public void setNssTrabajador(String v)          { this.nssTrabajador = v; }
+    public void setExperiencia(String v)            { this.experiencia = v; }
+    public void setTelefonoTrabajador(String v)     { this.telefonoTrabajador = v; }
+    public void setCorreoTrabajador(String v)       { this.correoTrabajador = v; }
+    public void setEspecialidadTrabajador(String v) { this.especialidadTrabajador = v; }
+    public void setEstadoTrabajador(String v)       { this.estadoTrabajador = v; }
+    public void setDescripcionTrabajador(String v)  { this.descripcionTrabajador = v; }
+    public void setCalificacionTrabajador(Integer v){ this.calificacionTrabajador = v; }
+    public void setFechaIngreso(String v)           { this.fechaIngreso = v; }
+    public void setUbicacionTrabajador(String v)    { this.ubicacionTrabajador = v; }
 }

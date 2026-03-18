@@ -3,12 +3,10 @@ package com.example.indecsa_v2.network;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
 public class RetrofitClient {
-    //cambiar  la linea de abajo por tu ip local
 
-    private static final String BASE_URL = "http://10.221.141.213:8080/indecsa/api/";
-
+    // Cambia esta IP por la de tu máquina en la red local
+    private static final String BASE_URL = "http://10.221.141.213:8080/api/v1/";
 
     private static Retrofit retrofit;
 
@@ -22,8 +20,7 @@ public class RetrofitClient {
         return retrofit;
     }
 
-    public static com.example.indecsa_v2.network.ApiService getApiService() {
-        return getClient().create(com.example.indecsa_v2.network.ApiService.class);
+    public static ApiService getApiService() {
+        return getClient().create(ApiService.class);
     }
-
 }

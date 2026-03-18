@@ -1,4 +1,4 @@
-package com.example.indecsa_v2.admin;
+package com.example.indecsa_v2.admin.proyecto;
 
 import android.os.Bundle;
 

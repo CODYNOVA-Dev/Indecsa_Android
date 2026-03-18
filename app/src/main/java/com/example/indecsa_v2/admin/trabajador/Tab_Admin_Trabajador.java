@@ -1,4 +1,4 @@
-package com.example.indecsa_v2.admin;
+package com.example.indecsa_v2.admin.trabajador;
 
 import android.os.Bundle;
 

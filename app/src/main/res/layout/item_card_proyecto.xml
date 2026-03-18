@@ -23,79 +23,70 @@
             android:orientation="horizontal"
             tools:ignore="MissingConstraints">
 
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                tools:ignore="MissingConstraints"
-                android:gravity="center">
-                <!-- Avatar circular con inicial -->
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                tools:layout_editor_absoluteX="68dp">
 
-                <!-- Badge de Estado Activo -->
                 <TextView
-                    android:id="@+id/textAvatar"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    android:background="@drawable/pill_blue"
+                    android:id="@+id/textNombreCompleto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
                     android:fontFamily="sans-serif-black"
-                    android:gravity="center"
-                    android:text="A"
-                    android:textColor="@color/text_white"
-                    android:textSize="22sp"
+                    android:maxLines="1"
+                    android:text="Planta Industrial Norte"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintEnd_toStartOf="@id/badgeEstado"
+                    app:layout_constraintStart_toEndOf="@id/textAvatar" />
+
+                <TextView
+                    android:id="@+id/textEspecialidad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif"
+                    android:maxLines="1"
+                    android:text="Industrial"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@id/badgeEstado"
+                    app:layout_constraintStart_toEndOf="@id/textAvatar" />
+
+                <TextView
+                    android:id="@+id/textUbicacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif"
+                    android:maxLines="1"
+                    android:text="Hidalgo"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toStartOf="@id/badgeEstado"
+                    app:layout_constraintStart_toEndOf="@id/textAvatar" />
 
                 <LinearLayout
-                    android:layout_width="210dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     tools:layout_editor_absoluteX="68dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:ignore="MissingConstraints">
-
-                        <TextView
-                            android:id="@+id/textNombreCompleto"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
-                            android:layout_marginTop="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif-black"
-                            android:maxLines="1"
-                            android:text="RFC: "
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                            app:layout_constraintStart_toEndOf="@id/textAvatar" />
-
-                        <TextView
-                            android:id="@+id/textNombreCompleto"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif-black"
-                            android:maxLines="1"
-                            android:text="GARL850312AB1"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                            app:layout_constraintStart_toEndOf="@id/textAvatar" />
-
-                    </LinearLayout>
-
                     <TextView
-                        android:id="@+id/textUbicacion"
+                        android:id="@+id/textCorreo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="14dp"
@@ -103,7 +94,7 @@
                         android:ellipsize="end"
                         android:fontFamily="sans-serif"
                         android:maxLines="1"
-                        android:text="Hidalgo"
+                        android:text="Inicio:"
                         android:textColor="@color/text_secondary"
                         android:textSize="16sp"
                         app:layout_constraintEnd_toStartOf="@id/badgeEstado"
@@ -118,12 +109,20 @@
                         android:ellipsize="end"
                         android:fontFamily="sans-serif"
                         android:maxLines="1"
-                        android:text="Numero"
+                        android:text=" 15/01/2024"
                         android:textColor="@color/text_secondary"
                         android:textSize="16sp"
                         app:layout_constraintEnd_toStartOf="@id/badgeEstado"
                         app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="68dp">
                     <TextView
                         android:id="@+id/textCorreo"
                         android:layout_width="wrap_content"
@@ -133,14 +132,14 @@
                         android:ellipsize="end"
                         android:fontFamily="sans-serif"
                         android:maxLines="1"
-                        android:text="trabajador@indecsa.com"
+                        android:text="Fin:"
                         android:textColor="@color/text_secondary"
                         android:textSize="16sp"
                         app:layout_constraintEnd_toStartOf="@id/badgeEstado"
                         app:layout_constraintStart_toEndOf="@id/textAvatar" />
 
                     <TextView
-                        android:id="@+id/textEspecialidad"
+                        android:id="@+id/textNumero"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="14dp"
@@ -148,16 +147,12 @@
                         android:ellipsize="end"
                         android:fontFamily="sans-serif"
                         android:maxLines="1"
-                        android:text="Empresa especializada en obra civil y estructuras metálicas."
+                        android:text="      15/01/2024"
                         android:textColor="@color/text_secondary"
                         android:textSize="16sp"
                         app:layout_constraintEnd_toStartOf="@id/badgeEstado"
                         app:layout_constraintStart_toEndOf="@id/textAvatar" />
-
-
-
                 </LinearLayout>
-
 
             </LinearLayout>
 
@@ -203,5 +198,4 @@
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView>

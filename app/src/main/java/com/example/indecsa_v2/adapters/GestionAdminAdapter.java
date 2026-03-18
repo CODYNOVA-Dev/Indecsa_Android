@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.indecsa_v2.admin.Tab_Admin_Contratista;
-import com.example.indecsa_v2.admin.Tab_Admin_Proyecto;
-import com.example.indecsa_v2.admin.Tab_Admin_Trabajador;
+import com.example.indecsa_v2.admin.contratista.Tab_Admin_Contratista;
+import com.example.indecsa_v2.admin.proyecto.Tab_Admin_Proyecto;
+import com.example.indecsa_v2.admin.trabajador.Tab_Admin_Trabajador;
 
 public class GestionAdminAdapter extends FragmentStateAdapter {
 
