@@ -5,9 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,9 +16,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.indecsa_v2.models.Contratista;
-import com.example.indecsa_v2.network.ApiService;
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.models.Contratista;
+import com.example.indecsa_v2.network.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,25 +26,39 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * CORRECCIONES respecto a la versión anterior:
+ *
+ * 1. Se eliminó la creación manual de Retrofit aquí.
+ *    Ahora se usa RetrofitClient.getApiService() para tener una única instancia
+ *    con la BASE_URL correcta. La constante ApiService.BASE_URL ya no existe.
+ *
+ * 2. Se actualizaron todos los getters del modelo Contratista a los nuevos nombres:
+ *      getRfc()         → getRfcContratista()
+ *      getUbicacion()   → getUbicacionContratista()
+ *      getEspecialidad()→ ELIMINADO (campo inexistente en la API); se muestra
+ *                         experiencia como alternativa, o simplemente se omite.
+ *      getTelefono()    → getTelefonoContratista()
+ *      getCorreo()      → getCorreoContratista()
+ *
+ * 3. El filtro de búsqueda ya no filtra por especialidad (campo eliminado);
+ *    filtra por nombre, RFC, ubicación y descripción.
+ *
+ * 4. La comparación del badge de estado usa "ACTIVO" (mayúsculas), que es
+ *    el valor que devuelve el enum EstadoContratista del backend.
+ */
 public class Tab_Admin_Contratista extends Fragment {
 
     private RecyclerView recyclerViewAreas;
-    private ProgressBar progressBar;
-    private TextView textNoContratistas;
     private EditText editBuscarArea;
     private AppCompatButton btnBuscar;
 
     private ContratistaAdapter contratistaAdapter;
     private List<Contratista> listaContratistas;
     private List<Contratista> listaContratistasFiltrada;
-    private ApiService apiService;
 
-    public Tab_Admin_Contratista() {
-        // Required empty public constructor
-    }
+    public Tab_Admin_Contratista() {}
 
     @Nullable
     @Override
@@ -54,119 +66,77 @@ public class Tab_Admin_Contratista extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View vista = inflater.inflate(R.layout.fragment_tab__admin__contratista, container, false);
 
-        // Inicializar Retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiService.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        apiService = retrofit.create(ApiService.class);
+        recyclerViewAreas = vista.findViewById(R.id.recyclerViewAreas);
+        editBuscarArea    = vista.findViewById(R.id.editBuscarArea);
+        btnBuscar         = vista.findViewById(R.id.btnBuscar);
 
-        // Inicializar vistas
-        recyclerViewAreas       = vista.findViewById(R.id.recyclerViewAreas);
-        editBuscarArea          = vista.findViewById(R.id.editBuscarArea);
-        btnBuscar               = vista.findViewById(R.id.btnBuscar);
-        // Si tu layout tiene ProgressBar y TextView de estado vacío, enlázalos aquí:
-        // progressBar          = vista.findViewById(R.id.progressBar);
-        // textNoContratistas   = vista.findViewById(R.id.textNoContratistas);
-
-        // Configurar RecyclerView
-        listaContratistas        = new ArrayList<>();
+        listaContratistas         = new ArrayList<>();
         listaContratistasFiltrada = new ArrayList<>();
-        contratistaAdapter       = new ContratistaAdapter(listaContratistasFiltrada);
+        contratistaAdapter        = new ContratistaAdapter(listaContratistasFiltrada);
         recyclerViewAreas.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewAreas.setAdapter(contratistaAdapter);
 
-        // Configurar botón buscar
         btnBuscar.setOnClickListener(v -> filtrarContratistas(editBuscarArea.getText().toString()));
 
-        // Cargar contratistas al iniciar
         cargarContratistas();
-
         return vista;
     }
 
-    // -------------------------------------------------------------------------
-    // Carga de datos desde la API
-    // -------------------------------------------------------------------------
     private void cargarContratistas() {
-        // progressBar.setVisibility(View.VISIBLE);
         recyclerViewAreas.setVisibility(View.GONE);
 
-        apiService.obtenerContratistas().enqueue(new Callback<List<Contratista>>() {
+        RetrofitClient.getApiService().getAllContratistas().enqueue(new Callback<List<Contratista>>() {
             @Override
             public void onResponse(Call<List<Contratista>> call, Response<List<Contratista>> response) {
-                // progressBar.setVisibility(View.GONE);
-
                 if (response.isSuccessful() && response.body() != null) {
                     listaContratistas.clear();
                     listaContratistas.addAll(response.body());
-
                     listaContratistasFiltrada.clear();
                     listaContratistasFiltrada.addAll(listaContratistas);
 
-                    if (listaContratistas.isEmpty()) {
-                        // textNoContratistas.setVisibility(View.VISIBLE);
-                        recyclerViewAreas.setVisibility(View.GONE);
-                    } else {
-                        // textNoContratistas.setVisibility(View.GONE);
-                        recyclerViewAreas.setVisibility(View.VISIBLE);
-                        contratistaAdapter.notifyDataSetChanged();
-                    }
+                    recyclerViewAreas.setVisibility(listaContratistas.isEmpty() ? View.GONE : View.VISIBLE);
+                    contratistaAdapter.notifyDataSetChanged();
                 } else {
-                    // textNoContratistas.setVisibility(View.VISIBLE);
                     Toast.makeText(getContext(), "Error al cargar contratistas", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Contratista>> call, Throwable t) {
-                // progressBar.setVisibility(View.GONE);
-                // textNoContratistas.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // -------------------------------------------------------------------------
-    // Filtrado por texto
-    // -------------------------------------------------------------------------
     private void filtrarContratistas(String texto) {
         listaContratistasFiltrada.clear();
 
         if (texto.isEmpty()) {
             listaContratistasFiltrada.addAll(listaContratistas);
         } else {
-            String textoBusqueda = texto.toLowerCase().trim();
-            for (Contratista contratista : listaContratistas) {
-                if (contratista.getNombreContratista().toLowerCase().contains(textoBusqueda) ||
-                        contratista.getRfc().toLowerCase().contains(textoBusqueda)            ||
-                        contratista.getUbicacion().toLowerCase().contains(textoBusqueda)      ||
-                        contratista.getEspecialidad().toLowerCase().contains(textoBusqueda)) {
-                    listaContratistasFiltrada.add(contratista);
+            String q = texto.toLowerCase().trim();
+            for (Contratista c : listaContratistas) {
+                boolean nombre    = c.getNombreContratista() != null && c.getNombreContratista().toLowerCase().contains(q);
+                boolean rfc       = c.getRfcContratista()   != null && c.getRfcContratista().toLowerCase().contains(q);
+                boolean ubicacion = c.getUbicacionContratista() != null && c.getUbicacionContratista().toLowerCase().contains(q);
+                boolean desc      = c.getDescripcionContratista() != null && c.getDescripcionContratista().toLowerCase().contains(q);
+                if (nombre || rfc || ubicacion || desc) {
+                    listaContratistasFiltrada.add(c);
                 }
             }
         }
 
         contratistaAdapter.notifyDataSetChanged();
-
-        if (listaContratistasFiltrada.isEmpty()) {
-            // textNoContratistas.setText("No se encontraron contratistas con \"" + texto + "\"");
-            // textNoContratistas.setVisibility(View.VISIBLE);
-            recyclerViewAreas.setVisibility(View.GONE);
-        } else {
-            // textNoContratistas.setVisibility(View.GONE);
-            recyclerViewAreas.setVisibility(View.VISIBLE);
-        }
+        recyclerViewAreas.setVisibility(listaContratistasFiltrada.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
-    // -------------------------------------------------------------------------
-    // ADAPTER (clase interna)
-    // -------------------------------------------------------------------------
+    // ─── ADAPTER ─────────────────────────────────────────────────────────────
+
     private class ContratistaAdapter extends RecyclerView.Adapter<ContratistaAdapter.ViewHolder> {
 
         private final List<Contratista> contratistas;
 
-        public ContratistaAdapter(List<Contratista> contratistas) {
+        ContratistaAdapter(List<Contratista> contratistas) {
             this.contratistas = contratistas;
         }
 
@@ -184,23 +154,18 @@ public class Tab_Admin_Contratista extends Fragment {
         }
 
         @Override
-        public int getItemCount() {
-            return contratistas.size();
-        }
+        public int getItemCount() { return contratistas.size(); }
 
-        // -----------------------------------------------------------------
-        // ViewHolder
-        // -----------------------------------------------------------------
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView     textAvatar;
-            TextView     textNombreCompleto;
-            TextView     textUbicacion;
-            TextView     textNumero;
-            TextView     textCorreo;
-            TextView     textEspecialidad;
-            TextView     badgeEstado;
-            RatingBar    ratingBar;
-            CardView     cardContratista;
+            android.widget.TextView textAvatar;
+            android.widget.TextView textNombreCompleto;
+            android.widget.TextView textUbicacion;
+            android.widget.TextView textNumero;
+            android.widget.TextView textCorreo;
+            android.widget.TextView textEspecialidad;
+            android.widget.TextView badgeEstado;
+            RatingBar               ratingBar;
+            CardView                cardContratista;
 
             ViewHolder(View itemView) {
                 super(itemView);
@@ -212,56 +177,48 @@ public class Tab_Admin_Contratista extends Fragment {
                 textEspecialidad   = itemView.findViewById(R.id.textEspecialidad);
                 badgeEstado        = itemView.findViewById(R.id.badgeEstado);
                 ratingBar          = itemView.findViewById(R.id.ratingBar);
-                cardContratista    = (CardView) itemView; // raíz del item
+                cardContratista    = (CardView) itemView;
             }
 
-            void bind(Contratista contratista) {
+            void bind(Contratista c) {
                 // Avatar: inicial del nombre
-                if (contratista.getNombreContratista() != null && !contratista.getNombreContratista().isEmpty()) {
-                    textAvatar.setText(String.valueOf(contratista.getNombreContratista().charAt(0)).toUpperCase());
-                }
+                String nombre = c.getNombreContratista();
+                textAvatar.setText(nombre != null && !nombre.isEmpty()
+                        ? String.valueOf(nombre.charAt(0)).toUpperCase() : "?");
 
-                // RFC + nombre completo
-                textNombreCompleto.setText(contratista.getRfc());
+                // Nombre y RFC
+                textNombreCompleto.setText(nombre);
+                // Reutilizamos textEspecialidad para mostrar RFC (el campo especialidad no existe en la API)
+                textEspecialidad.setText(c.getRfcContratista());
 
-                // Demás campos
-                textUbicacion.setText(contratista.getUbicacion());
-                textNumero.setText(contratista.getTelefono());
-                textCorreo.setText(contratista.getCorreo());
-                textEspecialidad.setText(contratista.getEspecialidad());
+                // Datos de contacto
+                textUbicacion.setText(c.getUbicacionContratista());
+                textNumero.setText(c.getTelefonoContratista());
+                textCorreo.setText(c.getCorreoContratista());
 
-                // Badge de estado
-                if ("Activo".equals(contratista.getEstadoContratista())) {
+                // Badge de estado — el enum del backend devuelve "ACTIVO" en mayúsculas
+                if ("ACTIVO".equals(c.getEstadoContratista())) {
                     badgeEstado.setText("● Activo");
                     badgeEstado.setBackgroundResource(R.drawable.item_disp_verde);
                 } else {
                     badgeEstado.setText("● Inactivo");
-                    badgeEstado.setBackgroundResource(R.drawable.item_disp_rojo); // ajusta el drawable si es distinto
+                    badgeEstado.setBackgroundResource(R.drawable.item_disp_rojo);
                 }
 
                 // Rating
-                if (contratista.getCalificacion() > 0) {
-                    ratingBar.setRating(contratista.getCalificacion());
+                if (c.getCalificacionContratista() != null && c.getCalificacionContratista() > 0) {
+                    ratingBar.setRating(c.getCalificacionContratista());
                 }
 
-                // Click en la tarjeta
-                cardContratista.setOnClickListener(v -> abrirDetalleContratista(contratista));
+                cardContratista.setOnClickListener(v -> abrirDetalleContratista(c));
             }
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Navegación al detalle (adapta el ID de navegación según tu nav_graph)
-    // -------------------------------------------------------------------------
     private void abrirDetalleContratista(Contratista contratista) {
         Bundle bundle = new Bundle();
         bundle.putInt("contratistaId", contratista.getIdContratista());
         bundle.putString("contratistaNombre", contratista.getNombreContratista());
-
-        // Ejemplo de navegación — cambia el ID de destino según tu nav_graph:
-        // Navigation.findNavController(requireView())
-        //         .navigate(R.id.action_tab_admin_contratista_to_detalle, bundle);
-
         Toast.makeText(getContext(), "Contratista: " + contratista.getNombreContratista(), Toast.LENGTH_SHORT).show();
     }
 }

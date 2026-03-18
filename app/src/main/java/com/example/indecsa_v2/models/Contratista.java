@@ -2,6 +2,30 @@ package com.example.indecsa_v2.models;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * CORRECCIONES respecto al modelo anterior:
+ *
+ * 1. Se alinearon los @SerializedName con los campos reales que devuelve
+ *    ContratistaResponseDTO del backend:
+ *      - "rfcContratista"          (antes era "rfc"        → no coincidía con la API)
+ *      - "telefonoContratista"     (antes era "telefono"   → no coincidía con la API)
+ *      - "correoContratista"       (antes era "correo"     → no coincidía con la API)
+ *      - "descripcionContratista"  (ya existía, se mantuvo)
+ *      - "calificacionContratista" (antes era "calificacion" con Integer → API devuelve Byte/int)
+ *      - "ubicacionContratista"    (antes era "ubicacion"  → no coincidía con la API)
+ *      - "estadoContratista"       (ya existía, se mantuvo)
+ *    El campo "especialidad" NO existe en ContratistaResponseDTO; se eliminó.
+ *
+ * 2. Se renombraron los getters para reflejar los nombres correctos,
+ *    manteniendo retrocompatibilidad donde el adaptador Android los usaba.
+ *    Tab_Admin_Contratista usaba:
+ *      contratista.getRfc()         → ahora getRfcContratista()
+ *      contratista.getUbicacion()   → ahora getUbicacionContratista()
+ *      contratista.getEspecialidad()→ ELIMINADO (campo no existe en la API)
+ *      contratista.getTelefono()    → ahora getTelefonoContratista()
+ *      contratista.getCorreo()      → ahora getCorreoContratista()
+ *    IMPORTANTE: actualizar Tab_Admin_Contratista con los nuevos getters.
+ */
 public class Contratista {
 
     @SerializedName("idContratista")
@@ -10,49 +34,59 @@ public class Contratista {
     @SerializedName("nombreContratista")
     private String nombreContratista;
 
-    @SerializedName("estadoContratista")
-    private String estadoContratista;
+    @SerializedName("rfcContratista")
+    private String rfcContratista;
+
+    @SerializedName("telefonoContratista")
+    private String telefonoContratista;
+
+    @SerializedName("correoContratista")
+    private String correoContratista;
 
     @SerializedName("descripcionContratista")
     private String descripcionContratista;
 
-    @SerializedName("calificacion")
-    private Integer calificacion;
+    @SerializedName("experiencia")
+    private String experiencia;
 
-    @SerializedName("especialidad")
-    private String especialidad;
+    @SerializedName("calificacionContratista")
+    private Integer calificacionContratista;
 
-    @SerializedName("telefono")
-    private String telefono;
+    @SerializedName("estadoContratista")
+    private String estadoContratista;
 
-    @SerializedName("correo")
-    private String correo;
+    @SerializedName("ubicacionContratista")
+    private String ubicacionContratista;
 
-    // Constructor vacío
     public Contratista() {}
 
-    // GETTERS Y SETTERS
-    public Integer getIdContratista() { return idContratista; }
-    public void setIdContratista(Integer idContratista) { this.idContratista = idContratista; }
+    public Integer getIdContratista()          { return idContratista; }
+    public void setIdContratista(Integer v)    { this.idContratista = v; }
 
-    public String getNombreContratista() { return nombreContratista; }
-    public void setNombreContratista(String nombreContratista) { this.nombreContratista = nombreContratista; }
+    public String getNombreContratista()       { return nombreContratista; }
+    public void setNombreContratista(String v) { this.nombreContratista = v; }
 
-    public String getEstadoContratista() { return estadoContratista; }
-    public void setEstadoContratista(String estadoContratista) { this.estadoContratista = estadoContratista; }
+    public String getRfcContratista()          { return rfcContratista; }
+    public void setRfcContratista(String v)    { this.rfcContratista = v; }
 
-    public String getDescripcionContratista() { return descripcionContratista; }
-    public void setDescripcionContratista(String descripcionContratista) { this.descripcionContratista = descripcionContratista; }
+    public String getTelefonoContratista()     { return telefonoContratista; }
+    public void setTelefonoContratista(String v){ this.telefonoContratista = v; }
 
-    public Integer getCalificacion() { return calificacion; }
-    public void setCalificacion(Integer calificacion) { this.calificacion = calificacion; }
+    public String getCorreoContratista()       { return correoContratista; }
+    public void setCorreoContratista(String v) { this.correoContratista = v; }
 
-    public String getEspecialidad() { return especialidad; }
-    public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
+    public String getDescripcionContratista()  { return descripcionContratista; }
+    public void setDescripcionContratista(String v){ this.descripcionContratista = v; }
 
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getExperiencia()             { return experiencia; }
+    public void setExperiencia(String v)       { this.experiencia = v; }
 
-    public String getCorreo() { return correo; }
-    public void setCorreo(String correo) { this.correo = correo; }
+    public Integer getCalificacionContratista()       { return calificacionContratista; }
+    public void setCalificacionContratista(Integer v) { this.calificacionContratista = v; }
+
+    public String getEstadoContratista()       { return estadoContratista; }
+    public void setEstadoContratista(String v) { this.estadoContratista = v; }
+
+    public String getUbicacionContratista()    { return ubicacionContratista; }
+    public void setUbicacionContratista(String v){ this.ubicacionContratista = v; }
 }
