@@ -144,7 +144,7 @@ public class Tab_Admin_Contratista extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_card_contratista, parent, false);
+                    .inflate(R.layout.item_card_admin_contratista, parent, false);
             return new ViewHolder(view);
         }
 
@@ -207,7 +207,7 @@ public class Tab_Admin_Contratista extends Fragment {
 
                 // Rating
                 if (c.getCalificacionContratista() != null && c.getCalificacionContratista() > 0) {
-                    ratingBar.setRating(c.getCalificacionContratista());
+                    ratingBar.setRating(c.getCalificacionContratista().floatValue());
                 }
 
                 cardContratista.setOnClickListener(v -> abrirDetalleContratista(c));

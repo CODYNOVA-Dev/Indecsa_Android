@@ -80,7 +80,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:itemCount="3"
-            tools:listitem="@layout/item_card_contratista"
+            tools:listitem="@layout/item_card_admin_contratista"
             app:layout_constraintTop_toBottomOf="@+id/layoutBuscador"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

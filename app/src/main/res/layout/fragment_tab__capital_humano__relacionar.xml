@@ -35,7 +35,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/buscar"
-                app:tint="@color/primary_orange" />
+                app:tint="@color/raya_amarilla" />
 
             <EditText
                 android:id="@+id/editBuscarArea"
@@ -80,7 +80,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:itemCount="3"
-            tools:listitem="@layout/item_card_caphum_trabajador"
+            tools:listitem="@layout/item_card_caphum_relacionar"
             app:layout_constraintTop_toBottomOf="@+id/layoutBuscador"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

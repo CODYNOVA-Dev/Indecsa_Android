@@ -17,7 +17,7 @@
             android:label="@string/title_activity_admin_tab_trabajadores"
             android:theme="@style/Theme.Indecsa_v2.NoActionBar" />
         <activity
-            android:name=".contratista.Panel_CapitalHumano"
+            android:name=".capitalhumano.Panel_CapitalHumano"
             android:exported="false" />
         <activity
             android:name=".admin.Panel_Admin"

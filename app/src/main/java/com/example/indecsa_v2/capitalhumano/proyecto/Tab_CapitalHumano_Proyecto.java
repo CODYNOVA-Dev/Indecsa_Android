@@ -1,4 +1,4 @@
-package com.example.indecsa_v2.contratista;
+package com.example.indecsa_v2.capitalhumano.proyecto;
 
 import android.os.Bundle;
 

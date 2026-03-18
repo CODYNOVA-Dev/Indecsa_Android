@@ -50,13 +50,13 @@ public class Panel_Admin extends AppCompatActivity {
                 (tab, position) -> {
                     switch (position) {
                         case 0:
-                            tab.setText("Bloques");
+                            tab.setText("Contratista");
                             break;
                         case 1:
-                            tab.setText("Horarios");
+                            tab.setText("Proyecto");
                             break;
                         case 2:
-                            tab.setText("Calendarios");
+                            tab.setText("Trabajadores");
                             break;
                     }
                 }

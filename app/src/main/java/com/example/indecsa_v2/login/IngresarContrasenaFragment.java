@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.admin.Panel_Admin;
+import com.example.indecsa_v2.capitalhumano.Panel_CapitalHumano;
 import com.example.indecsa_v2.models.LoginRequestDto;
 import com.example.indecsa_v2.models.LoginResponseDto;
 import com.example.indecsa_v2.network.RetrofitClient;
@@ -86,12 +88,12 @@ public class IngresarContrasenaFragment extends Fragment {
 
                 switch (rol) {
                     case "ADMIN":
-                        startActivity(new Intent(requireActivity(), Admin.class));
+                        startActivity(new Intent(requireActivity(), Panel_Admin.class));
                         requireActivity().finish();
                         break;
 
                     case "CAPITAL_HUMANO":
-                        startActivity(new Intent(requireActivity(), CapitalHumano.class));
+                        startActivity(new Intent(requireActivity(), Panel_CapitalHumano.class));
                         requireActivity().finish();
                         break;
 

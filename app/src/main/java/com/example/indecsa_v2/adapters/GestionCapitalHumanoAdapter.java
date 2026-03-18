@@ -6,8 +6,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.indecsa_v2.admin.contratista.Tab_Admin_Contratista;
-import com.example.indecsa_v2.contratista.Tab_CapitalHumano_Proyecto;
-import com.example.indecsa_v2.contratista.Tab_CapitalHumano_Trabajador;
+import com.example.indecsa_v2.capitalhumano.proyecto.Tab_CapitalHumano_Proyecto;
+import com.example.indecsa_v2.capitalhumano.trabajador.Tab_CapitalHumano_Trabajador;
 
 public class GestionCapitalHumanoAdapter extends FragmentStateAdapter {
 

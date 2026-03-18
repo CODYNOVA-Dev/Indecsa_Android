@@ -1,4 +1,4 @@
-package com.example.indecsa_v2.contratista;
+package com.example.indecsa_v2.capitalhumano;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -51,13 +51,13 @@ public class Panel_CapitalHumano extends AppCompatActivity {
                 (tab, position) -> {
                     switch (position) {
                         case 0:
-                            tab.setText("Bloques");
+                            tab.setText("Contratista");
                             break;
                         case 1:
-                            tab.setText("Horarios");
+                            tab.setText("Proyecto");
                             break;
                         case 2:
-                            tab.setText("Calendarios");
+                            tab.setText("Trabajadores");
                             break;
                     }
                 }
