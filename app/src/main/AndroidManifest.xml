@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Indecsa_v2" >
         <activity
+            android:name=".capitalhumano.Panel_Inicial_CapitalHumano"
+            android:exported="false" />
+        <activity
+            android:name=".admin.Panel_Inicial_Admin"
+            android:exported="false" />
+        <activity
             android:name=".Admin_Tab_Trabajadores"
             android:exported="false"
             android:label="@string/title_activity_admin_tab_trabajadores"

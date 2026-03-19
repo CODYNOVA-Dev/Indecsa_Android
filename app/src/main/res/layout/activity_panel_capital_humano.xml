@@ -38,39 +38,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabLayoutCapitalHumano"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/tarjeta"
-                    android:elevation="4dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:tabGravity="fill"
-                    app:tabIndicatorColor="@color/primary_orange"
-                    app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/primary_orange"
-                    app:tabTextColor="@color/text_secondary">
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Proyecto" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Contratista" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Trabajador" />
-                </com.google.android.material.tabs.TabLayout>
-
             </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.viewpager2.widget.ViewPager2
@@ -81,7 +48,43 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tabLayoutGestion" />
+                app:layout_constraintTop_toBottomOf="@id/frame_correo_login" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayoutCapitalHumano"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/tarjeta"
+                android:elevation="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@color/primary_orange"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/primary_orange"
+                app:tabTextColor="@color/text_secondary">
+
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Proyecto" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contratista" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trabajador" />
+
+            </com.google.android.material.tabs.TabLayout>
+
 
         </FrameLayout>
     </androidx.cardview.widget.CardView>

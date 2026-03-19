@@ -30,7 +30,7 @@
                     android:id="@+id/dialogTvAvatar"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/pill_orange"
+                    android:background="@drawable/pill_blue"
                     android:gravity="center"
                     android:text="C"
                     android:textColor="@color/text_white"

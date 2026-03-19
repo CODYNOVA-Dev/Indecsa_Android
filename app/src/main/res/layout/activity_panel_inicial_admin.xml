@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_mas_claro">
+
+    <LinearLayout
+        android:id="@+id/header_admin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/fondo_encabezado"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
+        <ImageView
+            android:layout_width="202dp"
+            android:layout_height="116dp"
+            android:src="@drawable/logo" />
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_admin"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="-30dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp">
+        <FrameLayout android:layout_width="match_parent" android:layout_height="150dp"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card1"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp">
+        <FrameLayout android:layout_width="match_parent" android:layout_height="150dp"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card2"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp">
+        <FrameLayout android:layout_width="match_parent" android:layout_height="150dp"/>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

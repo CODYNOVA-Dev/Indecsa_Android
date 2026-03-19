@@ -63,7 +63,6 @@
                         tools:layout_editor_absoluteX="68dp">
 
                         <TextView
-                            android:id="@+id/textUbicacion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
@@ -77,7 +76,7 @@
                             app:layout_constraintEnd_toStartOf="@id/badgeEstado"
                             app:layout_constraintStart_toEndOf="@id/textAvatar" />
                         <TextView
-                            android:id="@+id/textUbicacion"
+                            android:id="@+id/textEstado"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
@@ -100,7 +99,6 @@
                         tools:layout_editor_absoluteX="68dp">
 
                         <TextView
-                            android:id="@+id/textUbicacion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
@@ -114,7 +112,7 @@
                             app:layout_constraintEnd_toStartOf="@id/badgeEstado"
                             app:layout_constraintStart_toEndOf="@id/textAvatar" />
                         <TextView
-                            android:id="@+id/textUbicacion"
+                            android:id="@+id/textMunicipio"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
