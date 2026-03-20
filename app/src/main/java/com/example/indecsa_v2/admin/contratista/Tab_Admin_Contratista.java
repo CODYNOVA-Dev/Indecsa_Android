@@ -27,27 +27,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * CORRECCIONES respecto a la versión anterior:
- *
- * 1. Se eliminó la creación manual de Retrofit aquí.
- *    Ahora se usa RetrofitClient.getApiService() para tener una única instancia
- *    con la BASE_URL correcta. La constante ApiService.BASE_URL ya no existe.
- *
- * 2. Se actualizaron todos los getters del modelo Contratista a los nuevos nombres:
- *      getRfc()         → getRfcContratista()
- *      getUbicacion()   → getUbicacionContratista()
- *      getEspecialidad()→ ELIMINADO (campo inexistente en la API); se muestra
- *                         experiencia como alternativa, o simplemente se omite.
- *      getTelefono()    → getTelefonoContratista()
- *      getCorreo()      → getCorreoContratista()
- *
- * 3. El filtro de búsqueda ya no filtra por especialidad (campo eliminado);
- *    filtra por nombre, RFC, ubicación y descripción.
- *
- * 4. La comparación del badge de estado usa "ACTIVO" (mayúsculas), que es
- *    el valor que devuelve el enum EstadoContratista del backend.
- */
 public class Tab_Admin_Contratista extends Fragment {
 
     private RecyclerView recyclerViewAreas;
@@ -93,14 +72,12 @@ public class Tab_Admin_Contratista extends Fragment {
                     listaContratistas.addAll(response.body());
                     listaContratistasFiltrada.clear();
                     listaContratistasFiltrada.addAll(listaContratistas);
-
                     recyclerViewAreas.setVisibility(listaContratistas.isEmpty() ? View.GONE : View.VISIBLE);
                     contratistaAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "Error al cargar contratistas", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<List<Contratista>> call, Throwable t) {
                 Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -110,7 +87,6 @@ public class Tab_Admin_Contratista extends Fragment {
 
     private void filtrarContratistas(String texto) {
         listaContratistasFiltrada.clear();
-
         if (texto.isEmpty()) {
             listaContratistasFiltrada.addAll(listaContratistas);
         } else {
@@ -120,14 +96,19 @@ public class Tab_Admin_Contratista extends Fragment {
                 boolean rfc       = c.getRfcContratista()   != null && c.getRfcContratista().toLowerCase().contains(q);
                 boolean ubicacion = c.getUbicacionContratista() != null && c.getUbicacionContratista().toLowerCase().contains(q);
                 boolean desc      = c.getDescripcionContratista() != null && c.getDescripcionContratista().toLowerCase().contains(q);
-                if (nombre || rfc || ubicacion || desc) {
-                    listaContratistasFiltrada.add(c);
-                }
+                if (nombre || rfc || ubicacion || desc) listaContratistasFiltrada.add(c);
             }
         }
-
         contratistaAdapter.notifyDataSetChanged();
         recyclerViewAreas.setVisibility(listaContratistasFiltrada.isEmpty() ? View.GONE : View.VISIBLE);
+    }
+
+    // ─── ABRIR DIALOG ────────────────────────────────────────────────────────
+
+    private void abrirDetalleContratista(Contratista contratista) {
+        DetalleContratistaDialog dialog = DetalleContratistaDialog.newInstance(contratista);
+        dialog.setOnCambioListener(this::cargarContratistas);
+        dialog.show(getParentFragmentManager(), "detalle_contratista");
     }
 
     // ─── ADAPTER ─────────────────────────────────────────────────────────────
@@ -136,9 +117,7 @@ public class Tab_Admin_Contratista extends Fragment {
 
         private final List<Contratista> contratistas;
 
-        ContratistaAdapter(List<Contratista> contratistas) {
-            this.contratistas = contratistas;
-        }
+        ContratistaAdapter(List<Contratista> contratistas) { this.contratistas = contratistas; }
 
         @NonNull
         @Override
@@ -181,22 +160,15 @@ public class Tab_Admin_Contratista extends Fragment {
             }
 
             void bind(Contratista c) {
-                // Avatar: inicial del nombre
                 String nombre = c.getNombreContratista();
                 textAvatar.setText(nombre != null && !nombre.isEmpty()
                         ? String.valueOf(nombre.charAt(0)).toUpperCase() : "?");
-
-                // Nombre y RFC
                 textNombreCompleto.setText(nombre);
-                // Reutilizamos textEspecialidad para mostrar RFC (el campo especialidad no existe en la API)
                 textEspecialidad.setText(c.getRfcContratista());
-
-                // Datos de contacto
                 textUbicacion.setText(c.getUbicacionContratista());
                 textNumero.setText(c.getTelefonoContratista());
                 textCorreo.setText(c.getCorreoContratista());
 
-                // Badge de estado — el enum del backend devuelve "ACTIVO" en mayúsculas
                 if ("ACTIVO".equals(c.getEstadoContratista())) {
                     badgeEstado.setText("● Activo");
                     badgeEstado.setBackgroundResource(R.drawable.item_disp_verde);
@@ -205,20 +177,13 @@ public class Tab_Admin_Contratista extends Fragment {
                     badgeEstado.setBackgroundResource(R.drawable.item_disp_rojo);
                 }
 
-                // Rating
                 if (c.getCalificacionContratista() != null && c.getCalificacionContratista() > 0) {
                     ratingBar.setRating(c.getCalificacionContratista().floatValue());
                 }
 
+                // ✅ Ahora abre el dialog real
                 cardContratista.setOnClickListener(v -> abrirDetalleContratista(c));
             }
         }
-    }
-
-    private void abrirDetalleContratista(Contratista contratista) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("contratistaId", contratista.getIdContratista());
-        bundle.putString("contratistaNombre", contratista.getNombreContratista());
-        Toast.makeText(getContext(), "Contratista: " + contratista.getNombreContratista(), Toast.LENGTH_SHORT).show();
     }
 }

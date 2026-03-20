@@ -27,26 +27,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Tab de Trabajadores — panel administrador.
- *
- * Usa TrabajadorDto (todos los campos disponibles en la API):
- *   idTrabajador, nombreTrabajador, nssTrabajador, experiencia,
- *   telefonoTrabajador, correoTrabajador, especialidadTrabajador,
- *   estadoTrabajador (ACTIVO|INACTIVO|VACACIONES|BAJA),
- *   descripcionTrabajador, calificacionTrabajador (Integer),
- *   fechaIngreso, ubicacionTrabajador (CDMX|Hidalgo|Puebla)
- *
- * Mapeo de IDs (item_card_trabajador.xml) → campo del DTO:
- *   textAvatar         → inicial de getNombreTrabajador()
- *   textNombreCompleto → getNombreTrabajador()
- *   textEspecialidad   → getEspecialidadTrabajador()
- *   textNumero         → getTelefonoTrabajador()
- *   textCorreo         → getCorreoTrabajador()
- *   textUbicacion      → getUbicacionTrabajador()
- *   badgeEstado        → getEstadoTrabajador()
- *   ratingBar          → getCalificacionTrabajador()
- */
 public class Tab_Admin_Trabajador extends Fragment {
 
     private RecyclerView        recyclerViewAreas;
@@ -83,8 +63,6 @@ public class Tab_Admin_Trabajador extends Fragment {
         return vista;
     }
 
-    // ─── CARGA DE DATOS ──────────────────────────────────────────────────────
-
     private void cargarTrabajadores() {
         recyclerViewAreas.setVisibility(View.GONE);
 
@@ -96,14 +74,12 @@ public class Tab_Admin_Trabajador extends Fragment {
                     listaTrabajadores.addAll(response.body());
                     listaTrabajadoresFiltrada.clear();
                     listaTrabajadoresFiltrada.addAll(listaTrabajadores);
-
                     recyclerViewAreas.setVisibility(listaTrabajadores.isEmpty() ? View.GONE : View.VISIBLE);
                     trabajadorAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "Error al cargar trabajadores", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<List<TrabajadorDto>> call, Throwable t) {
                 Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -111,11 +87,8 @@ public class Tab_Admin_Trabajador extends Fragment {
         });
     }
 
-    // ─── FILTRO ───────────────────────────────────────────────────────────────
-
     private void filtrarTrabajadores(String texto) {
         listaTrabajadoresFiltrada.clear();
-
         if (texto.isEmpty()) {
             listaTrabajadoresFiltrada.addAll(listaTrabajadores);
         } else {
@@ -132,9 +105,16 @@ public class Tab_Admin_Trabajador extends Fragment {
                 }
             }
         }
-
         trabajadorAdapter.notifyDataSetChanged();
         recyclerViewAreas.setVisibility(listaTrabajadoresFiltrada.isEmpty() ? View.GONE : View.VISIBLE);
+    }
+
+    // ─── ABRIR DIALOG ────────────────────────────────────────────────────────
+
+    private void abrirDetalleTrabajador(TrabajadorDto trabajador) {
+        DetalleTrabajadorDialog dialog = DetalleTrabajadorDialog.newInstance(trabajador);
+        dialog.setOnCambioListener(this::cargarTrabajadores);
+        dialog.show(getParentFragmentManager(), "detalle_trabajador");
     }
 
     // ─── ADAPTER ─────────────────────────────────────────────────────────────
@@ -143,9 +123,7 @@ public class Tab_Admin_Trabajador extends Fragment {
 
         private final List<TrabajadorDto> trabajadores;
 
-        TrabajadorAdapter(List<TrabajadorDto> trabajadores) {
-            this.trabajadores = trabajadores;
-        }
+        TrabajadorAdapter(List<TrabajadorDto> trabajadores) { this.trabajadores = trabajadores; }
 
         @NonNull
         @Override
@@ -186,19 +164,15 @@ public class Tab_Admin_Trabajador extends Fragment {
             }
 
             void bind(TrabajadorDto t) {
-                // Avatar: inicial del nombre
                 String nombre = t.getNombreTrabajador();
                 textAvatar.setText(nombre != null && !nombre.isEmpty()
                         ? String.valueOf(nombre.charAt(0)).toUpperCase() : "?");
-
-                // Datos principales
                 textNombreCompleto.setText(nombre);
                 textEspecialidad.setText(t.getEspecialidadTrabajador());
                 textNumero.setText(t.getTelefonoTrabajador());
                 textCorreo.setText(t.getCorreoTrabajador());
                 textUbicacion.setText(t.getUbicacionTrabajador());
 
-                // Badge — cubre todos los valores del ENUM del backend
                 String estado = t.getEstadoTrabajador() != null ? t.getEstadoTrabajador() : "";
                 switch (estado) {
                     case "ACTIVO":
@@ -223,7 +197,6 @@ public class Tab_Admin_Trabajador extends Fragment {
                         break;
                 }
 
-                // Rating — calificacionTrabajador es Integer en el DTO
                 Integer calificacion = t.getCalificacionTrabajador();
                 if (calificacion != null && calificacion > 0) {
                     ratingBar.setVisibility(View.VISIBLE);
@@ -232,18 +205,9 @@ public class Tab_Admin_Trabajador extends Fragment {
                     ratingBar.setVisibility(View.GONE);
                 }
 
+                // ✅ Ahora abre el dialog real
                 itemView.setOnClickListener(v -> abrirDetalleTrabajador(t));
             }
         }
-    }
-
-    // ─── DETALLE ─────────────────────────────────────────────────────────────
-
-    private void abrirDetalleTrabajador(TrabajadorDto trabajador) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("trabajadorId", trabajador.getIdTrabajador());
-        bundle.putString("trabajadorNombre", trabajador.getNombreTrabajador());
-        Toast.makeText(getContext(), "Trabajador: " + trabajador.getNombreTrabajador(), Toast.LENGTH_SHORT).show();
-        // TODO: navegar al detalle del trabajador cuando esté disponible
     }
 }

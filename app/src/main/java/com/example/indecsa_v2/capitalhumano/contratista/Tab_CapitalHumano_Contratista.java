@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.indecsa_v2.R;
-import com.example.indecsa_v2.admin.contratista.DetalleContratistaDialog;
 import com.example.indecsa_v2.models.Contratista;
 import com.example.indecsa_v2.network.RetrofitClient;
 
@@ -31,7 +29,7 @@ import retrofit2.Response;
 public class Tab_CapitalHumano_Contratista extends Fragment {
 
     private RecyclerView recyclerView;
-    private EditText editBuscar;
+    private android.widget.EditText editBuscar;
     private AppCompatButton btnBuscar;
 
     private ContratistaCapHumAdapter adapter;
@@ -50,7 +48,7 @@ public class Tab_CapitalHumano_Contratista extends Fragment {
         editBuscar   = vista.findViewById(R.id.editBuscarArea);
         btnBuscar    = vista.findViewById(R.id.btnBuscar);
 
-        // Ocultar botón "Agregar" si existe (CapHum solo visualiza)
+        // CapHum solo visualiza — ocultar botón Agregar
         View layoutAgregar = vista.findViewById(R.id.layoutAgregar);
         if (layoutAgregar != null) layoutAgregar.setVisibility(View.GONE);
 
@@ -155,11 +153,11 @@ public class Tab_CapitalHumano_Contratista extends Fragment {
                 if (c.getCalificacionContratista() != null && c.getCalificacionContratista() > 0)
                     ratingBar.setRating(c.getCalificacionContratista().floatValue());
 
-                // ── Solo lectura: abre el dialog de detalle sin edición ──
+                // ── Solo lectura: usa el dialog readonly ──
                 itemView.setOnClickListener(v -> {
-                    DetalleContratistaDialog dialog = DetalleContratistaDialog.newInstance(c);
-                    // No se asigna OnCambioListener → CapHum solo visualiza
-                    dialog.show(getParentFragmentManager(), "detalle_contratista_caphum");
+                    DetalleContratistaReadonlyDialog dialog =
+                            DetalleContratistaReadonlyDialog.newInstance(c);
+                    dialog.show(getParentFragmentManager(), "readonly_contratista");
                 });
             }
         }

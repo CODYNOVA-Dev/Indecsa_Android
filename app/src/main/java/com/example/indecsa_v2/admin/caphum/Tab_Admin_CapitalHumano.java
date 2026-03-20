@@ -1,4 +1,4 @@
-package com.example.indecsa_v2.admin.proyecto;
+package com.example.indecsa_v2.admin.caphum;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,41 +27,56 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Tab_Admin_Proyecto extends Fragment {
+/**
+ * Tab de Capital Humano — panel administrador.
+ *
+ * Muestra la lista de proyectos. Al seleccionar uno abre
+ * AsignarCapitalHumanoDialog con las reglas:
+ *   - Máximo 1 contratista asignado
+ *   - Máximo 8 trabajadores asignados
+ *   - No se pueden repetir trabajadores
+ *
+ * Reutiliza el layout fragment_tab__admin__proyecto.xml y
+ * el item_card_admin_proyecto.xml para no crear vistas extra.
+ */
+public class Tab_Admin_CapitalHumano extends Fragment {
 
     private RecyclerView      recyclerViewAreas;
     private EditText          editBuscarArea;
     private AppCompatButton   btnBuscar;
 
-    private ProyectoAdapter   proyectoAdapter;
-    private List<ProyectoDto> listaProyectos;
-    private List<ProyectoDto> listaProyectosFiltrada;
+    private ProyectoCapHumAdapter adapter;
+    private List<ProyectoDto>     listaProyectos;
+    private List<ProyectoDto>     listaFiltrada;
 
-    public Tab_Admin_Proyecto() {}
+    public Tab_Admin_CapitalHumano() {}
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
+        // Reutilizamos el mismo layout que Tab_Admin_Proyecto
         View vista = inflater.inflate(R.layout.fragment_tab__admin__proyecto, container, false);
 
         recyclerViewAreas = vista.findViewById(R.id.recyclerViewAreas);
         editBuscarArea    = vista.findViewById(R.id.editBuscarArea);
         btnBuscar         = vista.findViewById(R.id.btnBuscar);
 
-        listaProyectos         = new ArrayList<>();
-        listaProyectosFiltrada = new ArrayList<>();
-        proyectoAdapter        = new ProyectoAdapter(listaProyectosFiltrada);
+        listaProyectos = new ArrayList<>();
+        listaFiltrada  = new ArrayList<>();
+        adapter        = new ProyectoCapHumAdapter(listaFiltrada);
 
         recyclerViewAreas.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewAreas.setAdapter(proyectoAdapter);
+        recyclerViewAreas.setAdapter(adapter);
 
-        btnBuscar.setOnClickListener(v -> filtrarProyectos(editBuscarArea.getText().toString()));
+        btnBuscar.setOnClickListener(v -> filtrar(editBuscarArea.getText().toString()));
 
         cargarProyectos();
         return vista;
     }
+
+    // ─── CARGA ───────────────────────────────────────────────────────────────
 
     private void cargarProyectos() {
         recyclerViewAreas.setVisibility(View.GONE);
@@ -72,10 +87,10 @@ public class Tab_Admin_Proyecto extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     listaProyectos.clear();
                     listaProyectos.addAll(response.body());
-                    listaProyectosFiltrada.clear();
-                    listaProyectosFiltrada.addAll(listaProyectos);
+                    listaFiltrada.clear();
+                    listaFiltrada.addAll(listaProyectos);
                     recyclerViewAreas.setVisibility(listaProyectos.isEmpty() ? View.GONE : View.VISIBLE);
-                    proyectoAdapter.notifyDataSetChanged();
+                    adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "Error al cargar proyectos", Toast.LENGTH_SHORT).show();
                 }
@@ -87,65 +102,65 @@ public class Tab_Admin_Proyecto extends Fragment {
         });
     }
 
-    private void filtrarProyectos(String texto) {
-        listaProyectosFiltrada.clear();
+    // ─── FILTRO ───────────────────────────────────────────────────────────────
+
+    private void filtrar(String texto) {
+        listaFiltrada.clear();
         if (texto.isEmpty()) {
-            listaProyectosFiltrada.addAll(listaProyectos);
+            listaFiltrada.addAll(listaProyectos);
         } else {
             String q = texto.toLowerCase().trim();
             for (ProyectoDto p : listaProyectos) {
-                boolean nombre  = p.getNombreProyecto() != null && p.getNombreProyecto().toLowerCase().contains(q);
-                boolean tipo    = p.getTipoProyecto()   != null && p.getTipoProyecto().toLowerCase().contains(q);
-                boolean lugar   = p.getLugarProyecto()  != null && p.getLugarProyecto().toLowerCase().contains(q);
-                if (nombre || tipo || lugar) listaProyectosFiltrada.add(p);
+                boolean nombre = p.getNombreProyecto() != null && p.getNombreProyecto().toLowerCase().contains(q);
+                boolean tipo   = p.getTipoProyecto()   != null && p.getTipoProyecto().toLowerCase().contains(q);
+                boolean lugar  = p.getLugarProyecto()  != null && p.getLugarProyecto().toLowerCase().contains(q);
+                if (nombre || tipo || lugar) listaFiltrada.add(p);
             }
         }
-        proyectoAdapter.notifyDataSetChanged();
-        recyclerViewAreas.setVisibility(listaProyectosFiltrada.isEmpty() ? View.GONE : View.VISIBLE);
+        adapter.notifyDataSetChanged();
+        recyclerViewAreas.setVisibility(listaFiltrada.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
-    // ─── ABRIR DIALOG ────────────────────────────────────────────────────────
+    // ─── ABRIR DIALOG DE ASIGNACIÓN ──────────────────────────────────────────
 
-    private void abrirDetalleProyecto(ProyectoDto proyecto) {
-        DetalleProyectoDialog dialog = DetalleProyectoDialog.newInstance(proyecto);
-        dialog.setOnCambioListener(this::cargarProyectos);
-        dialog.show(getParentFragmentManager(), "detalle_proyecto");
+    private void abrirAsignacion(ProyectoDto proyecto) {
+        AsignarCapitalHumanoDialog dialog = AsignarCapitalHumanoDialog.newInstance(
+                proyecto.getIdProyecto(),
+                proyecto.getNombreProyecto()
+        );
+        dialog.show(getParentFragmentManager(), "asignar_capital_humano");
     }
 
     // ─── ADAPTER ─────────────────────────────────────────────────────────────
 
-    private class ProyectoAdapter extends RecyclerView.Adapter<ProyectoAdapter.ViewHolder> {
+    private class ProyectoCapHumAdapter extends RecyclerView.Adapter<ProyectoCapHumAdapter.VH> {
 
-        private final List<ProyectoDto> proyectos;
+        private final List<ProyectoDto> items;
 
-        ProyectoAdapter(List<ProyectoDto> proyectos) { this.proyectos = proyectos; }
+        ProyectoCapHumAdapter(List<ProyectoDto> items) { this.items = items; }
 
         @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
+        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_card_admin_proyecto, parent, false);
-            return new ViewHolder(view);
+            return new VH(v);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.bind(proyectos.get(position));
+        public void onBindViewHolder(@NonNull VH holder, int position) {
+            holder.bind(items.get(position));
         }
 
         @Override
-        public int getItemCount() { return proyectos.size(); }
+        public int getItemCount() { return items.size(); }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
-            TextView  textNombreCompleto;
-            TextView  textEspecialidad;
-            TextView  textUbicacion;
-            TextView  textCorreo;
-            TextView  textNumero;
-            TextView  badgeEstado;
+        class VH extends RecyclerView.ViewHolder {
+            TextView  textNombreCompleto, textEspecialidad, textUbicacion,
+                    textCorreo, textNumero, badgeEstado;
             RatingBar ratingBar;
 
-            ViewHolder(View itemView) {
+            VH(View itemView) {
                 super(itemView);
                 textNombreCompleto = itemView.findViewById(R.id.textNombreCompleto);
                 textEspecialidad   = itemView.findViewById(R.id.textEspecialidad);
@@ -166,8 +181,7 @@ public class Tab_Admin_Proyecto extends Fragment {
                 badgeEstado.setBackgroundResource(R.drawable.item_disp_verde);
                 ratingBar.setVisibility(View.GONE);
 
-                // ✅ Ahora abre el dialog real
-                itemView.setOnClickListener(v -> abrirDetalleProyecto(p));
+                itemView.setOnClickListener(v -> abrirAsignacion(p));
             }
         }
     }

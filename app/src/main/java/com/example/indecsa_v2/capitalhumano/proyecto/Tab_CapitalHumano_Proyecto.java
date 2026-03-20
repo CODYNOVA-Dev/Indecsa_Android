@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.indecsa_v2.R;
-import com.example.indecsa_v2.capitalhumano.relacionar.AsignacionProyectoDialog;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.network.RetrofitClient;
 
@@ -31,7 +29,7 @@ import retrofit2.Response;
 public class Tab_CapitalHumano_Proyecto extends Fragment {
 
     private RecyclerView recyclerView;
-    private EditText editBuscar;
+    private android.widget.EditText editBuscar;
     private AppCompatButton btnBuscar;
 
     private ProyectoCapHumAdapter adapter;
@@ -49,6 +47,7 @@ public class Tab_CapitalHumano_Proyecto extends Fragment {
         editBuscar   = vista.findViewById(R.id.editBuscarArea);
         btnBuscar    = vista.findViewById(R.id.btnBuscar);
 
+        // CapHum solo visualiza — ocultar botón Agregar
         View layoutAgregar = vista.findViewById(R.id.layoutAgregar);
         if (layoutAgregar != null) layoutAgregar.setVisibility(View.GONE);
 
@@ -91,7 +90,7 @@ public class Tab_CapitalHumano_Proyecto extends Fragment {
             String q = texto.toLowerCase().trim();
             for (ProyectoDto p : lista) {
                 if ((p.getNombreProyecto() != null && p.getNombreProyecto().toLowerCase().contains(q)) ||
-                        (p.getTipoProyecto()   != null && p.getTipoProyecto().toLowerCase().contains(q)) ||
+                        (p.getTipoProyecto()   != null && p.getTipoProyecto().toLowerCase().contains(q))   ||
                         (p.getLugarProyecto()  != null && p.getLugarProyecto().toLowerCase().contains(q))) {
                     listaFiltrada.add(p);
                 }
@@ -135,10 +134,12 @@ public class Tab_CapitalHumano_Proyecto extends Fragment {
                 badgeEstado.setBackgroundResource(R.drawable.item_disp_verde);
                 if (ratingBar != null) ratingBar.setVisibility(View.GONE);
 
-                // ── Toca el proyecto → abre dialog de asignación ──
-                itemView.setOnClickListener(v ->
-                        AsignacionProyectoDialog.newInstance(p)
-                                .show(getParentFragmentManager(), "asignacion_proyecto"));
+                // ── Solo lectura: usa el dialog readonly ──
+                itemView.setOnClickListener(v -> {
+                    DetalleProyectoReadonlyDialog dialog =
+                            DetalleProyectoReadonlyDialog.newInstance(p);
+                    dialog.show(getParentFragmentManager(), "readonly_proyecto");
+                });
             }
         }
     }
