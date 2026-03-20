@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#1A2B4C"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="8dp"
+    app:strokeColor="#40FFFFFF"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="12dp">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/circle_border"
+                android:padding="16dp"
+                android:src="@drawable/perfil"
+                app:tint="#D4AF37" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Trabajadores"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Gestiona el personal registrado: altas, consultas, modificaciones y bajas."
+                android:textColor="#A0AEC0"
+                android:textSize="14sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="10dp"
+                android:background="#2D3748" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="222dp"
+                android:layout_height="55dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/button_dark_bg"
+                android:drawableStart="@drawable/dot_blue"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:text="Ver lista de personal"
+                android:textAllCaps="false"
+                android:textColor="#A0AEC0" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
