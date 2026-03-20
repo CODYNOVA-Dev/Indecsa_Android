@@ -1,4 +1,4 @@
-package com.example.indecsa_v2.capitalhumano.trabajador;
+package com.example.indecsa_v2.capitalhumano.contratista;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.indecsa_v2.R;
-import com.example.indecsa_v2.admin.trabajador.DetalleTrabajadorDialog;
-import com.example.indecsa_v2.models.TrabajadorDto;
+import com.example.indecsa_v2.admin.contratista.DetalleContratistaDialog;
+import com.example.indecsa_v2.models.Contratista;
 import com.example.indecsa_v2.network.RetrofitClient;
 
 import java.util.ArrayList;
@@ -28,31 +28,33 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Tab_CapitalHumano_Trabajador extends Fragment {
+public class Tab_CapitalHumano_Contratista extends Fragment {
 
     private RecyclerView recyclerView;
     private EditText editBuscar;
     private AppCompatButton btnBuscar;
 
-    private TrabajadorCapHumAdapter adapter;
-    private List<TrabajadorDto> lista = new ArrayList<>();
-    private List<TrabajadorDto> listaFiltrada = new ArrayList<>();
+    private ContratistaCapHumAdapter adapter;
+    private List<Contratista> lista = new ArrayList<>();
+    private List<Contratista> listaFiltrada = new ArrayList<>();
 
-    public Tab_CapitalHumano_Trabajador() {}
+    public Tab_CapitalHumano_Contratista() {}
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View vista = inflater.inflate(R.layout.fragment_tab__capital_humano__trabajador, container, false);
+        View vista = inflater.inflate(R.layout.fragment_tab__admin__contratista, container, false);
 
         recyclerView = vista.findViewById(R.id.recyclerViewAreas);
         editBuscar   = vista.findViewById(R.id.editBuscarArea);
         btnBuscar    = vista.findViewById(R.id.btnBuscar);
 
+        // Ocultar botón "Agregar" si existe (CapHum solo visualiza)
         View layoutAgregar = vista.findViewById(R.id.layoutAgregar);
         if (layoutAgregar != null) layoutAgregar.setVisibility(View.GONE);
 
-        adapter = new TrabajadorCapHumAdapter(listaFiltrada);
+        adapter = new ContratistaCapHumAdapter(listaFiltrada);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
@@ -62,9 +64,9 @@ public class Tab_CapitalHumano_Trabajador extends Fragment {
     }
 
     private void cargar() {
-        RetrofitClient.getApiService().getAllTrabajadores().enqueue(new Callback<List<TrabajadorDto>>() {
+        RetrofitClient.getApiService().getAllContratistas().enqueue(new Callback<List<Contratista>>() {
             @Override
-            public void onResponse(Call<List<TrabajadorDto>> call, Response<List<TrabajadorDto>> response) {
+            public void onResponse(Call<List<Contratista>> call, Response<List<Contratista>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     lista.clear();
                     lista.addAll(response.body());
@@ -73,11 +75,11 @@ public class Tab_CapitalHumano_Trabajador extends Fragment {
                     recyclerView.setVisibility(lista.isEmpty() ? View.GONE : View.VISIBLE);
                     adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getContext(), "Error al cargar trabajadores", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error al cargar contratistas", Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
-            public void onFailure(Call<List<TrabajadorDto>> call, Throwable t) {
+            public void onFailure(Call<List<Contratista>> call, Throwable t) {
                 Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -89,10 +91,10 @@ public class Tab_CapitalHumano_Trabajador extends Fragment {
             listaFiltrada.addAll(lista);
         } else {
             String q = texto.toLowerCase().trim();
-            for (TrabajadorDto t : lista) {
-                if ((t.getNombreTrabajador()       != null && t.getNombreTrabajador().toLowerCase().contains(q)) ||
-                        (t.getEspecialidadTrabajador() != null && t.getEspecialidadTrabajador().toLowerCase().contains(q))) {
-                    listaFiltrada.add(t);
+            for (Contratista c : lista) {
+                if ((c.getNombreContratista() != null && c.getNombreContratista().toLowerCase().contains(q)) ||
+                        (c.getRfcContratista()    != null && c.getRfcContratista().toLowerCase().contains(q))) {
+                    listaFiltrada.add(c);
                 }
             }
         }
@@ -101,14 +103,14 @@ public class Tab_CapitalHumano_Trabajador extends Fragment {
 
     // ─── Adapter ─────────────────────────────────────────────────────────────
 
-    private class TrabajadorCapHumAdapter extends RecyclerView.Adapter<TrabajadorCapHumAdapter.VH> {
-        private final List<TrabajadorDto> items;
-        TrabajadorCapHumAdapter(List<TrabajadorDto> items) { this.items = items; }
+    private class ContratistaCapHumAdapter extends RecyclerView.Adapter<ContratistaCapHumAdapter.VH> {
+        private final List<Contratista> items;
+        ContratistaCapHumAdapter(List<Contratista> items) { this.items = items; }
 
         @NonNull @Override
         public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_card_caphum_trabajador, parent, false);
+                    .inflate(R.layout.item_card_admin_contratista, parent, false);
             return new VH(v);
         }
 
@@ -116,60 +118,49 @@ public class Tab_CapitalHumano_Trabajador extends Fragment {
         @Override public int getItemCount() { return items.size(); }
 
         class VH extends RecyclerView.ViewHolder {
-            TextView textAvatar, textNombreCompleto, textEspecialidad, textNumero,
-                    textCorreo, textUbicacion, badgeEstado;
+            TextView textAvatar, textNombreCompleto, textUbicacion, textNumero,
+                    textCorreo, textEspecialidad, badgeEstado;
             RatingBar ratingBar;
 
             VH(View v) {
                 super(v);
                 textAvatar         = v.findViewById(R.id.textAvatar);
                 textNombreCompleto = v.findViewById(R.id.textNombreCompleto);
-                textEspecialidad   = v.findViewById(R.id.textEspecialidad);
+                textUbicacion      = v.findViewById(R.id.textUbicacion);
                 textNumero         = v.findViewById(R.id.textNumero);
                 textCorreo         = v.findViewById(R.id.textCorreo);
-                textUbicacion      = v.findViewById(R.id.textUbicacion);
+                textEspecialidad   = v.findViewById(R.id.textEspecialidad);
                 badgeEstado        = v.findViewById(R.id.badgeEstado);
                 ratingBar          = v.findViewById(R.id.ratingBar);
             }
 
-            void bind(TrabajadorDto t) {
-                String nombre = t.getNombreTrabajador();
+            void bind(Contratista c) {
+                String nombre = c.getNombreContratista();
                 textAvatar.setText(nombre != null && !nombre.isEmpty()
                         ? String.valueOf(nombre.charAt(0)).toUpperCase() : "?");
                 textNombreCompleto.setText(nombre);
-                textEspecialidad.setText(t.getEspecialidadTrabajador());
-                textNumero.setText(t.getTelefonoTrabajador());
-                textCorreo.setText(t.getCorreoTrabajador());
-                textUbicacion.setText(t.getUbicacionTrabajador());
+                textEspecialidad.setText(c.getRfcContratista());
+                textUbicacion.setText(c.getUbicacionContratista());
+                textNumero.setText(c.getTelefonoContratista());
+                textCorreo.setText(c.getCorreoContratista());
 
-                String estado = t.getEstadoTrabajador() != null ? t.getEstadoTrabajador() : "";
-                switch (estado) {
-                    case "ACTIVO": case "VACACIONES":
-                        badgeEstado.setText("● " + capitalizar(estado));
-                        badgeEstado.setBackgroundResource(R.drawable.item_disp_verde); break;
-                    default:
-                        badgeEstado.setText("● " + capitalizar(estado));
-                        badgeEstado.setBackgroundResource(R.drawable.item_disp_rojo); break;
-                }
-
-                Integer cal = t.getCalificacionTrabajador();
-                if (cal != null && cal > 0) {
-                    ratingBar.setVisibility(View.VISIBLE);
-                    ratingBar.setRating(cal.floatValue());
+                if ("ACTIVO".equals(c.getEstadoContratista())) {
+                    badgeEstado.setText("● Activo");
+                    badgeEstado.setBackgroundResource(R.drawable.item_disp_verde);
                 } else {
-                    ratingBar.setVisibility(View.GONE);
+                    badgeEstado.setText("● Inactivo");
+                    badgeEstado.setBackgroundResource(R.drawable.item_disp_rojo);
                 }
 
-                // ── Solo lectura ──
-                itemView.setOnClickListener(v -> {
-                    DetalleTrabajadorDialog dialog = DetalleTrabajadorDialog.newInstance(t);
-                    dialog.show(getParentFragmentManager(), "detalle_trabajador_caphum");
-                });
-            }
+                if (c.getCalificacionContratista() != null && c.getCalificacionContratista() > 0)
+                    ratingBar.setRating(c.getCalificacionContratista().floatValue());
 
-            private String capitalizar(String s) {
-                if (s == null || s.isEmpty()) return "—";
-                return s.charAt(0) + s.substring(1).toLowerCase();
+                // ── Solo lectura: abre el dialog de detalle sin edición ──
+                itemView.setOnClickListener(v -> {
+                    DetalleContratistaDialog dialog = DetalleContratistaDialog.newInstance(c);
+                    // No se asigna OnCambioListener → CapHum solo visualiza
+                    dialog.show(getParentFragmentManager(), "detalle_contratista_caphum");
+                });
             }
         }
     }

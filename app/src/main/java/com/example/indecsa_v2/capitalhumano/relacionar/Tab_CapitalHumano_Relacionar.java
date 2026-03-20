@@ -1,66 +1,171 @@
 package com.example.indecsa_v2.capitalhumano.relacionar;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.models.ProyectoDto;
+import com.example.indecsa_v2.network.RetrofitClient;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Tab_CapitalHumano_Relacionar#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Tab_CapitalHumano_Relacionar extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerView;
+    private EditText editBuscar;
+    private AppCompatButton btnBuscar;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RelacionarAdapter adapter;
+    private List<ProyectoDto> lista = new ArrayList<>();
+    private List<ProyectoDto> listaFiltrada = new ArrayList<>();
 
-    public Tab_CapitalHumano_Relacionar() {
-        // Required empty public constructor
-    }
+    public Tab_CapitalHumano_Relacionar() {}
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Tab_CapitalHumano_Contratista.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Tab_CapitalHumano_Relacionar newInstance(String param1, String param2) {
-        Tab_CapitalHumano_Relacionar fragment = new Tab_CapitalHumano_Relacionar();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
+        View vista = inflater.inflate(R.layout.fragment_tab__capital_humano__relacionar, container, false);
+
+        recyclerView = vista.findViewById(R.id.recyclerViewAreas);
+        editBuscar   = vista.findViewById(R.id.editBuscarArea);
+        btnBuscar    = vista.findViewById(R.id.btnBuscar);
+
+        // CapHum solo asigna, no agrega proyectos nuevos
+        View layoutAgregar = vista.findViewById(R.id.layoutAgregar);
+        if (layoutAgregar != null) layoutAgregar.setVisibility(View.GONE);
+
+        adapter = new RelacionarAdapter(listaFiltrada);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+
+        btnBuscar.setOnClickListener(v -> filtrar(editBuscar.getText().toString()));
+
+        cargar();
+        return vista;
+    }
+
+    // ─── Carga ───────────────────────────────────────────────────────────────
+
+    private void cargar() {
+        recyclerView.setVisibility(View.GONE);
+
+        RetrofitClient.getApiService().getAllProyectos().enqueue(new Callback<List<ProyectoDto>>() {
+            @Override
+            public void onResponse(Call<List<ProyectoDto>> call, Response<List<ProyectoDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    lista.clear();
+                    lista.addAll(response.body());
+                    listaFiltrada.clear();
+                    listaFiltrada.addAll(lista);
+                    recyclerView.setVisibility(lista.isEmpty() ? View.GONE : View.VISIBLE);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getContext(), "Error al cargar proyectos", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<List<ProyectoDto>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // ─── Filtro ───────────────────────────────────────────────────────────────
+
+    private void filtrar(String texto) {
+        listaFiltrada.clear();
+        if (texto.isEmpty()) {
+            listaFiltrada.addAll(lista);
+        } else {
+            String q = texto.toLowerCase().trim();
+            for (ProyectoDto p : lista) {
+                boolean nombre = p.getNombreProyecto() != null && p.getNombreProyecto().toLowerCase().contains(q);
+                boolean tipo   = p.getTipoProyecto()   != null && p.getTipoProyecto().toLowerCase().contains(q);
+                boolean lugar  = p.getLugarProyecto()  != null && p.getLugarProyecto().toLowerCase().contains(q);
+                if (nombre || tipo || lugar) listaFiltrada.add(p);
+            }
         }
+        adapter.notifyDataSetChanged();
+        recyclerView.setVisibility(listaFiltrada.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tab__capital_humano__relacionar, container, false);
+    // ─── Adapter ─────────────────────────────────────────────────────────────
+
+    private class RelacionarAdapter extends RecyclerView.Adapter<RelacionarAdapter.VH> {
+
+        private final List<ProyectoDto> items;
+
+        RelacionarAdapter(List<ProyectoDto> items) { this.items = items; }
+
+        @NonNull
+        @Override
+        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_card_caphum_relacionar, parent, false);
+            return new VH(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull VH h, int pos) { h.bind(items.get(pos)); }
+
+        @Override
+        public int getItemCount() { return items.size(); }
+
+        class VH extends RecyclerView.ViewHolder {
+            TextView textNombreCompleto;
+            TextView textEstado;
+            TextView textMunicipio;
+            TextView badgeEstado;
+
+            VH(View v) {
+                super(v);
+                textNombreCompleto = v.findViewById(R.id.textNombreCompleto);
+                textEstado         = v.findViewById(R.id.textEstado);
+                textMunicipio      = v.findViewById(R.id.textMunicipio);
+                badgeEstado        = v.findViewById(R.id.badgeEstado);
+            }
+
+            void bind(ProyectoDto p) {
+                textNombreCompleto.setText(p.getNombreProyecto());
+
+                // Reutilizamos textEstado para mostrar el tipo de proyecto
+                if (textEstado != null)
+                    textEstado.setText(p.getTipoProyecto() != null ? p.getTipoProyecto() : "—");
+
+                // Reutilizamos textMunicipio para mostrar el lugar
+                if (textMunicipio != null)
+                    textMunicipio.setText(p.getLugarProyecto() != null ? p.getLugarProyecto() : "—");
+
+                // Badge fijo mientras el DTO no exponga estatus
+                if (badgeEstado != null) {
+                    badgeEstado.setText("● En curso");
+                    badgeEstado.setBackgroundResource(R.drawable.item_disp_verde);
+                }
+
+                // ── Al tocar el proyecto → abre AsignacionProyectoDialog ──
+                itemView.setOnClickListener(v ->
+                        com.example.indecsa_v2.capitalhumano.relacionar.AsignacionProyectoDialog.newInstance(p)
+                                .show(getParentFragmentManager(), "asignacion_" + p.getIdProyecto()));
+            }
+        }
     }
 }

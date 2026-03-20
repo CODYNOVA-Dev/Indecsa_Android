@@ -1,66 +1,145 @@
 package com.example.indecsa_v2.capitalhumano.proyecto;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.capitalhumano.relacionar.AsignacionProyectoDialog;
+import com.example.indecsa_v2.models.ProyectoDto;
+import com.example.indecsa_v2.network.RetrofitClient;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Tab_CapitalHumano_Proyecto#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Tab_CapitalHumano_Proyecto extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerView;
+    private EditText editBuscar;
+    private AppCompatButton btnBuscar;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ProyectoCapHumAdapter adapter;
+    private List<ProyectoDto> lista = new ArrayList<>();
+    private List<ProyectoDto> listaFiltrada = new ArrayList<>();
 
-    public Tab_CapitalHumano_Proyecto() {
-        // Required empty public constructor
+    public Tab_CapitalHumano_Proyecto() {}
+
+    @Nullable @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View vista = inflater.inflate(R.layout.fragment_tab__capital_humano__proyecto, container, false);
+
+        recyclerView = vista.findViewById(R.id.recyclerViewAreas);
+        editBuscar   = vista.findViewById(R.id.editBuscarArea);
+        btnBuscar    = vista.findViewById(R.id.btnBuscar);
+
+        View layoutAgregar = vista.findViewById(R.id.layoutAgregar);
+        if (layoutAgregar != null) layoutAgregar.setVisibility(View.GONE);
+
+        adapter = new ProyectoCapHumAdapter(listaFiltrada);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+
+        btnBuscar.setOnClickListener(v -> filtrar(editBuscar.getText().toString()));
+        cargar();
+        return vista;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Tab_CapitalHumano_Proyecto.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Tab_CapitalHumano_Proyecto newInstance(String param1, String param2) {
-        Tab_CapitalHumano_Proyecto fragment = new Tab_CapitalHumano_Proyecto();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    private void cargar() {
+        RetrofitClient.getApiService().getAllProyectos().enqueue(new Callback<List<ProyectoDto>>() {
+            @Override
+            public void onResponse(Call<List<ProyectoDto>> call, Response<List<ProyectoDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    lista.clear();
+                    lista.addAll(response.body());
+                    listaFiltrada.clear();
+                    listaFiltrada.addAll(lista);
+                    recyclerView.setVisibility(lista.isEmpty() ? View.GONE : View.VISIBLE);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getContext(), "Error al cargar proyectos", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<List<ProyectoDto>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    private void filtrar(String texto) {
+        listaFiltrada.clear();
+        if (texto.isEmpty()) {
+            listaFiltrada.addAll(lista);
+        } else {
+            String q = texto.toLowerCase().trim();
+            for (ProyectoDto p : lista) {
+                if ((p.getNombreProyecto() != null && p.getNombreProyecto().toLowerCase().contains(q)) ||
+                        (p.getTipoProyecto()   != null && p.getTipoProyecto().toLowerCase().contains(q)) ||
+                        (p.getLugarProyecto()  != null && p.getLugarProyecto().toLowerCase().contains(q))) {
+                    listaFiltrada.add(p);
+                }
+            }
         }
+        adapter.notifyDataSetChanged();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tab__capital_humano__proyecto, container, false);
+    // ─── Adapter ─────────────────────────────────────────────────────────────
+
+    private class ProyectoCapHumAdapter extends RecyclerView.Adapter<ProyectoCapHumAdapter.VH> {
+        private final List<ProyectoDto> items;
+        ProyectoCapHumAdapter(List<ProyectoDto> items) { this.items = items; }
+
+        @NonNull @Override
+        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_card_caphum_proyecto, parent, false);
+            return new VH(v);
+        }
+
+        @Override public void onBindViewHolder(@NonNull VH h, int pos) { h.bind(items.get(pos)); }
+        @Override public int getItemCount() { return items.size(); }
+
+        class VH extends RecyclerView.ViewHolder {
+            TextView textNombreCompleto, textUbicacion, badgeEstado;
+            RatingBar ratingBar;
+
+            VH(View v) {
+                super(v);
+                textNombreCompleto = v.findViewById(R.id.textNombreCompleto);
+                textUbicacion      = v.findViewById(R.id.textUbicacion);
+                badgeEstado        = v.findViewById(R.id.badgeEstado);
+                ratingBar          = v.findViewById(R.id.ratingBar);
+            }
+
+            void bind(ProyectoDto p) {
+                textNombreCompleto.setText(p.getNombreProyecto());
+                textUbicacion.setText(p.getLugarProyecto());
+                badgeEstado.setText("● Activo");
+                badgeEstado.setBackgroundResource(R.drawable.item_disp_verde);
+                if (ratingBar != null) ratingBar.setVisibility(View.GONE);
+
+                // ── Toca el proyecto → abre dialog de asignación ──
+                itemView.setOnClickListener(v ->
+                        AsignacionProyectoDialog.newInstance(p)
+                                .show(getParentFragmentManager(), "asignacion_proyecto"));
+            }
+        }
     }
 }
