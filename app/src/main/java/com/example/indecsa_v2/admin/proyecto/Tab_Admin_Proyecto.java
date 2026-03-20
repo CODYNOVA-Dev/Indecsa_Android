@@ -62,6 +62,7 @@ public class Tab_Admin_Proyecto extends Fragment {
         btnBuscar.setOnClickListener(v -> filtrarProyectos(editBuscarArea.getText().toString()));
 
         // ✅ Configurar botón Agregar
+        AppCompatButton btnAgregar = vista.findViewById(R.id.btnAgregar);
         btnAgregar.setOnClickListener(v -> {
             AgregarProyectoDialog dialog = new AgregarProyectoDialog();
             dialog.setOnAgregadoListener(this::cargarProyectos);

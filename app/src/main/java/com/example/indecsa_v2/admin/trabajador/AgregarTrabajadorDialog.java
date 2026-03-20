@@ -80,9 +80,10 @@ public class AgregarTrabajadorDialog extends DialogFragment {
             dto.setCorreoTrabajador(correo);
             dto.setTelefonoTrabajador(telefono);
             dto.setNssTrabajador(nss);
-            dto.setUbicacionTrabajador(ubicacion);
+            dto.setUbicacionTrabajador(ubicacion.isEmpty() ? "CDMX" : ubicacion);
             dto.setExperiencia(experiencia);
             dto.setDescripcionTrabajador(descripcion);
+            // ✅ Valores por defecto para campos obligatorios
             dto.setEstadoTrabajador("ACTIVO");
             dto.setCalificacionTrabajador(0);
 

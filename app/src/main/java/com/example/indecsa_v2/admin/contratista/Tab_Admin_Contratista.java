@@ -60,6 +60,7 @@ public class Tab_Admin_Contratista extends Fragment {
         btnBuscar.setOnClickListener(v -> filtrarContratistas(editBuscarArea.getText().toString()));
 
         // ✅ Configurar botón Agregar
+        AppCompatButton btnAgregar = vista.findViewById(R.id.btnAgregar);
         btnAgregar.setOnClickListener(v -> {
             AgregarContratistaDialog dialog = new AgregarContratistaDialog();
             dialog.setOnAgregadoListener(this::cargarContratistas);

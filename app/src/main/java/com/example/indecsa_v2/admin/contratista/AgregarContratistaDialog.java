@@ -78,10 +78,12 @@ public class AgregarContratistaDialog extends DialogFragment {
             c.setRfcContratista(rfc);
             c.setCorreoContratista(correo);
             c.setTelefonoContratista(telefono);
-            c.setUbicacionContratista(ubicacion);
+            c.setUbicacionContratista(ubicacion.isEmpty() ? "CDMX" : ubicacion);
             c.setExperiencia(exp);
             c.setDescripcionContratista(desc);
+            // ✅ NO enviar ID ni calificación - el backend los asigna
             c.setEstadoContratista("ACTIVO");
+            c.setCalificacionContratista(0); // ← Asegúrate de que sea 0, no null
 
             RetrofitClient.getApiService().createContratista(c)
                     .enqueue(new Callback<Contratista>() {

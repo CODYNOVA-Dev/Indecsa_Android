@@ -62,12 +62,12 @@ public class Tab_Admin_Trabajador extends Fragment {
         btnBuscar.setOnClickListener(v -> filtrarTrabajadores(editBuscarArea.getText().toString()));
 
         // ✅ Configurar botón Agregar
+        AppCompatButton btnAgregar = vista.findViewById(R.id.btnAgregar);
         btnAgregar.setOnClickListener(v -> {
             AgregarTrabajadorDialog dialog = new AgregarTrabajadorDialog();
             dialog.setOnAgregadoListener(this::cargarTrabajadores);
             dialog.show(getParentFragmentManager(), "agregar_trabajador");
         });
-
         cargarTrabajadores();
         return vista;
     }
