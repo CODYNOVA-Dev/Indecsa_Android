@@ -3,43 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="28dp">
+    android:padding="28dp"
+    android:background="@color/fondo_mas_claro">
 
-    <!-- Ícono de advertencia -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="⚠"
         android:textSize="40sp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:textColor="#FFFFFF"/>
 
-    <!-- Título -->
     <TextView
         android:id="@+id/confirmTvTitulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="¿Eliminar registro?"
-        android:textColor="@color/text_primary"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:fontFamily="sans-serif-black"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp" />
 
-    <!-- Mensaje -->
     <TextView
         android:id="@+id/confirmTvMensaje"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Esta acción no se puede deshacer."
-        android:textColor="@color/text_secondary"
+        android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:gravity="center"
         android:lineSpacingExtra="4dp"
         android:layout_marginBottom="28dp"/>
 
-    <!-- Botones -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,7 +51,7 @@
             android:background="@drawable/boton_secundario"
             android:text="Cancelar"
             android:textAllCaps="false"
-            android:textColor="@color/text_primary"
+            android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:fontFamily="sans-serif-medium"
             android:layout_marginEnd="8dp"/>
@@ -66,7 +64,7 @@
             android:background="@drawable/boton_rojo"
             android:text="Sí, eliminar"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:fontFamily="sans-serif-medium"
             android:layout_marginStart="8dp"/>
