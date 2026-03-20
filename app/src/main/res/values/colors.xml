@@ -52,4 +52,33 @@
     <color name="fondo_claro">#001244</color>
     <color name="fondo_mas_claro">#152D50</color>
 
+    <!-- Fondo principal del dialog (azul marino oscuro) -->
+    <color name="dialog_bg">#1A2340</color>
+
+    <!-- Fondo de la card interior (azul marino más claro) -->
+    <color name="card_bg">#1E2D4A</color>
+
+    <!-- Texto blanco -->
+    <color name="white">#FFFFFF</color>
+
+    <!-- Labels pequeños arriba de los Spinners -->
+    <color name="label_color">#8A9BBF</color>
+
+    <!-- Encabezados de tabla color naranja/amarillo -->
+    <color name="header_orange">#F5A623</color>
+
+    <!-- Divisores de tabla -->
+    <color name="divider_color">#2C3E60</color>
+
+    <!-- Botón coral/rojo (Eliminar) -->
+    <color name="btn_coral">#E8736A</color>
+    <color name="btn_coral_pressed">#C05A52</color>
+
+    <!-- Botón teal/verde menta (Agregar, Guardar, Volver) -->
+    <color name="btn_teal">#3DBFA0</color>
+    <color name="btn_teal_pressed">#2E9A82</color>
+
+    <!-- Borde del Spinner -->
+    <color name="spinner_border">#3A4E70</color>
+    <color name="spinner_bg">#253555</color>
 </resources>
