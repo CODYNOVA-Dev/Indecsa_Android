@@ -42,15 +42,12 @@ public class Tab_CapitalHumano_Contratista extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View vista = inflater.inflate(R.layout.fragment_tab__admin__contratista, container, false);
+        View vista = inflater.inflate(R.layout.fragment_tab__capital_humano__contratista, container, false);
 
         recyclerView = vista.findViewById(R.id.recyclerViewAreas);
         editBuscar   = vista.findViewById(R.id.editBuscarArea);
         btnBuscar    = vista.findViewById(R.id.btnBuscar);
 
-        // CapHum solo visualiza — ocultar botón Agregar
-        View layoutAgregar = vista.findViewById(R.id.layoutAgregar);
-        if (layoutAgregar != null) layoutAgregar.setVisibility(View.GONE);
 
         adapter = new ContratistaCapHumAdapter(listaFiltrada);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

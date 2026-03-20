@@ -32,6 +32,7 @@ public class Tab_Admin_Contratista extends Fragment {
     private RecyclerView recyclerViewAreas;
     private EditText editBuscarArea;
     private AppCompatButton btnBuscar;
+    private AppCompatButton btnAgregar;
 
     private ContratistaAdapter contratistaAdapter;
     private List<Contratista> listaContratistas;
@@ -48,6 +49,7 @@ public class Tab_Admin_Contratista extends Fragment {
         recyclerViewAreas = vista.findViewById(R.id.recyclerViewAreas);
         editBuscarArea    = vista.findViewById(R.id.editBuscarArea);
         btnBuscar         = vista.findViewById(R.id.btnBuscar);
+        btnAgregar        = vista.findViewById(R.id.btnAgregar);
 
         listaContratistas         = new ArrayList<>();
         listaContratistasFiltrada = new ArrayList<>();
@@ -56,6 +58,13 @@ public class Tab_Admin_Contratista extends Fragment {
         recyclerViewAreas.setAdapter(contratistaAdapter);
 
         btnBuscar.setOnClickListener(v -> filtrarContratistas(editBuscarArea.getText().toString()));
+
+        // ✅ Configurar botón Agregar
+        btnAgregar.setOnClickListener(v -> {
+            AgregarContratistaDialog dialog = new AgregarContratistaDialog();
+            dialog.setOnAgregadoListener(this::cargarContratistas);
+            dialog.show(getParentFragmentManager(), "agregar_contratista");
+        });
 
         cargarContratistas();
         return vista;

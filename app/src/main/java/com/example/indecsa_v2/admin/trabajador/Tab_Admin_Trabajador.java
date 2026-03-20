@@ -32,6 +32,7 @@ public class Tab_Admin_Trabajador extends Fragment {
     private RecyclerView        recyclerViewAreas;
     private EditText            editBuscarArea;
     private AppCompatButton     btnBuscar;
+    private AppCompatButton     btnAgregar;
 
     private TrabajadorAdapter   trabajadorAdapter;
     private List<TrabajadorDto> listaTrabajadores;
@@ -49,6 +50,7 @@ public class Tab_Admin_Trabajador extends Fragment {
         recyclerViewAreas = vista.findViewById(R.id.recyclerViewAreas);
         editBuscarArea    = vista.findViewById(R.id.editBuscarArea);
         btnBuscar         = vista.findViewById(R.id.btnBuscar);
+        btnAgregar        = vista.findViewById(R.id.btnAgregar);
 
         listaTrabajadores         = new ArrayList<>();
         listaTrabajadoresFiltrada = new ArrayList<>();
@@ -58,6 +60,13 @@ public class Tab_Admin_Trabajador extends Fragment {
         recyclerViewAreas.setAdapter(trabajadorAdapter);
 
         btnBuscar.setOnClickListener(v -> filtrarTrabajadores(editBuscarArea.getText().toString()));
+
+        // ✅ Configurar botón Agregar
+        btnAgregar.setOnClickListener(v -> {
+            AgregarTrabajadorDialog dialog = new AgregarTrabajadorDialog();
+            dialog.setOnAgregadoListener(this::cargarTrabajadores);
+            dialog.show(getParentFragmentManager(), "agregar_trabajador");
+        });
 
         cargarTrabajadores();
         return vista;

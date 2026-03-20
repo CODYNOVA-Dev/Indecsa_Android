@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".admin.contratista.Tab_Admin_Contratista"
-    android:background="@android:color/transparent">
+    android:background="@color/spinner_border">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -66,36 +66,6 @@
                 android:textSize="14sp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/layoutAgregar"
-            android:layout_width="359dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/entrada_texto"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layoutBuscador"
-            tools:ignore="MissingConstraints">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnAgregar"
-                android:layout_width="316dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/boton_principal_v2"
-                android:fontFamily="sans-serif-medium"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:text="+ Agregar"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewAreas"
             android:layout_width="0dp"
@@ -111,7 +81,7 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:itemCount="3"
             tools:listitem="@layout/item_card_caphum_proyecto"
-            app:layout_constraintTop_toBottomOf="@+id/layoutAgregar"/>
+            app:layout_constraintTop_toBottomOf="@+id/layoutBuscador"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

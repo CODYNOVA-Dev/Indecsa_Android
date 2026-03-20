@@ -32,6 +32,7 @@ public class Tab_Admin_Proyecto extends Fragment {
     private RecyclerView      recyclerViewAreas;
     private EditText          editBuscarArea;
     private AppCompatButton   btnBuscar;
+    private AppCompatButton   btnAgregar;
 
     private ProyectoAdapter   proyectoAdapter;
     private List<ProyectoDto> listaProyectos;
@@ -49,6 +50,7 @@ public class Tab_Admin_Proyecto extends Fragment {
         recyclerViewAreas = vista.findViewById(R.id.recyclerViewAreas);
         editBuscarArea    = vista.findViewById(R.id.editBuscarArea);
         btnBuscar         = vista.findViewById(R.id.btnBuscar);
+        btnAgregar        = vista.findViewById(R.id.btnAgregar);
 
         listaProyectos         = new ArrayList<>();
         listaProyectosFiltrada = new ArrayList<>();
@@ -58,6 +60,13 @@ public class Tab_Admin_Proyecto extends Fragment {
         recyclerViewAreas.setAdapter(proyectoAdapter);
 
         btnBuscar.setOnClickListener(v -> filtrarProyectos(editBuscarArea.getText().toString()));
+
+        // ✅ Configurar botón Agregar
+        btnAgregar.setOnClickListener(v -> {
+            AgregarProyectoDialog dialog = new AgregarProyectoDialog();
+            dialog.setOnAgregadoListener(this::cargarProyectos);
+            dialog.show(getParentFragmentManager(), "agregar_proyecto");
+        });
 
         cargarProyectos();
         return vista;
