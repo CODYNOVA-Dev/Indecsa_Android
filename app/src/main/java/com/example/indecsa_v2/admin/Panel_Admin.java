@@ -14,6 +14,8 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class Panel_Admin extends AppCompatActivity {
 
+    public static final String EXTRA_TAB_INDEX = "extra_tab_index";
+
     private TabLayout tabLayoutAdmin;
     private ViewPager2 viewPagerAdmin;
     private GestionAdminAdapter adapter;
@@ -25,14 +27,13 @@ public class Panel_Admin extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_panel_admin);
 
-        // Inicializar vistas
         initViews();
-
-        // Configurar ViewPager2 con el adapter
         setupViewPager();
-
-        // Conectar TabLayout con ViewPager2
         setupTabLayout();
+
+        // Navegar al tab indicado por el Intent (default: 0)
+        int tabIndex = getIntent().getIntExtra(EXTRA_TAB_INDEX, 0);
+        viewPagerAdmin.setCurrentItem(tabIndex, false);
     }
 
     private void initViews() {
@@ -49,15 +50,10 @@ public class Panel_Admin extends AppCompatActivity {
         new TabLayoutMediator(tabLayoutAdmin, viewPagerAdmin,
                 (tab, position) -> {
                     switch (position) {
-                        case 0:
-                            tab.setText("Contratista");
-                            break;
-                        case 1:
-                            tab.setText("Proyecto");
-                            break;
-                        case 2:
-                            tab.setText("Trabajadores");
-                            break;
+                        case 0: tab.setText("Contratista");    break;
+                        case 1: tab.setText("Proyecto");       break;
+                        case 2: tab.setText("Trabajadores");   break;
+                        case 3: tab.setText("Capital Humano"); break;
                     }
                 }
         ).attach();

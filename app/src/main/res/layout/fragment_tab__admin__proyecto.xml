@@ -81,8 +81,6 @@
             app:layout_constraintTop_toBottomOf="@+id/layoutBuscador"
             tools:ignore="MissingConstraints">
 
-
-
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnAgregar"
                 android:layout_width="316dp"
@@ -91,13 +89,12 @@
                 android:fontFamily="sans-serif-medium"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:text="Buscar"
+                android:text="+ Agregar"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
 
         </LinearLayout>
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewAreas"
