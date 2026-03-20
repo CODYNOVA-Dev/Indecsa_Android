@@ -6,7 +6,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     // Cambia esta IP por la de tu máquina en la red local
-    private static final String BASE_URL = "http://10.221.141.213:8080/api/v1/";
+    // RetrofitClient.java
+    private static final String BASE_URL = "http://10.0.2.2:8080/api/v1/";
 
     private static Retrofit retrofit;
 

@@ -2,15 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
 
+    <!-- ✅ 1. Permiso de internet (faltaba) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- ✅ 2. usesCleartextTraffic para permitir HTTP (faltaba) -->
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Indecsa_v2" >
+        android:theme="@style/Theme.Indecsa_v2"
+        android:usesCleartextTraffic="true" >
+
         <activity
             android:name=".capitalhumano.Panel_Inicial_CapitalHumano"
             android:exported="false" />
@@ -18,31 +24,10 @@
             android:name=".admin.Panel_Inicial_Admin"
             android:exported="false" />
         <activity
-            android:name=".Admin_Tab_Trabajadores"
-            android:exported="false"
-            android:label="@string/title_activity_admin_tab_trabajadores"
-            android:theme="@style/Theme.Indecsa_v2.NoActionBar" />
-        <activity
             android:name=".capitalhumano.Panel_CapitalHumano"
             android:exported="false" />
         <activity
             android:name=".admin.Panel_Admin"
-            android:exported="false" />
-        <activity
-            android:name=".CapitalHumano"
-            android:exported="false"
-            android:label="@string/title_activity_capital_humano"
-            android:theme="@style/Theme.Indecsa_v2.NoActionBar" />
-        <activity
-            android:name=".Admin"
-            android:exported="false"
-            android:label="@string/title_activity_admin"
-            android:theme="@style/Theme.Indecsa_v2.NoActionBar" />
-        <activity
-            android:name=".startCapitalHumano"
-            android:exported="false" />
-        <activity
-            android:name=".startAdmin"
             android:exported="false" />
         <activity
             android:name=".login.CorreoLoginActivity"
@@ -55,10 +40,10 @@
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

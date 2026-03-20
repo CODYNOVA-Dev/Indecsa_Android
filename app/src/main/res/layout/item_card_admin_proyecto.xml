@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
@@ -12,190 +11,109 @@
     app:cardCornerRadius="14dp"
     app:cardElevation="3dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:padding="16dp">
 
+        <!-- Info -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textNombreCompleto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Nombre Proyecto"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/textEspecialidad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Tipo"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/textUbicacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Lugar"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                tools:layout_editor_absoluteX="68dp">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textNombreCompleto"
+                    android:id="@+id/textCorreo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif-black"
-                    android:maxLines="1"
-                    android:text="Planta Industrial Norte"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                    app:layout_constraintStart_toEndOf="@id/textAvatar" />
-
-                <TextView
-                    android:id="@+id/textEspecialidad"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif"
-                    android:maxLines="1"
-                    android:text="Industrial"
+                    android:text="Inicio: "
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                    app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                    android:textSize="13sp"/>
 
                 <TextView
-                    android:id="@+id/textUbicacion"
+                    android:id="@+id/textNumero"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif"
-                    android:maxLines="1"
-                    android:text="Hidalgo"
+                    android:text="—"
                     android:textColor="@color/text_secondary"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                    app:layout_constraintStart_toEndOf="@id/textAvatar" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="68dp">
-                    <TextView
-                        android:id="@+id/textCorreo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_marginTop="2dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:maxLines="1"
-                        android:text="Inicio:"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="16sp"
-                        app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                        app:layout_constraintStart_toEndOf="@id/textAvatar" />
-
-                    <TextView
-                        android:id="@+id/textNumero"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_marginTop="2dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:maxLines="1"
-                        android:text=" 15/01/2024"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="16sp"
-                        app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                        app:layout_constraintStart_toEndOf="@id/textAvatar" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="68dp">
-                    <TextView
-                        android:id="@+id/textCorreo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_marginTop="2dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:maxLines="1"
-                        android:text="Fin:"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="16sp"
-                        app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                        app:layout_constraintStart_toEndOf="@id/textAvatar" />
-
-                    <TextView
-                        android:id="@+id/textNumero"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_marginTop="2dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:maxLines="1"
-                        android:text="      15/01/2024"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="16sp"
-                        app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                        app:layout_constraintStart_toEndOf="@id/textAvatar" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/badgeEstado"
-                    android:layout_width="71dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/item_disp_verde"
-                    android:fontFamily="sans-serif-medium"
-                    android:paddingStart="10dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="4dp"
-                    android:text="● Activo"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-                <RatingBar
-                    android:id="@+id/ratingBar"
-                    style="?android:attr/ratingBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="40dp"
-                    android:numStars="5"
-                    android:rating="4"
-                    android:stepSize="0.5"
-                    android:progressTint="#D4AF37"
-                    android:secondaryProgressTint="#D4AF37" />
-
+                    android:textSize="13sp"/>
             </LinearLayout>
 
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Badge + Rating -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/badgeEstado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/item_disp_verde"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="● Activo"
+                android:textColor="@color/white"
+                android:textSize="11sp"
+                android:textStyle="bold"/>
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:progressTint="#D4AF37"
+                android:secondaryProgressTint="#D4AF37"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

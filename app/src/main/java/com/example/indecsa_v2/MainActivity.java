@@ -19,7 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.indecsa_v2.login.Login;
+import com.example.indecsa_v2.login.CorreoLoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         barraProgreso = findViewById(R.id.barraprogreso);
         textoCarga   = findViewById(R.id.carga);
-        cardViewLogo = findViewById(R.id.cardViewLogo); // ← asegúrate de agregar este id al XML
+        cardViewLogo = findViewById(R.id.cardViewLogo);
 
         iniciarAnimacionRespiracion();
         iniciarAnimacionCarga();
@@ -60,24 +60,20 @@ public class MainActivity extends AppCompatActivity {
 
     // ─── Efecto respiración en el CardView ───────────────────────────────────
     private void iniciarAnimacionRespiracion() {
-        // Escala en X
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(cardViewLogo, "scaleX", 1f, 1.08f, 1f);
-        // Escala en Y
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(cardViewLogo, "scaleY", 1f, 1.08f, 1f);
-        // Elevación (sombra que "sube" y "baja")
-        ObjectAnimator elevation = ObjectAnimator.ofFloat(cardViewLogo, "cardElevation", 16f, 32f, 16f);
+        ObjectAnimator scaleX     = ObjectAnimator.ofFloat(cardViewLogo, "scaleX", 1f, 1.08f, 1f);
+        ObjectAnimator scaleY     = ObjectAnimator.ofFloat(cardViewLogo, "scaleY", 1f, 1.08f, 1f);
+        ObjectAnimator elevation  = ObjectAnimator.ofFloat(cardViewLogo, "cardElevation", 16f, 32f, 16f);
 
         AnimatorSet breathSet = new AnimatorSet();
         breathSet.playTogether(scaleX, scaleY, elevation);
-        breathSet.setDuration(2000);                                  // 2 s por ciclo
+        breathSet.setDuration(2000);
         breathSet.setInterpolator(new AccelerateDecelerateInterpolator());
 
-        // Repetir indefinidamente con un pequeño pausa entre ciclos
         Runnable breathLoop = new Runnable() {
             @Override
             public void run() {
                 breathSet.start();
-                handler.postDelayed(this, 2400); // 2 s animación + 0,4 s pausa
+                handler.postDelayed(this, 2400);
             }
         };
         handler.post(breathLoop);
@@ -89,9 +85,9 @@ public class MainActivity extends AppCompatActivity {
         int[] saltos     = {20,   40,  60,  80, 100};
 
         for (int i = 0; i < saltos.length; i++) {
-            final int progreso = saltos[i];
-            final String mensaje = mensajesCarga[i];
-            final boolean esElUltimo = (i == saltos.length - 1); // Detectamos si es el final
+            final int progreso      = saltos[i];
+            final String mensaje    = mensajesCarga[i];
+            final boolean esElUltimo = (i == saltos.length - 1);
 
             long delay = 0;
             for (int j = 0; j <= i; j++) delay += intervalos[j];
@@ -99,10 +95,10 @@ public class MainActivity extends AppCompatActivity {
             handler.postDelayed(() -> {
                 textoCarga.setText(mensaje);
 
-                // Si es el último salto, pasamos la orden de cambiar de activity
                 if (esElUltimo) {
                     animarProgreso(progreso, () -> {
-                        startActivity(new Intent(MainActivity.this, Login.class));
+                        // ✅ CORRECCIÓN: apunta a CorreoLoginActivity, no a Login
+                        startActivity(new Intent(MainActivity.this, CorreoLoginActivity.class));
                         finish();
                     });
                 } else {
@@ -112,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Modificamos ligeramente tu método original:
     private void animarProgreso(int destino, Runnable alTerminar) {
         ObjectAnimator anim = ObjectAnimator.ofInt(barraProgreso, "progress", progresoActual, destino);
         anim.setDuration(400);
@@ -122,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    alTerminar.run(); // Aquí ejecuta el cambio de Activity
+                    alTerminar.run();
                 }
             });
         }
@@ -134,6 +129,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacksAndMessages(null); // evitar leaks
+        handler.removeCallbacksAndMessages(null);
     }
 }

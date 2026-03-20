@@ -13,8 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.indecsa_v2.R;
-import com.example.indecsa_v2.admin.Panel_Admin;
-import com.example.indecsa_v2.capitalhumano.Panel_CapitalHumano;
+import com.example.indecsa_v2.admin.Panel_Inicial_Admin;
+import com.example.indecsa_v2.capitalhumano.Panel_Inicial_CapitalHumano;
 import com.example.indecsa_v2.models.LoginRequestDto;
 import com.example.indecsa_v2.models.LoginResponseDto;
 import com.example.indecsa_v2.network.RetrofitClient;
@@ -53,8 +53,6 @@ public class IngresarContrasenaFragment extends Fragment {
                 return;
             }
 
-            // El correo se envía en minúsculas para coincidir con el trigger
-            // trg_normalizar_correo_empleado del backend
             iniciarSesion(correo.trim().toLowerCase(), pass);
         });
 
@@ -71,7 +69,6 @@ public class IngresarContrasenaFragment extends Fragment {
                                    Response<LoginResponseDto> response) {
 
                 if (response.code() == 401 || !response.isSuccessful() || response.body() == null) {
-                    // El backend devuelve 401 cuando las credenciales son incorrectas
                     Toast.makeText(getContext(),
                             "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show();
                     return;
@@ -88,12 +85,14 @@ public class IngresarContrasenaFragment extends Fragment {
 
                 switch (rol) {
                     case "ADMIN":
-                        startActivity(new Intent(requireActivity(), Panel_Admin.class));
+                        // ✅ Va al panel inicial del admin (dashboard con cards)
+                        startActivity(new Intent(requireActivity(), Panel_Inicial_Admin.class));
                         requireActivity().finish();
                         break;
 
                     case "CAPITAL_HUMANO":
-                        startActivity(new Intent(requireActivity(), Panel_CapitalHumano.class));
+                        // ✅ Va al panel inicial de capital humano (dashboard con cards)
+                        startActivity(new Intent(requireActivity(), Panel_Inicial_CapitalHumano.class));
                         requireActivity().finish();
                         break;
 

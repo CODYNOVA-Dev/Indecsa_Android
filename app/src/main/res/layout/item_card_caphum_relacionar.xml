@@ -23,20 +23,19 @@
             android:orientation="vertical"
             tools:ignore="MissingConstraints">
 
+            <!-- Fila superior: nombre + badge -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                tools:ignore="MissingConstraints">
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    tools:layout_editor_absoluteX="68dp">
+                    android:layout_weight="2"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/textNombreCompleto"
@@ -50,81 +49,68 @@
                         android:text="Planta Industrial Norte"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                        app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                        android:textStyle="bold" />
 
+                    <!-- Estado del proyecto (valor dinámico) -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="68dp">
+                        android:orientation="horizontal">
 
+                        <!-- Label fijo "Estado:" sin ID para evitar duplicados -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
                             android:layout_marginTop="2dp"
-                            android:ellipsize="end"
                             android:fontFamily="sans-serif"
-                            android:maxLines="1"
                             android:text="Estado:"
                             android:textColor="@color/text_secondary"
-                            android:textSize="16sp"
-                            app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                            app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                            android:textSize="14sp" />
+
                         <TextView
                             android:id="@+id/textEstado"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
+                            android:layout_marginStart="4dp"
                             android:layout_marginTop="2dp"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
                             android:maxLines="1"
                             android:text="Hidalgo"
                             android:textColor="@color/text_secondary"
-                            android:textSize="16sp"
-                            app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                            app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                            android:textSize="14sp" />
                     </LinearLayout>
+
+                    <!-- Municipio (valor dinámico) -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="68dp">
+                        android:orientation="horizontal">
 
+                        <!-- Label fijo "Municipio:" sin ID -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
                             android:layout_marginTop="2dp"
-                            android:ellipsize="end"
                             android:fontFamily="sans-serif"
-                            android:maxLines="1"
                             android:text="Municipio:"
                             android:textColor="@color/text_secondary"
-                            android:textSize="16sp"
-                            app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                            app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                            android:textSize="14sp" />
+
                         <TextView
                             android:id="@+id/textMunicipio"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
+                            android:layout_marginStart="4dp"
                             android:layout_marginTop="2dp"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
                             android:maxLines="1"
                             android:text="Tizayuca"
                             android:textColor="@color/text_secondary"
-                            android:textSize="16sp"
-                            app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                            app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -157,80 +143,67 @@
 
             </LinearLayout>
 
+            <!-- Fila Trabajadores: label fijo sin ID + valor dinámico con ID -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                tools:ignore="MissingConstraints">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textUbicacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif"
-                    android:maxLines="1"
-                    android:text="Trabajadores"
+                    android:text="Trabajadores:"
                     android:textColor="@color/text_secondary"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                    app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                    android:textSize="14sp" />
+
                 <TextView
-                    android:id="@+id/textUbicacion"
+                    android:id="@+id/textContadorTrabajadores"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:maxLines="1"
                     android:text="0/8"
                     android:textColor="@color/text_secondary"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                    app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
+            <!-- Fila Contratista: label fijo sin ID + valor dinámico con ID -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                tools:ignore="MissingConstraints">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textUbicacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif"
-                    android:maxLines="1"
-                    android:text="Contratista"
+                    android:text="Contratista:"
                     android:textColor="@color/text_secondary"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                    app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                    android:textSize="14sp" />
+
                 <TextView
-                    android:id="@+id/textUbicacion"
+                    android:id="@+id/textNombreContratista"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:maxLines="1"
                     android:text="Constructora Norte SA"
                     android:textColor="@color/text_secondary"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toStartOf="@id/badgeEstado"
-                    app:layout_constraintStart_toEndOf="@id/textAvatar" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
-
 
         </LinearLayout>
 

@@ -6,9 +6,6 @@ import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.indecsa_v2.R;
 
@@ -25,11 +22,8 @@ public class Panel_Inicial_CapitalHumano extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_panel_inicial_capital_humano);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        // ✅ Se eliminó el ViewCompat.setOnApplyWindowInsetsListener
+        // porque R.id.main no existe en este layout y causaba NullPointerException
 
         setupCardListeners();
     }
@@ -40,10 +34,14 @@ public class Panel_Inicial_CapitalHumano extends AppCompatActivity {
         View cardTrabajador  = findViewById(R.id.card_caphum_trabajador);
         View cardRelacionar  = findViewById(R.id.card_caphum_relacionar);
 
-        cardContratista.setOnClickListener(v -> openPanelCapitalHumano(TAB_CONTRATISTA));
-        cardProyecto.setOnClickListener(v -> openPanelCapitalHumano(TAB_PROYECTO));
-        cardTrabajador.setOnClickListener(v -> openPanelCapitalHumano(TAB_TRABAJADOR));
-        cardRelacionar.setOnClickListener(v -> openPanelCapitalHumano(TAB_RELACIONAR));
+        if (cardContratista != null)
+            cardContratista.setOnClickListener(v -> openPanelCapitalHumano(TAB_CONTRATISTA));
+        if (cardProyecto != null)
+            cardProyecto.setOnClickListener(v -> openPanelCapitalHumano(TAB_PROYECTO));
+        if (cardTrabajador != null)
+            cardTrabajador.setOnClickListener(v -> openPanelCapitalHumano(TAB_TRABAJADOR));
+        if (cardRelacionar != null)
+            cardRelacionar.setOnClickListener(v -> openPanelCapitalHumano(TAB_RELACIONAR));
     }
 
     private void openPanelCapitalHumano(int tabIndex) {

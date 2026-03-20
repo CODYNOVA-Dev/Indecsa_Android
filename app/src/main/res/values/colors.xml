@@ -59,7 +59,6 @@
     <color name="card_bg">#1E2D4A</color>
 
     <!-- Texto blanco -->
-    <color name="white">#FFFFFF</color>
 
     <!-- Labels pequeños arriba de los Spinners -->
     <color name="label_color">#8A9BBF</color>
