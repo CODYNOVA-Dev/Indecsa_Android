@@ -170,8 +170,8 @@ public class Tab_Admin_Proyecto extends Fragment {
                 textNombreCompleto.setText(p.getNombreProyecto());
                 textEspecialidad.setText(p.getTipoProyecto());
                 textUbicacion.setText(p.getLugarProyecto());
-                textCorreo.setText("Tipo:");
-                textNumero.setText(p.getTipoProyecto() != null ? p.getTipoProyecto() : "—");
+                textCorreo.setVisibility(View.GONE);
+                textNumero.setVisibility(View.GONE);
                 badgeEstado.setText("● Activo");
                 badgeEstado.setBackgroundResource(R.drawable.item_disp_verde);
                 ratingBar.setVisibility(View.GONE);
