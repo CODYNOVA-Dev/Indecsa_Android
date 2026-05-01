@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -54,6 +56,15 @@ public class AgregarProyectoDialog extends DialogFragment {
             getDialog().setCanceledOnTouchOutside(false);
         }
 
+        // ── Spinner de estado geográfico ──────────────────────────────────────
+        Spinner spinnerEstadoGeo = view.findViewById(R.id.spinnerEstadoGeo);
+        ArrayAdapter<String> adp = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_item,
+                new String[]{"CDMX", "Hidalgo", "Puebla"});
+        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerEstadoGeo.setAdapter(adp);
+        // ─────────────────────────────────────────────────────────────────────
+
         AppCompatButton btnGuardar  = view.findViewById(R.id.btnGuardar);
         AppCompatButton btnCancelar = view.findViewById(R.id.btnCancelar);
 
@@ -67,12 +78,17 @@ public class AgregarProyectoDialog extends DialogFragment {
             String fechaIni  = getText(view, R.id.editFechaIni);
             String fechaFin  = getText(view, R.id.editFechaFin);
 
+            // ── Leer el estado geográfico del Spinner ─────────────────────────
+            String estadoGeo = spinnerEstadoGeo.getSelectedItem().toString();
+            // ─────────────────────────────────────────────────────────────────
+
             if (nombre.isEmpty()) {
                 Toast.makeText(getContext(), "El nombre del proyecto es obligatorio", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             ProyectoDto dto = new ProyectoDto(nombre, tipo, lugar);
+            dto.setEstadoProyectoGeo(estadoGeo); // ✅ viene del Spinner
 
             RetrofitClient.getApiService().createProyecto(dto)
                     .enqueue(new Callback<ProyectoDto>() {
@@ -93,7 +109,6 @@ public class AgregarProyectoDialog extends DialogFragment {
                     });
         });
     }
-
     private String getText(View root, int id) {
         EditText et = root.findViewById(id);
         return et != null ? et.getText().toString().trim() : "";

@@ -5,6 +5,7 @@ import com.example.indecsa_v2.models.LoginRequestDto;
 import com.example.indecsa_v2.models.LoginResponseDto;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.models.TrabajadorDto;
+import com.example.indecsa_v2.models.EmpleadoDto;
 
 import java.util.List;
 
@@ -60,6 +61,15 @@ import retrofit2.http.Query;
 public interface ApiService {
 
     // ==================== AUTH ====================
+
+    @GET("empleados")
+    Call<List<EmpleadoDto>> getAllEmpleados();
+
+    @GET("empleados/rol/{idRol}")
+    Call<List<EmpleadoDto>> getEmpleadosByRol(@Path("idRol") Integer idRol);
+
+    @DELETE("empleados/{id}")
+    Call<Void> deleteEmpleado(@Path("id") Integer id);
 
     /**
      * Único endpoint de login.

@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -54,6 +56,15 @@ public class AgregarContratistaDialog extends DialogFragment {
             getDialog().setCanceledOnTouchOutside(false);
         }
 
+        // ── Spinner de estado geográfico ──────────────────────────────────────
+        Spinner spinnerEstadoGeo = view.findViewById(R.id.spinnerEstadoGeo);
+        ArrayAdapter<String> adp = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_item,
+                new String[]{"CDMX", "Hidalgo", "Puebla"});
+        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerEstadoGeo.setAdapter(adp);
+        // ─────────────────────────────────────────────────────────────────────
+
         AppCompatButton btnGuardar  = view.findViewById(R.id.btnGuardar);
         AppCompatButton btnCancelar = view.findViewById(R.id.btnCancelar);
 
@@ -67,6 +78,11 @@ public class AgregarContratistaDialog extends DialogFragment {
             String ubicacion = getText(view, R.id.editUbicacion);
             String exp       = getText(view, R.id.editExperiencia);
             String desc      = getText(view, R.id.editDescripcion);
+
+
+            // ── Leer el estado geográfico del Spinner ─────────────────────────
+            String estadoGeo = spinnerEstadoGeo.getSelectedItem().toString();
+            // ──
 
             if (nombre.isEmpty() || rfc.isEmpty()) {
                 Toast.makeText(getContext(), "Nombre y RFC son obligatorios", Toast.LENGTH_SHORT).show();
