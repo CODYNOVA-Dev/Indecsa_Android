@@ -170,11 +170,17 @@ public class Tab_Admin_Proyecto extends Fragment {
                 textNombreCompleto.setText(p.getNombreProyecto());
                 textEspecialidad.setText(p.getTipoProyecto());
                 textUbicacion.setText(p.getLugarProyecto());
-                textCorreo.setText("Tipo:");
-                textNumero.setText(p.getTipoProyecto() != null ? p.getTipoProyecto() : "—");
-                badgeEstado.setText("● Activo");
-                badgeEstado.setBackgroundResource(R.drawable.item_disp_verde);
+                textCorreo.setVisibility(View.GONE);
+                textNumero.setVisibility(View.GONE);
                 ratingBar.setVisibility(View.GONE);
+
+                String estatus = p.getEstatusProyecto();
+                boolean activo = "EN_CURSO".equals(estatus) || "ACTIVO".equals(estatus);
+                badgeEstado.setText(estatus != null && !estatus.isEmpty()
+                        ? "● " + estatus.replace("_", " ")
+                        : "● Sin estatus");
+                badgeEstado.setBackgroundResource(activo
+                        ? R.drawable.item_disp_verde : R.drawable.item_disp_rojo);
 
                 // ✅ Ahora abre el dialog real
                 itemView.setOnClickListener(v -> abrirDetalleProyecto(p));

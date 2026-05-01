@@ -15,6 +15,9 @@ public class ProyectoDto {
     @SerializedName("lugarProyecto")
     private String lugarProyecto;
 
+    @SerializedName("estatusProyecto")
+    private String estatusProyecto;
+
     // Constructores
     public ProyectoDto() {}
 
@@ -36,4 +39,7 @@ public class ProyectoDto {
 
     public String getLugarProyecto() { return lugarProyecto; }
     public void setLugarProyecto(String lugarProyecto) { this.lugarProyecto = lugarProyecto; }
+
+    public String getEstatusProyecto() { return estatusProyecto; }
+    public void setEstatusProyecto(String estatusProyecto) { this.estatusProyecto = estatusProyecto; }
 }
