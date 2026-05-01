@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -68,9 +72,24 @@ public class IngresarContrasenaFragment extends Fragment {
             public void onResponse(Call<LoginResponseDto> call,
                                    Response<LoginResponseDto> response) {
 
-                if (response.code() == 401 || !response.isSuccessful() || response.body() == null) {
-                    Toast.makeText(getContext(),
-                            "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                if (!response.isSuccessful() || response.body() == null) {
+                    String msg;
+                    switch (response.code()) {
+                        case 401:
+                            msg = "Correo o contraseña incorrectos";
+                            break;
+                        case 403:
+                            msg = "No tienes permiso para acceder";
+                            break;
+                        case 500:
+                        case 502:
+                        case 503:
+                            msg = "Error del servidor, intenta más tarde";
+                            break;
+                        default:
+                            msg = "Error inesperado (código " + response.code() + ")";
+                    }
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -105,8 +124,15 @@ public class IngresarContrasenaFragment extends Fragment {
 
             @Override
             public void onFailure(Call<LoginResponseDto> call, Throwable t) {
-                Toast.makeText(getContext(),
-                        "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                String msg;
+                if (t instanceof SocketTimeoutException) {
+                    msg = "La conexión tardó demasiado, intenta de nuevo";
+                } else if (t instanceof UnknownHostException || t instanceof ConnectException) {
+                    msg = "No se pudo conectar al servidor. Verifica tu red";
+                } else {
+                    msg = "Error de conexión: " + t.getMessage();
+                }
+                Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
             }
         });
     }

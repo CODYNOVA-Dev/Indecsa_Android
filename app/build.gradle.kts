@@ -17,12 +17,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/api/v1/\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // TODO: reemplaza con la URL del servidor de producción
+            buildConfigField("String", "BASE_URL", "\"https://tu-servidor.com/api/v1/\"")
         }
     }
     compileOptions {
@@ -31,6 +36,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
