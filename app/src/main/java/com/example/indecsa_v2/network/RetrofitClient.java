@@ -1,13 +1,12 @@
 package com.example.indecsa_v2.network;
 
-import com.example.indecsa_v2.BuildConfig;
-
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL = BuildConfig.BASE_URL;
+    // Cambia esta IP por la de tu máquina en la red local
+    private static final String BASE_URL = "http://10.0.2.2:8080/api/v1/";
 
     private static Retrofit retrofit;
 
