@@ -22,6 +22,7 @@ import com.example.indecsa_v2.capitalhumano.Panel_Inicial_CapitalHumano;
 import com.example.indecsa_v2.models.LoginRequestDto;
 import com.example.indecsa_v2.models.LoginResponseDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.network.TokenManager;
 import com.google.android.material.textfield.TextInputEditText;
 
 import retrofit2.Call;
@@ -94,6 +95,12 @@ public class IngresarContrasenaFragment extends Fragment {
                 }
 
                 LoginResponseDto empleado = response.body();
+
+                String token = empleado.getToken();
+                if (token != null) {
+                    RetrofitClient.getTokenManager().saveToken(token);
+                }
+
                 String rol = empleado.getNombreRol();
 
                 if (rol == null) {

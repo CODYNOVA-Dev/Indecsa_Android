@@ -25,8 +25,12 @@ public class LoginResponseDto {
     @SerializedName("nombreRol")
     private String nombreRol;
 
+    @SerializedName("token")
+    private String token;
+
     public Integer getIdEmpleado()    { return idEmpleado; }
     public String getNombreEmpleado() { return nombreEmpleado; }
     public String getCorreoEmpleado() { return correoEmpleado; }
     public String getNombreRol()      { return nombreRol; }
+    public String getToken()          { return token; }
 }
