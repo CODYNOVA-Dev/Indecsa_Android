@@ -21,6 +21,11 @@ public class ProyectoDto {
     // Constructores
     public ProyectoDto() {}
 
+    @SerializedName("estadoProyectoGeo")
+    private String estadoProyectoGeo;
+
+    public String getEstadoProyectoGeo() { return estadoProyectoGeo; }
+    public void setEstadoProyectoGeo(String v) { this.estadoProyectoGeo = v; }
     public ProyectoDto(String nombreProyecto, String tipoProyecto, String lugarProyecto) {
         this.nombreProyecto = nombreProyecto;
         this.tipoProyecto = tipoProyecto;

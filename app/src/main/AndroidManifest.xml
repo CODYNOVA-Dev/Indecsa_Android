@@ -33,9 +33,6 @@
             android:name=".login.CorreoLoginActivity"
             android:exported="false" />
         <activity
-            android:name=".login.Login"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>

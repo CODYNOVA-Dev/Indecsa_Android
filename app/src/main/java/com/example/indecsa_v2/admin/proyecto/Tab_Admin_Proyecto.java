@@ -172,6 +172,8 @@ public class Tab_Admin_Proyecto extends Fragment {
                 textUbicacion.setText(p.getLugarProyecto());
                 textCorreo.setVisibility(View.GONE);
                 textNumero.setVisibility(View.GONE);
+                badgeEstado.setText("● Activo");
+                badgeEstado.setBackgroundResource(R.drawable.item_disp_verde);
                 ratingBar.setVisibility(View.GONE);
 
                 String estatus = p.getEstatusProyecto();

@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,6 +22,7 @@ import com.example.indecsa_v2.capitalhumano.Panel_Inicial_CapitalHumano;
 import com.example.indecsa_v2.models.LoginRequestDto;
 import com.example.indecsa_v2.models.LoginResponseDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.network.TokenManager;
 import com.google.android.material.textfield.TextInputEditText;
 
 import retrofit2.Call;
@@ -68,13 +73,34 @@ public class IngresarContrasenaFragment extends Fragment {
             public void onResponse(Call<LoginResponseDto> call,
                                    Response<LoginResponseDto> response) {
 
-                if (response.code() == 401 || !response.isSuccessful() || response.body() == null) {
-                    Toast.makeText(getContext(),
-                            "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                if (!response.isSuccessful() || response.body() == null) {
+                    String msg;
+                    switch (response.code()) {
+                        case 401:
+                            msg = "Correo o contraseña incorrectos";
+                            break;
+                        case 403:
+                            msg = "No tienes permiso para acceder";
+                            break;
+                        case 500:
+                        case 502:
+                        case 503:
+                            msg = "Error del servidor, intenta más tarde";
+                            break;
+                        default:
+                            msg = "Error inesperado (código " + response.code() + ")";
+                    }
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 LoginResponseDto empleado = response.body();
+
+                String token = empleado.getToken();
+                if (token != null) {
+                    RetrofitClient.getTokenManager().saveToken(token);
+                }
+
                 String rol = empleado.getNombreRol();
 
                 if (rol == null) {
@@ -105,8 +131,15 @@ public class IngresarContrasenaFragment extends Fragment {
 
             @Override
             public void onFailure(Call<LoginResponseDto> call, Throwable t) {
-                Toast.makeText(getContext(),
-                        "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                String msg;
+                if (t instanceof SocketTimeoutException) {
+                    msg = "La conexión tardó demasiado, intenta de nuevo";
+                } else if (t instanceof UnknownHostException || t instanceof ConnectException) {
+                    msg = "No se pudo conectar al servidor. Verifica tu red";
+                } else {
+                    msg = "Error de conexión: " + t.getMessage();
+                }
+                Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
             }
         });
     }

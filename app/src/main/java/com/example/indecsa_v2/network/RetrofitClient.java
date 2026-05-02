@@ -1,27 +1,37 @@
 package com.example.indecsa_v2.network;
 
+import android.content.Context;
+
+import com.example.indecsa_v2.BuildConfig;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    // Cambia esta IP por la de tu máquina en la red local
-    // RetrofitClient.java
-    private static final String BASE_URL = "http://10.0.2.2:8080/api/v1/";
+    private static final String BASE_URL = BuildConfig.BASE_URL;
 
     private static Retrofit retrofit;
+    private static TokenManager tokenManager;
 
-    public static Retrofit getClient() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
-        return retrofit;
+    public static void init(Context context) {
+        tokenManager = new TokenManager(context);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor(tokenManager))
+                .build();
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    public static TokenManager getTokenManager() {
+        return tokenManager;
     }
 
     public static ApiService getApiService() {
-        return getClient().create(ApiService.class);
+        return retrofit.create(ApiService.class);
     }
 }

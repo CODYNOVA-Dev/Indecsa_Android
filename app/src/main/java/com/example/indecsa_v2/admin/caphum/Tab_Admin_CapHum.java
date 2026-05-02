@@ -1,12 +1,10 @@
 package com.example.indecsa_v2.admin.caphum;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,11 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.models.EmpleadoDto;
+import com.example.indecsa_v2.network.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tab_Admin_CapitalHumano extends Fragment {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class Tab_Admin_CapHum extends Fragment {
 
     private RecyclerView            recyclerViewAreas;
     private EditText                editBuscarArea;
@@ -33,7 +36,7 @@ public class Tab_Admin_CapitalHumano extends Fragment {
     private final List<EmpleadoDto> lista         = new ArrayList<>();
     private final List<EmpleadoDto> listaFiltrada = new ArrayList<>();
 
-    public Tab_Admin_CapitalHumano() {}
+    public Tab_Admin_CapHum() {}
 
     @Nullable
     @Override
@@ -52,40 +55,39 @@ public class Tab_Admin_CapitalHumano extends Fragment {
 
         btnBuscar.setOnClickListener(v -> filtrar(editBuscarArea.getText().toString()));
 
-        cargarFichasPrueba();
+        cargar();
         return vista;
     }
 
-    // ─── FICHAS DE PRUEBA ────────────────────────────────────────────────────
+    // ─── CARGA ───────────────────────────────────────────────────────────────
 
-    private void cargarFichasPrueba() {
-        lista.clear();
+    private void cargar() {
+        recyclerViewAreas.setVisibility(View.GONE);
 
-        EmpleadoDto e1 = new EmpleadoDto();
-        e1.setIdEmpleado(1);
-        e1.setNombreEmpleado("Laura Ramírez");
-        e1.setCorreoEmpleado("laura.ramirez@indecsa.com");
-        e1.setNombreRol("CAPITAL_HUMANO");
-        lista.add(e1);
-
-        EmpleadoDto e2 = new EmpleadoDto();
-        e2.setIdEmpleado(2);
-        e2.setNombreEmpleado("Carlos Mendoza");
-        e2.setCorreoEmpleado("carlos.mendoza@indecsa.com");
-        e2.setNombreRol("CAPITAL_HUMANO");
-        lista.add(e2);
-
-        EmpleadoDto e3 = new EmpleadoDto();
-        e3.setIdEmpleado(3);
-        e3.setNombreEmpleado("Ana Torres");
-        e3.setCorreoEmpleado("ana.torres@indecsa.com");
-        e3.setNombreRol("CAPITAL_HUMANO");
-        lista.add(e3);
-
-        listaFiltrada.clear();
-        listaFiltrada.addAll(lista);
-        recyclerViewAreas.setVisibility(View.VISIBLE);
-        adapter.notifyDataSetChanged();
+        RetrofitClient.getApiService().getEmpleadosByRol(2)
+                .enqueue(new Callback<List<EmpleadoDto>>() {
+                    @Override
+                    public void onResponse(Call<List<EmpleadoDto>> call,
+                                           Response<List<EmpleadoDto>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            lista.clear();
+                            lista.addAll(response.body());
+                            listaFiltrada.clear();
+                            listaFiltrada.addAll(lista);
+                            recyclerViewAreas.setVisibility(
+                                    lista.isEmpty() ? View.GONE : View.VISIBLE);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(getContext(),
+                                    "Error al cargar empleados", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<List<EmpleadoDto>> call, Throwable t) {
+                        Toast.makeText(getContext(),
+                                "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     // ─── FILTRO ───────────────────────────────────────────────────────────────
@@ -106,36 +108,6 @@ public class Tab_Admin_CapitalHumano extends Fragment {
         }
         adapter.notifyDataSetChanged();
         recyclerViewAreas.setVisibility(listaFiltrada.isEmpty() ? View.GONE : View.VISIBLE);
-    }
-
-    // ─── EDITAR LOCAL ────────────────────────────────────────────────────────
-
-    private void mostrarDialogEditar(EmpleadoDto e) {
-        LinearLayout layout = new LinearLayout(getContext());
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(48, 24, 48, 24);
-
-        EditText etNombre = new EditText(getContext());
-        etNombre.setHint("Nombre");
-        etNombre.setText(e.getNombreEmpleado());
-        layout.addView(etNombre);
-
-        EditText etCorreo = new EditText(getContext());
-        etCorreo.setHint("Correo");
-        etCorreo.setText(e.getCorreoEmpleado());
-        layout.addView(etCorreo);
-
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Editar empleado")
-                .setView(layout)
-                .setPositiveButton("Guardar", (dialog, which) -> {
-                    e.setNombreEmpleado(etNombre.getText().toString().trim());
-                    e.setCorreoEmpleado(etCorreo.getText().toString().trim());
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(getContext(), "Empleado actualizado", Toast.LENGTH_SHORT).show();
-                })
-                .setNegativeButton("Cancelar", null)
-                .show();
     }
 
     // ─── ADAPTER ─────────────────────────────────────────────────────────────
@@ -181,44 +153,64 @@ public class Tab_Admin_CapitalHumano extends Fragment {
             void bind(EmpleadoDto e) {
                 String nombre = e.getNombreEmpleado();
 
+                // ✅ Null-checks en todos los campos para evitar crash
                 if (textAvatar != null)
                     textAvatar.setText(nombre != null && !nombre.isEmpty()
                             ? String.valueOf(nombre.charAt(0)).toUpperCase() : "?");
+
                 if (textNombreCompleto != null)
                     textNombreCompleto.setText(nombre != null ? nombre : "—");
+
                 if (textCorreo != null)
                     textCorreo.setText(e.getCorreoEmpleado() != null
                             ? e.getCorreoEmpleado() : "—");
+
                 if (textId != null)
                     textId.setText("ID: " + (e.getIdEmpleado() != null
                             ? e.getIdEmpleado() : "—"));
+
                 if (textDescripcion != null)
                     textDescripcion.setText("Gestión de asignaciones de personal");
+
                 if (badgeRol != null) {
                     badgeRol.setText("CAPITAL_HUMANO");
                     badgeRol.setBackgroundResource(R.drawable.item_disp_verde);
                 }
 
                 if (btnEditar != null)
-                    btnEditar.setOnClickListener(v -> mostrarDialogEditar(e));
+                    btnEditar.setOnClickListener(v ->
+                            Toast.makeText(v.getContext(),
+                                    "Editar: " + nombre, Toast.LENGTH_SHORT).show());
 
                 if (btnEliminar != null)
-                    btnEliminar.setOnClickListener(v ->
-                            new AlertDialog.Builder(requireContext())
-                                    .setTitle("¿Eliminar empleado?")
-                                    .setMessage("\"" + nombre + "\" será eliminado de la lista.")
-                                    .setPositiveButton("Eliminar", (dialog, which) -> {
-                                        lista.remove(e);
-                                        listaFiltrada.remove(e);
-                                        notifyDataSetChanged();
-                                        recyclerViewAreas.setVisibility(
-                                                lista.isEmpty() ? View.GONE : View.VISIBLE);
-                                        Toast.makeText(getContext(),
-                                                nombre + " eliminado",
+                    btnEliminar.setOnClickListener(v -> {
+                        if (e.getIdEmpleado() == null) return;
+                        RetrofitClient.getApiService().deleteEmpleado(e.getIdEmpleado())
+                                .enqueue(new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call,
+                                                           Response<Void> response) {
+                                        if (response.isSuccessful()) {
+                                            lista.remove(e);
+                                            listaFiltrada.remove(e);
+                                            notifyDataSetChanged();
+                                            Toast.makeText(v.getContext(),
+                                                    nombre + " eliminado",
+                                                    Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(v.getContext(),
+                                                    "Error al eliminar",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+                                        Toast.makeText(v.getContext(),
+                                                "Error de conexión",
                                                 Toast.LENGTH_SHORT).show();
-                                    })
-                                    .setNegativeButton("Cancelar", null)
-                                    .show());
+                                    }
+                                });
+                    });
             }
         }
     }

@@ -174,7 +174,7 @@ public class Tab_Admin_Contratista extends Fragment {
                 textAvatar.setText(nombre != null && !nombre.isEmpty()
                         ? String.valueOf(nombre.charAt(0)).toUpperCase() : "?");
                 textNombreCompleto.setText(nombre);
-                textEspecialidad.setText(c.getRfcContratista());
+                textEspecialidad.setText(c.getExperiencia());
                 textUbicacion.setText(c.getUbicacionContratista());
                 textNumero.setText(c.getTelefonoContratista());
                 textCorreo.setText(c.getCorreoContratista());

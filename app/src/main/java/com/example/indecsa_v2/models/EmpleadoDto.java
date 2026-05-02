@@ -2,16 +2,7 @@ package com.example.indecsa_v2.models;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * NUEVO: Reemplaza a LoginResponse.
- *
- * Coincide exactamente con LoginResponseDTO del backend:
- *   { idEmpleado, nombreEmpleado, correoEmpleado, nombreRol }
- *
- * nombreRol vale "ADMIN" o "CAPITAL_HUMANO".
- * IngresarContrasenaFragment ya lo usa con getNombreRol().
- */
-public class LoginResponseDto {
+public class EmpleadoDto {
 
     @SerializedName("idEmpleado")
     private Integer idEmpleado;
@@ -25,12 +16,13 @@ public class LoginResponseDto {
     @SerializedName("nombreRol")
     private String nombreRol;
 
-    @SerializedName("token")
-    private String token;
-
     public Integer getIdEmpleado()    { return idEmpleado; }
     public String getNombreEmpleado() { return nombreEmpleado; }
     public String getCorreoEmpleado() { return correoEmpleado; }
     public String getNombreRol()      { return nombreRol; }
-    public String getToken()          { return token; }
+
+    public void setIdEmpleado(Integer v)    { this.idEmpleado = v; }
+    public void setNombreEmpleado(String v) { this.nombreEmpleado = v; }
+    public void setCorreoEmpleado(String v) { this.correoEmpleado = v; }
+    public void setNombreRol(String v)      { this.nombreRol = v; }
 }
