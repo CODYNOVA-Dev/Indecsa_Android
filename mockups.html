@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Indecsa Android – Flujo de Pantallas</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: #eee; padding: 32px 24px; }
+
+  h1 { text-align: center; color: #f5a623; font-size: 22px; margin-bottom: 8px; }
+  .subtitle { text-align: center; color: #aaa; font-size: 13px; margin-bottom: 40px; }
+
+  /* ── Sección / fila ── */
+  .section-title {
+    font-size: 13px; font-weight: 700; letter-spacing: 2px;
+    color: #f5a623; text-transform: uppercase;
+    margin: 36px 0 16px; padding-left: 4px;
+    border-left: 3px solid #f5a623; padding-left: 10px;
+  }
+  .row { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 8px; align-items: flex-start; }
+  .arrow-row { display: flex; align-items: center; gap: 6px; margin: 4px 0 4px 0; }
+  .arrow { font-size: 22px; color: #f5a623; }
+  .branch { display: flex; flex-direction: column; gap: 0; }
+  .branch-label { font-size: 11px; font-weight: 700; color: #f5a623; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; padding: 4px 10px; background: #2a2a4a; border-radius: 6px; display: inline-block; }
+
+  /* ── Phone frame ── */
+  .phone {
+    width: 260px;
+    background: #0f0f1a;
+    border-radius: 32px;
+    border: 3px solid #333;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6);
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .phone-label {
+    font-size: 11px; color: #888; text-align: center;
+    padding: 6px 4px 0; font-style: italic;
+  }
+  .phone-filename {
+    font-size: 10px; color: #555; text-align: center;
+    padding: 2px 4px 6px; font-family: monospace;
+  }
+  .phone-notch {
+    width: 80px; height: 12px; background: #0f0f1a;
+    border-radius: 0 0 10px 10px; margin: 0 auto;
+    position: relative; z-index: 10;
+  }
+  .screen { width: 100%; overflow: hidden; position: relative; }
+
+  /* ══════════════ COLORES ANDROID ══════════════ */
+  /* Primario */
+  --orange: #f5a623;
+  --blue:   #3b82f6;
+  --teal:   #0d9488;
+  --coral:  #e05b5b;
+  --yellow: #d4af37;
+  --bg-dark:  #1a1f2e;
+  --card-bg:  #1e2538;
+  --dialog-bg:#1a2035;
+  --input-bg: #2a3048;
+  --text-p:   #f0f0f0;
+  --text-s:   #9ca3af;
+  --white:    #ffffff;
+  --label:    #8899aa;
+  --header-grad: linear-gradient(135deg, #1a2a4a 0%, #1a3a5a 100%);
+
+  /* ══════════════ 1. SPLASH ══════════════ */
+  .splash {
+    background: linear-gradient(160deg, #1a2a4a 0%, #1a3a5a 50%, #0f1f3a 100%);
+    height: 480px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 0;
+    padding: 20px 24px 16px;
+  }
+  .splash-logo-card {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: #e8f0fe; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 24px rgba(59,130,246,.4); margin-bottom: 28px;
+  }
+  .splash-logo-card svg { width: 50px; height: 50px; }
+  .splash-bar-wrap { width: 160px; margin-bottom: 10px; }
+  .splash-bar-bg { height: 6px; background: #334; border-radius: 3px; }
+  .splash-bar-fill { height: 6px; background: #3b82f6; border-radius: 3px; width: 65%; }
+  .splash-text { font-size: 13px; color: #90aac8; letter-spacing: 1px; }
+  .splash-footer { position: absolute; bottom: 12px; text-align: center; }
+  .splash-footer p { font-size: 11px; color: #4a6a8a; }
+
+  /* ══════════════ 2-3. LOGIN ══════════════ */
+  .login-wrap {
+    height: 480px; background: #e8edf5; display: flex; flex-direction: column;
+  }
+  .login-header {
+    background: linear-gradient(135deg, #1a2a4a 0%, #1a3a5a 100%);
+    padding: 28px 12px 40px; display: flex; align-items: center; justify-content: center;
+  }
+  .login-header svg { width: 90px; height: 50px; }
+  .login-card {
+    margin: -20px 14px 0; background: #fff; border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 20px 18px;
+  }
+  .login-title { font-size: 17px; font-weight: 700; color: #1a2a4a; margin-bottom: 4px; }
+  .login-sub   { font-size: 11px; color: #9ca3af; margin-bottom: 16px; }
+  .login-field {
+    border: 1.5px solid #ddd; border-radius: 8px; padding: 9px 10px;
+    font-size: 12px; color: #555; width: 100%; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 6px; background: #fff;
+  }
+  .login-field.active { border-color: #3b82f6; }
+  .login-field span { font-size: 11px; color: #aaa; }
+  .login-field .val { color: #3b82f6; font-size: 11px; }
+  .login-btn {
+    background: #3b82f6; color: #fff; border-radius: 28px;
+    padding: 11px; text-align: center; font-size: 13px; font-weight: 700;
+    letter-spacing: 1px; cursor: pointer; width: 100%;
+  }
+
+  /* ══════════════ 4. PANEL INICIAL (dashboard cards) ══════════════ */
+  .panel-inicial-wrap {
+    height: 520px; background: #e8edf5; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .panel-header {
+    background: linear-gradient(135deg, #1a2a4a 0%, #1a3a5a 100%);
+    padding: 20px 12px 36px; text-align: center;
+  }
+  .panel-header svg { width: 80px; height: 44px; margin-bottom: 8px; }
+  .panel-header h2 { font-size: 14px; color: #fff; font-weight: 700; }
+  .panel-header p  { font-size: 10px; color: #8899aa; margin-top: 4px; }
+  .panel-cards {
+    margin: -18px 12px 0; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding-bottom: 12px;
+  }
+  .panel-card {
+    background: #fff; border-radius: 14px; padding: 14px 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1); display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+  }
+  .panel-card-icon {
+    width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .panel-card-icon.orange { background: #fff3e0; }
+  .panel-card-icon.blue   { background: #e3f0ff; }
+  .panel-card-icon.green  { background: #e8f5e9; }
+  .panel-card-icon.purple { background: #f3e8ff; }
+  .panel-card-info h3 { font-size: 13px; font-weight: 700; color: #1a2a4a; }
+  .panel-card-info p  { font-size: 10px; color: #9ca3af; margin-top: 2px; }
+
+  /* ══════════════ 5. PANEL ADMIN (tabs + viewpager) ══════════════ */
+  .panel-admin-wrap {
+    height: 520px; background: #e8edf5; display: flex; flex-direction: column;
+  }
+  .panel-admin-header {
+    background: linear-gradient(135deg, #1a2a4a 0%, #1a3a5a 100%);
+    padding: 14px 12px 20px; text-align: center;
+  }
+  .panel-admin-header svg { width: 80px; height: 44px; }
+  .panel-admin-card {
+    margin: -8px 8px 0; background: #fff; border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.15); flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .tabs {
+    display: flex; background: #f0f0f0; border-radius: 10px; margin: 8px 8px 0;
+    padding: 3px;
+  }
+  .tab {
+    flex: 1; text-align: center; padding: 6px 2px; font-size: 9px; color: #9ca3af;
+    border-radius: 8px; cursor: pointer; white-space: nowrap;
+  }
+  .tab.active { background: #fff; color: #1a2a4a; font-weight: 700; border-bottom: 2px solid #d4af37; }
+  .tab-content { flex: 1; padding: 10px 8px; overflow: hidden; }
+
+  /* ══════════════ 6. TAB CONTENT (lista) ══════════════ */
+  .search-bar {
+    display: flex; align-items: center; gap: 6px;
+    border: 1.5px solid #e0e0e0; border-radius: 10px; padding: 7px 10px;
+    margin-bottom: 8px; background: #fafafa;
+  }
+  .search-bar input { font-size: 11px; border: none; outline: none; flex: 1; background: transparent; color: #555; }
+  .search-btn { background: #f5a623; color: #fff; border: none; border-radius: 6px; padding: 4px 8px; font-size: 10px; cursor: pointer; }
+  .add-btn {
+    width: 100%; background: #f5a623; color: #fff; border: none; border-radius: 8px;
+    padding: 8px; font-size: 11px; font-weight: 700; margin-bottom: 10px; cursor: pointer;
+  }
+  .item-card {
+    background: #f8f9fc; border-radius: 10px; padding: 10px;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+  }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 18px; background: #3b82f6;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  .item-info { flex: 1; }
+  .item-info .name { font-size: 12px; font-weight: 700; color: #1a2a4a; }
+  .item-info .sub  { font-size: 10px; color: #9ca3af; }
+  .badge-green {
+    background: #22c55e; color: #fff; font-size: 9px; font-weight: 700;
+    padding: 2px 6px; border-radius: 10px;
+  }
+  .stars { color: #d4af37; font-size: 11px; margin-top: 3px; }
+
+  /* ══════════════ DIALOG overlay ══════════════ */
+  .dialog-overlay {
+    background: rgba(0,0,0,.6); height: 100%; display: flex; align-items: center; justify-content: center; padding: 8px;
+  }
+  .dialog-box {
+    background: #1a2035; border-radius: 12px; padding: 14px;
+    width: 100%; max-height: 440px; overflow-y: auto;
+  }
+  .dialog-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 14px; }
+  .dialog-card { background: #1e2538; border-radius: 8px; padding: 12px; }
+  .d-avatar {
+    width: 40px; height: 40px; border-radius: 20px; background: #3b82f6;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .d-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .d-name  { font-size: 13px; font-weight: 700; color: #fff; }
+  .d-label { font-size: 10px; color: #8899aa; margin-bottom: 2px; margin-top: 8px; }
+  .d-val   { font-size: 12px; color: #fff; margin-bottom: 2px; }
+  .divider { height: 1px; background: #2e3a50; margin: 10px 0; }
+  .d-btns  { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+  .btn-coral { background: #e05b5b; color: #fff; border: none; border-radius: 6px; padding: 6px 14px; font-size: 11px; cursor: pointer; }
+  .btn-teal  { background: #0d9488; color: #fff; border: none; border-radius: 6px; padding: 6px 14px; font-size: 11px; cursor: pointer; }
+
+  /* edit fields */
+  .d-input {
+    width: 100%; background: #2a3048; border: none; border-radius: 6px;
+    padding: 7px 10px; color: #fff; font-size: 11px; margin-bottom: 10px;
+  }
+  .d-input::placeholder { color: #556; }
+
+  /* agregar */
+  .d-input-wrap { margin-bottom: 10px; }
+  .d-input-wrap label { font-size: 10px; color: #8899aa; display: block; margin-bottom: 3px; }
+
+  /* spinner */
+  .d-spinner {
+    width: 100%; background: #2a3048; border: none; border-radius: 6px;
+    padding: 8px 10px; color: #aaa; font-size: 11px; margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .d-spinner::after { content: '▾'; color: #888; }
+
+  /* tabla relacionar */
+  .d-table-head { display: flex; gap: 4px; margin-bottom: 6px; }
+  .d-th { flex: 1; font-size: 10px; font-weight: 700; color: #f5a623; }
+  .d-th.sm { flex: 0.7; }
+  .d-tr { display: flex; gap: 4px; align-items: center; margin-bottom: 6px; }
+  .d-td { flex: 1; font-size: 10px; color: #ddd; }
+  .d-td.sm { flex: 0.7; }
+
+  /* confirm dialog */
+  .confirm-box {
+    background: #1e2538; border-radius: 12px; padding: 20px 16px; width: 100%;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .confirm-icon { font-size: 36px; margin-bottom: 10px; }
+  .confirm-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .confirm-sub   { font-size: 11px; color: #9ca3af; margin-bottom: 18px; }
+
+  /* ── screen para diálogos (fondo difuminado) ── */
+  .screen-dialog {
+    height: 480px; display: flex; flex-direction: column;
+  }
+</style>
+</head>
+<body>
+
+<h1>Indecsa Android — Flujo de Pantallas</h1>
+<p class="subtitle">Mockups visuales de cada XML, ordenados por flujo de navegación</p>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ETAPA 1: ENTRADA -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-title">① Entrada — Splash</div>
+<div class="row">
+
+  <!-- SPLASH -->
+  <div>
+    <div class="phone-label">Pantalla inicial</div>
+    <div class="phone-filename">activity_main.xml</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="splash" style="position:relative;">
+          <div class="splash-logo-card">
+            <svg viewBox="0 0 60 60" fill="none">
+              <rect x="8" y="8" width="44" height="44" rx="10" fill="#1a3a6a"/>
+              <text x="30" y="38" text-anchor="middle" font-size="24" fill="#3b82f6" font-weight="900">I</text>
+            </svg>
+          </div>
+          <div class="splash-bar-wrap">
+            <div class="splash-bar-bg"><div class="splash-bar-fill"></div></div>
+          </div>
+          <div class="splash-text" style="margin-top:8px;">Verificando datos</div>
+          <div style="position:absolute; bottom:12px; text-align:center; width:100%;">
+            <p style="font-size:12px; color:#3b82f6; font-weight:700;">© Indecsa</p>
+            <p style="font-size:10px; color:#4a6a8a;">© Cydecsa</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row" style="align-self:center; flex-direction:column; align-items:center; gap:4px;">
+    <span class="arrow">→</span>
+    <span style="font-size:9px; color:#888;">al 100%</span>
+  </div>
+
+  <!-- LOGIN CORREO -->
+  <div>
+    <div class="phone-label">Login — paso 1</div>
+    <div class="phone-filename">fragment_ingresar_correo.xml</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="login-wrap">
+          <div class="login-header">
+            <svg viewBox="0 0 120 60" fill="none">
+              <rect x="4" y="8" width="52" height="44" rx="8" fill="#1a3a6a"/>
+              <text x="30" y="36" text-anchor="middle" font-size="22" fill="#3b82f6" font-weight="900">I</text>
+              <text x="72" y="30" font-size="14" fill="#fff" font-weight="700">NDECSA</text>
+              <text x="72" y="46" font-size="8" fill="#8899aa">Sistema Integral</text>
+            </svg>
+          </div>
+          <div class="login-card">
+            <div class="login-title">Iniciar Sesión</div>
+            <div class="login-sub">Ingresa tu correo electrónico</div>
+            <div class="login-field">
+              <span>👤</span>
+              <span>Correo Electrónico</span>
+            </div>
+            <div class="login-btn">SIGUIENTE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row" style="align-self:center; flex-direction:column; align-items:center; gap:4px;">
+    <span class="arrow">→</span>
+    <span style="font-size:9px; color:#888;">Siguiente</span>
+  </div>
+
+  <!-- LOGIN CONTRASEÑA -->
+  <div>
+    <div class="phone-label">Login — paso 2</div>
+    <div class="phone-filename">fragment_ingresar_contrasena.xml</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="login-wrap">
+          <div class="login-header">
+            <svg viewBox="0 0 120 60" fill="none">
+              <rect x="4" y="8" width="52" height="44" rx="8" fill="#1a3a6a"/>
+              <text x="30" y="36" text-anchor="middle" font-size="22" fill="#3b82f6" font-weight="900">I</text>
+              <text x="72" y="30" font-size="14" fill="#fff" font-weight="700">NDECSA</text>
+              <text x="72" y="46" font-size="8" fill="#8899aa">Sistema Integral</text>
+            </svg>
+          </div>
+          <div class="login-card">
+            <div class="login-title">Ingresa tu contraseña</div>
+            <div class="login-sub" style="color:#3b82f6;">usuario@indecsa.com</div>
+            <div class="login-field" style="margin-top:8px;">
+              <span>🔒</span>
+              <span>Contraseña</span>
+              <span style="margin-left:auto; font-size:14px;">👁</span>
+            </div>
+            <div class="login-btn">INICIAR SESIÓN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ETAPA 2A: ADMIN -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-title">② Rol ADMIN — Panel Inicial</div>
+<div class="row">
+
+  <!-- PANEL INICIAL ADMIN -->
+  <div>
+    <div class="phone-label">Dashboard Admin</div>
+    <div class="phone-filename">activity_panel_inicial_admin.xml</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="panel-inicial-wrap">
+          <div class="panel-header">
+            <svg viewBox="0 0 120 60" fill="none">
+              <rect x="4" y="8" width="52" height="44" rx="8" fill="#1a3a6a"/>
+              <text x="30" y="36" text-anchor="middle" font-size="22" fill="#3b82f6" font-weight="900">I</text>
+            </svg>
+            <h2>Panel de administración</h2>
+            <p>Selecciona un módulo para comenzar</p>
+          </div>
+          <div class="panel-cards">
+            <div class="panel-card">
+              <div class="panel-card-icon orange">🏢</div>
+              <div class="panel-card-info">
+                <h3>Contratistas</h3>
+                <p>Gestionar empresas contratistas</p>
+              </div>
+            </div>
+            <div class="panel-card">
+              <div class="panel-card-icon blue">📋</div>
+              <div class="panel-card-info">
+                <h3>Proyectos</h3>
+                <p>Administrar proyectos activos</p>
+              </div>
+            </div>
+            <div class="panel-card">
+              <div class="panel-card-icon green">👷</div>
+              <div class="panel-card-info">
+                <h3>Trabajadores</h3>
+                <p>Control de personal operativo</p>
+              </div>
+            </div>
+            <div class="panel-card">
+              <div class="panel-card-icon purple">👥</div>
+              <div class="panel-card-info">
+                <h3>Capital Humano</h3>
+                <p>Gestión de empleados</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row" style="align-self:center; flex-direction:column; align-items:center; gap:4px;">
+    <span class="arrow">→</span>
+    <span style="font-size:9px; color:#888; text-align:center;">tap card<br>(pasa tab index)</span>
+  </div>
+
+  <!-- PANEL ADMIN TABS -->
+  <div>
+    <div class="phone-label">Panel con Tabs — Admin</div>
+    <div class="phone-filename">activity_panel_admin.xml</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="panel-admin-wrap">
+          <div class="panel-admin-header">
+            <svg viewBox="0 0 120 60" fill="none">
+              <rect x="4" y="8" width="52" height="44" rx="8" fill="#1a3a6a"/>
+              <text x="30" y="36" text-anchor="middle" font-size="22" fill="#3b82f6" font-weight="900">I</text>
+            </svg>
+          </div>
+          <div class="panel-admin-card">
+            <div class="tabs">
+              <div class="tab active">Contrat.</div>
+              <div class="tab">Proyecto</div>
+              <div class="tab">Trabaj.</div>
+              <div class="tab">Cap.Hum</div>
+            </div>
+            <div class="tab-content">
+              <!-- TAB Contratista -->
+              <div class="search-bar">
+                <span style="color:#f5a623; font-size:13px;">🔍</span>
+                <input placeholder="Buscar área por nombre..." readonly>
+                <button class="search-btn">Buscar</button>
+              </div>
+              <button class="add-btn">+ Agregar</button>
+              <div class="item-card">
+                <div class="avatar">C</div>
+                <div class="item-info">
+                  <div class="name">Constructora XYZ</div>
+                  <div class="sub">RFC: CXYZ123456</div>
+                  <div class="sub">CDMX · 5512345678</div>
+                </div>
+                <div style="text-align:right;">
+                  <span class="badge-green">● Activo</span>
+                  <div class="stars">★★★★☆</div>
+                </div>
+              </div>
+              <div class="item-card">
+                <div class="avatar" style="background:#8b5cf6;">A</div>
+                <div class="item-info">
+                  <div class="name">Aceros del Norte</div>
+                  <div class="sub">RFC: ANOR987654</div>
+                  <div class="sub">MTY · 8112345678</div>
+                </div>
+                <div style="text-align:right;">
+                  <span class="badge-green">● Activo</span>
+                  <div class="stars">★★★☆☆</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ETAPA 2A: DIALOGS ADMIN -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-title">③ Dialogs — Admin (Contratista)</div>
+<div class="row">
+
+  <!-- DIALOG AGREGAR -->
+  <div>
+    <div class="phone-label">Agregar contratista</div>
+    <div class="phone-filename">dialog_agregar_contratista.xml</div>
+    <div class="phone">
+      <div class="screen screen-dialog">
+        <div class="dialog-overlay" style="height:480px;">
+          <div class="dialog-box">
+            <div class="dialog-title">Agregar Contratista</div>
+            <div class="dialog-card">
+              <div class="d-input-wrap"><label>Nombre *</label><input class="d-input" placeholder="Nombre del contratista"></div>
+              <div class="d-input-wrap"><label>RFC *</label><input class="d-input" placeholder="RFC del contratista"></div>
+              <div class="d-input-wrap"><label>Correo Electrónico</label><input class="d-input" placeholder="correo@ejemplo.com"></div>
+              <div class="d-input-wrap"><label>Teléfono</label><input class="d-input" placeholder="5512345678"></div>
+              <div class="d-input-wrap"><label>Ubicación</label><input class="d-input" placeholder="Ciudad, Estado"></div>
+              <div class="d-input-wrap"><label>Experiencia</label><input class="d-input" placeholder="Años de experiencia..."></div>
+              <div class="d-input-wrap"><label>Descripción</label><textarea class="d-input" rows="2" placeholder="Descripción adicional..."></textarea></div>
+              <div class="d-btns">
+                <button class="btn-coral">Cancelar</button>
+                <button class="btn-teal">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIALOG DETALLE -->
+  <div>
+    <div class="phone-label">Detalle contratista</div>
+    <div class="phone-filename">dialog_detalle_contratista.xml<br><span style="color:#d4af37">(panelDetalle visible)</span></div>
+    <div class="phone">
+      <div class="screen screen-dialog">
+        <div class="dialog-overlay" style="height:480px;">
+          <div class="dialog-box">
+            <div class="dialog-title">Detalle de contratista</div>
+            <div class="dialog-card">
+              <div class="d-header">
+                <div class="d-avatar">C</div>
+                <div>
+                  <div class="d-name">Constructora XYZ</div>
+                  <span style="background:#22c55e; color:#fff; font-size:9px; padding:2px 8px; border-radius:10px; font-weight:700;">● Activo</span>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="d-label">RFC</div><div class="d-val">CXYZ123456ABC</div>
+              <div class="d-label">Correo</div><div class="d-val">contacto@xyz.com</div>
+              <div class="d-label">Teléfono</div><div class="d-val">55 1234 5678</div>
+              <div class="d-label">Experiencia</div><div class="d-val">15 años en construcción civil</div>
+              <div class="d-label">Calificación</div>
+              <div style="color:#d4af37; font-size:13px; margin-bottom:10px;">★★★★☆</div>
+              <div class="d-label">Descripción</div><div class="d-val">Empresa especializada en obra civil e infraestructura.</div>
+              <div class="d-btns">
+                <button class="btn-coral">Eliminar</button>
+                <button class="btn-teal">Editar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIALOG EDITAR (mismo XML, panel alternado) -->
+  <div>
+    <div class="phone-label">Editar contratista</div>
+    <div class="phone-filename">dialog_detalle_contratista.xml<br><span style="color:#0d9488">(panelEditar visible)</span></div>
+    <div class="phone">
+      <div class="screen screen-dialog">
+        <div class="dialog-overlay" style="height:480px;">
+          <div class="dialog-box">
+            <div class="dialog-title">Editar contratista</div>
+            <div class="dialog-card">
+              <div class="d-input-wrap"><label>Nombre</label><input class="d-input" value="Constructora XYZ"></div>
+              <div class="d-input-wrap"><label>RFC</label><input class="d-input" value="CXYZ123456ABC"></div>
+              <div class="d-input-wrap"><label>Correo</label><input class="d-input" value="contacto@xyz.com"></div>
+              <div class="d-input-wrap"><label>Teléfono</label><input class="d-input" value="5512345678"></div>
+              <div class="d-input-wrap"><label>Ubicación</label><input class="d-input" value="CDMX"></div>
+              <div class="d-input-wrap"><label>Experiencia</label><textarea class="d-input" rows="2">15 años en construcción civil</textarea></div>
+              <div class="d-input-wrap"><label>Descripción</label><textarea class="d-input" rows="2">Empresa especializada en obra civil.</textarea></div>
+              <div class="d-btns">
+                <button class="btn-coral">Cancelar</button>
+                <button class="btn-teal">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIALOG CONFIRMAR ELIMINAR -->
+  <div>
+    <div class="phone-label">Confirmar eliminación</div>
+    <div class="phone-filename">dialog_confirm_eliminar.xml</div>
+    <div class="phone">
+      <div class="screen screen-dialog">
+        <div class="dialog-overlay" style="height:480px;">
+          <div class="confirm-box">
+            <div class="confirm-icon">⚠️</div>
+            <div class="confirm-title">¿Eliminar registro?</div>
+            <div class="confirm-sub">Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar este elemento?</div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn-coral" style="padding:8px 20px;">Cancelar</button>
+              <button class="btn-teal" style="padding:8px 20px;">Eliminar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ETAPA 2B: CAPITAL HUMANO -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-title">④ Rol CAPITAL HUMANO — Panel Inicial</div>
+<div class="row">
+
+  <!-- PANEL INICIAL CAPHUM -->
+  <div>
+    <div class="phone-label">Dashboard Capital Humano</div>
+    <div class="phone-filename">activity_panel_inicial_capital_humano.xml</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="panel-inicial-wrap">
+          <div class="panel-header">
+            <svg viewBox="0 0 120 60" fill="none">
+              <rect x="4" y="8" width="52" height="44" rx="8" fill="#1a3a6a"/>
+              <text x="30" y="36" text-anchor="middle" font-size="22" fill="#3b82f6" font-weight="900">I</text>
+            </svg>
+            <h2>Panel Capital Humano</h2>
+            <p>Selecciona un módulo para comenzar</p>
+          </div>
+          <div class="panel-cards">
+            <div class="panel-card">
+              <div class="panel-card-icon orange">🏢</div>
+              <div class="panel-card-info">
+                <h3>Contratistas</h3>
+                <p>Ver empresas contratistas</p>
+              </div>
+            </div>
+            <div class="panel-card">
+              <div class="panel-card-icon blue">📋</div>
+              <div class="panel-card-info">
+                <h3>Proyectos</h3>
+                <p>Ver proyectos activos</p>
+              </div>
+            </div>
+            <div class="panel-card">
+              <div class="panel-card-icon green">👷</div>
+              <div class="panel-card-info">
+                <h3>Trabajadores</h3>
+                <p>Ver personal operativo</p>
+              </div>
+            </div>
+            <div class="panel-card" style="border: 2px solid #d4af3750;">
+              <div class="panel-card-icon" style="background:#fff8e0;">🔗</div>
+              <div class="panel-card-info">
+                <h3>Relacionar</h3>
+                <p>Asignar trabajadores a proyectos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row" style="align-self:center; flex-direction:column; align-items:center; gap:4px;">
+    <span class="arrow">→</span>
+    <span style="font-size:9px; color:#888; text-align:center;">tap card</span>
+  </div>
+
+  <!-- PANEL CAPHUM TABS -->
+  <div>
+    <div class="phone-label">Panel con Tabs — Cap.Humano</div>
+    <div class="phone-filename">activity_panel_capital_humano.xml</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="panel-admin-wrap">
+          <div class="panel-admin-header">
+            <svg viewBox="0 0 120 60" fill="none">
+              <rect x="4" y="8" width="52" height="44" rx="8" fill="#1a3a6a"/>
+              <text x="30" y="36" text-anchor="middle" font-size="22" fill="#3b82f6" font-weight="900">I</text>
+            </svg>
+          </div>
+          <div class="panel-admin-card">
+            <div class="tabs">
+              <div class="tab">Contrat.</div>
+              <div class="tab">Proyecto</div>
+              <div class="tab">Trabaj.</div>
+              <div class="tab active" style="border-bottom-color:#d4af37;">Relacion.</div>
+            </div>
+            <!-- TAB Relacionar content -->
+            <div class="tab-content">
+              <div class="search-bar">
+                <span style="color:#d4af37; font-size:13px;">🔍</span>
+                <input placeholder="Buscar área por nombre..." readonly>
+                <button class="search-btn" style="background:#d4af37;">Buscar</button>
+              </div>
+              <div class="item-card">
+                <div class="avatar" style="background:#d4af37; color:#1a1a1a;">P</div>
+                <div class="item-info">
+                  <div class="name">Proyecto Arco Norte</div>
+                  <div class="sub">3 trabajadores asignados</div>
+                  <div class="sub">Contratista: Constructora XYZ</div>
+                </div>
+              </div>
+              <div class="item-card">
+                <div class="avatar" style="background:#0d9488;">P</div>
+                <div class="item-info">
+                  <div class="name">Edificio Central</div>
+                  <div class="sub">5 trabajadores asignados</div>
+                  <div class="sub">Contratista: Aceros Norte</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row" style="align-self:center; flex-direction:column; align-items:center; gap:4px;">
+    <span class="arrow">→</span>
+    <span style="font-size:9px; color:#888;">tap item</span>
+  </div>
+
+  <!-- DIALOG RELACIONAR -->
+  <div>
+    <div class="phone-label">Asignación de personal</div>
+    <div class="phone-filename">dialog_detalle_relacionar.xml</div>
+    <div class="phone">
+      <div class="screen screen-dialog">
+        <div class="dialog-overlay" style="height:480px;">
+          <div class="dialog-box">
+            <div class="dialog-title">Asignación de personal</div>
+            <div class="dialog-card">
+              <div class="d-label">Asignar contratista</div>
+              <div class="d-spinner">Constructora XYZ <span>▾</span></div>
+              <button class="btn-coral" style="font-size:10px; padding:5px 12px; margin-bottom:14px;">Eliminar contratista</button>
+
+              <div class="d-label">Agregar trabajador</div>
+              <div class="d-spinner">Seleccionar trabajador <span>▾</span></div>
+              <button class="btn-teal" style="font-size:10px; padding:5px 12px; margin-bottom:16px;">Agregar trabajador</button>
+
+              <div class="divider"></div>
+              <div class="d-table-head">
+                <div class="d-th">Trabajador</div>
+                <div class="d-th">Especialidad</div>
+                <div class="d-th sm">Acción</div>
+              </div>
+              <div class="divider" style="margin-top:0;"></div>
+              <div class="d-tr">
+                <div class="d-td">Jorge Luis Perez</div>
+                <div class="d-td">Albanil</div>
+                <div class="d-td sm"><button class="btn-coral" style="font-size:9px; padding:3px 6px;">Eliminar</button></div>
+              </div>
+              <div class="divider"></div>
+              <div class="d-tr">
+                <div class="d-td">Maria Elena Torres</div>
+                <div class="d-td">Electricista</div>
+                <div class="d-td sm"><button class="btn-coral" style="font-size:9px; padding:3px 6px;">Eliminar</button></div>
+              </div>
+              <div class="divider"></div>
+              <div style="display:flex; gap:8px; margin-top:12px;">
+                <button class="btn-teal" style="font-size:10px; padding:6px 10px;">Guardar cambios</button>
+                <button class="btn-teal" style="font-size:10px; padding:6px 10px;">Volver</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- READ-ONLY dialogs CAPHUM -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-title">⑤ Dialogs Capital Humano — Solo Lectura</div>
+<div class="row">
+
+  <!-- READONLY CONTRATISTA -->
+  <div>
+    <div class="phone-label">Ver contratista (readonly)</div>
+    <div class="phone-filename">dialog_detalle_contratista_readonly.xml</div>
+    <div class="phone">
+      <div class="screen screen-dialog">
+        <div class="dialog-overlay" style="height:480px;">
+          <div class="dialog-box">
+            <div class="dialog-title">Detalle de contratista</div>
+            <div class="dialog-card">
+              <div class="d-header">
+                <div class="d-avatar">C</div>
+                <div>
+                  <div class="d-name">Constructora XYZ</div>
+                  <span style="background:#22c55e; color:#fff; font-size:9px; padding:2px 8px; border-radius:10px; font-weight:700;">● Activo</span>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="d-label">RFC</div><div class="d-val">CXYZ123456ABC</div>
+              <div class="d-label">Correo</div><div class="d-val">contacto@xyz.com</div>
+              <div class="d-label">Teléfono</div><div class="d-val">55 1234 5678</div>
+              <div class="d-label">Experiencia</div><div class="d-val">15 años en construcción civil</div>
+              <div class="d-label">Calificación</div>
+              <div style="color:#d4af37; font-size:13px; margin-bottom:8px;">★★★★☆</div>
+              <div style="background:#2a3048; border-radius:6px; padding:6px; font-size:10px; color:#8899aa; text-align:center; margin-top:8px;">
+                🔒 Solo lectura — sin acciones de edición
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- READONLY PROYECTO -->
+  <div>
+    <div class="phone-label">Ver proyecto (readonly)</div>
+    <div class="phone-filename">dialog_detalle_proyecto_readonly.xml</div>
+    <div class="phone">
+      <div class="screen screen-dialog">
+        <div class="dialog-overlay" style="height:480px;">
+          <div class="dialog-box">
+            <div class="dialog-title">Detalle de proyecto</div>
+            <div class="dialog-card">
+              <div class="d-header">
+                <div class="d-avatar" style="background:#0d9488;">P</div>
+                <div>
+                  <div class="d-name">Proyecto Arco Norte</div>
+                  <span style="background:#3b82f6; color:#fff; font-size:9px; padding:2px 8px; border-radius:10px; font-weight:700;">● En curso</span>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="d-label">Descripción</div><div class="d-val">Construcción de puente vial en zona norte.</div>
+              <div class="d-label">Fecha inicio</div><div class="d-val">01/03/2025</div>
+              <div class="d-label">Fecha fin estimada</div><div class="d-val">30/11/2025</div>
+              <div class="d-label">Contratista asignado</div><div class="d-val">Constructora XYZ</div>
+              <div style="background:#2a3048; border-radius:6px; padding:6px; font-size:10px; color:#8899aa; text-align:center; margin-top:14px;">
+                🔒 Solo lectura — sin acciones de edición
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- READONLY TRABAJADOR -->
+  <div>
+    <div class="phone-label">Ver trabajador (readonly)</div>
+    <div class="phone-filename">dialog_detalle_trabajador_readonly.xml</div>
+    <div class="phone">
+      <div class="screen screen-dialog">
+        <div class="dialog-overlay" style="height:480px;">
+          <div class="dialog-box">
+            <div class="dialog-title">Detalle de trabajador</div>
+            <div class="dialog-card">
+              <div class="d-header">
+                <div class="d-avatar" style="background:#8b5cf6;">J</div>
+                <div>
+                  <div class="d-name">Jorge Luis Pérez</div>
+                  <span style="background:#22c55e; color:#fff; font-size:9px; padding:2px 8px; border-radius:10px; font-weight:700;">● Activo</span>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="d-label">Especialidad</div><div class="d-val">Albañil</div>
+              <div class="d-label">CURP</div><div class="d-val">PELJ900101HMCRZR09</div>
+              <div class="d-label">Teléfono</div><div class="d-val">55 9876 5432</div>
+              <div class="d-label">Proyecto actual</div><div class="d-val">Arco Norte</div>
+              <div style="background:#2a3048; border-radius:6px; padding:6px; font-size:10px; color:#8899aa; text-align:center; margin-top:14px;">
+                🔒 Solo lectura — sin acciones de edición
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- MAPA RESUMEN -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-title">⑥ Mapa de Navegación</div>
+<div style="background:#12172a; border-radius:16px; padding:24px 20px; font-family:monospace; font-size:11px; line-height:2; color:#c0cfe0; overflow-x:auto;">
+  <span style="color:#f5a623;">activity_main.xml</span> (Splash)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;└─▶ <span style="color:#f5a623;">activity_correo_login.xml</span> (contenedor FrameLayout)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span style="color:#60a5fa;">fragment_ingresar_correo.xml</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <span style="color:#60a5fa;">fragment_ingresar_contrasena.xml</span> ─ API /login<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ [ADMIN] ──▶ <span style="color:#f5a623;">activity_panel_inicial_admin.xml</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─▶ <span style="color:#f5a623;">activity_panel_admin.xml</span> (TabLayout + ViewPager2)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ tab 0: <span style="color:#34d399;">fragment_tab__admin__contratista.xml</span> → RecyclerView (item_card_admin_contratista.xml)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├─ dialog_agregar_contratista.xml<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├─ dialog_detalle_contratista.xml (panelDetalle / panelEditar)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;└─ dialog_confirm_eliminar.xml<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ tab 1: <span style="color:#34d399;">fragment_tab__admin__proyecto.xml</span> → (mismo patrón)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ tab 2: <span style="color:#34d399;">fragment_tab__admin__trabajador.xml</span> → (mismo patrón)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ tab 3: <span style="color:#34d399;">fragment_tab__admin__cap_hum.xml</span> → dialog_asignar_capital_humano.xml<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ [CAP.HUM] ──▶ <span style="color:#d4af37;">activity_panel_inicial_capital_humano.xml</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─▶ <span style="color:#d4af37;">activity_panel_capital_humano.xml</span> (TabLayout + ViewPager2)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ tab 0: <span style="color:#a78bfa;">fragment_tab__capital_humano__contratista.xml</span> → dialog_detalle_contratista_readonly.xml<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ tab 1: <span style="color:#a78bfa;">fragment_tab__capital_humano__proyecto.xml</span> → dialog_detalle_proyecto_readonly.xml<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ tab 2: <span style="color:#a78bfa;">fragment_tab__capital_humano__trabajador.xml</span> → dialog_detalle_trabajador_readonly.xml<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ tab 3: <span style="color:#a78bfa;">fragment_tab__capital_humano__relacionar.xml</span> → dialog_detalle_relacionar.xml
+</div>
+
+<br><br>
+</body>
+</html>
