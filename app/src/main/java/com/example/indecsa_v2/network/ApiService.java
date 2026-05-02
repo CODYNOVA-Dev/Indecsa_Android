@@ -77,7 +77,7 @@ public interface ApiService {
      * Response 200: { idEmpleado, nombreEmpleado, correoEmpleado, nombreRol }
      * Response 401: credenciales incorrectas
      */
-    @POST("empleados/login")
+    @POST("auth/login")
     Call<LoginResponseDto> login(@Body LoginRequestDto request);
 
     // ==================== TRABAJADORES ====================
