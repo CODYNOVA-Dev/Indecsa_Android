@@ -68,7 +68,7 @@ public class DetalleProyectoDialog extends DialogFragment {
         // Cuando el DTO exponga más campos, agregarlos aquí:
         args.putString(ARG_MUNICIPIO,  "");
         args.putString(ARG_ESTADO_GEO, "");
-        args.putString(ARG_ESTATUS,    "");
+        args.putString(ARG_ESTATUS,    p.getEstatusProyecto() != null ? p.getEstatusProyecto() : "");
         args.putString(ARG_FECHA_INI,  "");
         args.putString(ARG_FECHA_FIN,  "");
         args.putInt   (ARG_CALIFIC,    0);
