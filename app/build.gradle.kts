@@ -26,8 +26,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // TODO: reemplaza con la URL del servidor de producción
-            buildConfigField("String", "BASE_URL", "\"https://tu-servidor.com/api/\"")
+            buildConfigField("String", "BASE_URL", "\"https://indecsaspringboot-production.up.railway.app/api/\"")
         }
     }
     compileOptions {
