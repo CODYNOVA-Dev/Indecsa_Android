@@ -15,6 +15,9 @@ public class Panel_Inicial_Admin extends AppCompatActivity {
     public static final int TAB_PROYECTO       = 1;
     public static final int TAB_TRABAJADOR     = 2;
     public static final int TAB_CAPITAL_HUMANO = 3;
+    public static final int TAB_PERSONAL_OBRA  = 4;
+    public static final int TAB_REGISTRO_HORAS = 5;
+    public static final int TAB_AVANCE_OBRA    = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,9 @@ public class Panel_Inicial_Admin extends AppCompatActivity {
         View cardProyecto      = findViewById(R.id.card_admin_proyecto);
         View cardTrabajador    = findViewById(R.id.card_admin_trabajador);
         View cardCapitalHumano = findViewById(R.id.card_admin_capitalhumano);
+        View cardPersonalObra  = findViewById(R.id.card_admin_personalobra);
+        View cardRegistroHoras = findViewById(R.id.card_admin_registro_horas);
+        View cardAvanceObra    = findViewById(R.id.card_admin_avance_obra);
 
         if (cardContratista != null)
             cardContratista.setOnClickListener(v -> openPanelAdmin(TAB_CONTRATISTA));
@@ -42,6 +48,12 @@ public class Panel_Inicial_Admin extends AppCompatActivity {
             cardTrabajador.setOnClickListener(v -> openPanelAdmin(TAB_TRABAJADOR));
         if (cardCapitalHumano != null)
             cardCapitalHumano.setOnClickListener(v -> openPanelAdmin(TAB_CAPITAL_HUMANO));
+        if (cardPersonalObra != null)
+            cardPersonalObra.setOnClickListener(v -> openPanelAdmin(TAB_PERSONAL_OBRA));
+        if (cardRegistroHoras != null)
+            cardRegistroHoras.setOnClickListener(v -> openPanelAdmin(TAB_REGISTRO_HORAS));
+        if (cardAvanceObra != null)
+            cardAvanceObra.setOnClickListener(v -> openPanelAdmin(TAB_AVANCE_OBRA));
     }
 
     private void openPanelAdmin(int tabIndex) {

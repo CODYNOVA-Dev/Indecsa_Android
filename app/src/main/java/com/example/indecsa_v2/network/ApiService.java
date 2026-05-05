@@ -1,9 +1,14 @@
 package com.example.indecsa_v2.network;
 
+import com.example.indecsa_v2.models.AsignacionTrabajadorProyectoDto;
+import com.example.indecsa_v2.models.AvancePartidaDto;
 import com.example.indecsa_v2.models.Contratista;
+import com.example.indecsa_v2.models.CuadrillaDto;
+import com.example.indecsa_v2.models.EstandarRendimientoDto;
 import com.example.indecsa_v2.models.LoginRequestDto;
 import com.example.indecsa_v2.models.LoginResponseDto;
 import com.example.indecsa_v2.models.ProyectoDto;
+import com.example.indecsa_v2.models.RegistroHorasDto;
 import com.example.indecsa_v2.models.TrabajadorDto;
 import com.example.indecsa_v2.models.EmpleadoDto;
 
@@ -154,4 +159,65 @@ public interface ApiService {
 
     @DELETE("proyectos/{id}")
     Call<Void> deleteProyecto(@Path("id") Integer id);
+
+    // ==================== ASIGNACIONES TRABAJADOR-PROYECTO ====================
+
+    @GET("asignaciones-trabajador/proyecto/{idProyecto}")
+    Call<List<AsignacionTrabajadorProyectoDto>> getAsignacionesByProyecto(@Path("idProyecto") Integer idProyecto);
+
+    @GET("asignaciones-trabajador/trabajador/{idTrabajador}")
+    Call<List<AsignacionTrabajadorProyectoDto>> getAsignacionesByTrabajador(@Path("idTrabajador") Integer idTrabajador);
+
+    @GET("asignaciones-trabajador/{id}")
+    Call<AsignacionTrabajadorProyectoDto> getAsignacionById(@Path("id") Integer id);
+
+    // ==================== CUADRILLAS ====================
+
+    @GET("cuadrillas/proyecto/{idProyecto}")
+    Call<List<CuadrillaDto>> getCuadrillasByProyecto(@Path("idProyecto") Integer idProyecto);
+
+    @POST("cuadrillas")
+    Call<CuadrillaDto> createCuadrilla(@Body CuadrillaDto cuadrilla);
+
+    @PUT("cuadrillas/{id}")
+    Call<CuadrillaDto> updateCuadrilla(@Path("id") Integer id, @Body CuadrillaDto cuadrilla);
+
+    @DELETE("cuadrillas/{id}")
+    Call<Void> deleteCuadrilla(@Path("id") Integer id);
+
+    // ==================== REGISTRO DE HORAS ====================
+
+    @GET("registro-horas/proyecto/{idProyecto}")
+    Call<List<RegistroHorasDto>> getRegistroHorasByProyecto(
+            @Path("idProyecto") Integer idProyecto,
+            @Query("fechaInicio") String fechaInicio,
+            @Query("fechaFin") String fechaFin);
+
+    @GET("registro-horas/trabajador/{idTrabajador}")
+    Call<List<RegistroHorasDto>> getRegistroHorasByTrabajador(@Path("idTrabajador") Integer idTrabajador);
+
+    @POST("registro-horas")
+    Call<RegistroHorasDto> createRegistroHoras(@Body RegistroHorasDto dto);
+
+    @DELETE("registro-horas/{id}")
+    Call<Void> deleteRegistroHoras(@Path("id") Integer id);
+
+    // ==================== AVANCE DE PARTIDA ====================
+
+    @GET("avance-partida/proyecto/{idProyecto}")
+    Call<List<AvancePartidaDto>> getAvancesByProyecto(
+            @Path("idProyecto") Integer idProyecto,
+            @Query("fechaInicio") String fechaInicio,
+            @Query("fechaFin") String fechaFin);
+
+    @POST("avance-partida")
+    Call<AvancePartidaDto> createAvancePartida(@Body AvancePartidaDto dto);
+
+    @DELETE("avance-partida/{id}")
+    Call<Void> deleteAvancePartida(@Path("id") Integer id);
+
+    // ==================== ESTÁNDARES DE RENDIMIENTO ====================
+
+    @GET("estandares-rendimiento")
+    Call<List<EstandarRendimientoDto>> getAllEstandares();
 }
