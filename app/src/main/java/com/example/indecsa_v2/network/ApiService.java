@@ -9,6 +9,7 @@ import com.example.indecsa_v2.models.LoginRequestDto;
 import com.example.indecsa_v2.models.LoginResponseDto;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.models.RegistroHorasDto;
+import com.example.indecsa_v2.models.RendimientoIndicadorDto;
 import com.example.indecsa_v2.models.TrabajadorDto;
 import com.example.indecsa_v2.models.EmpleadoDto;
 
@@ -220,4 +221,18 @@ public interface ApiService {
 
     @GET("estandares-rendimiento")
     Call<List<EstandarRendimientoDto>> getAllEstandares();
+
+    // ==================== INDICADORES DE RENDIMIENTO ====================
+
+    @GET("rendimiento/trabajador/{idTrabajador}")
+    Call<List<RendimientoIndicadorDto>> getRendimientoTrabajador(
+            @Path("idTrabajador") Integer idTrabajador,
+            @Query("fechaInicio") String fechaInicio,
+            @Query("fechaFin") String fechaFin);
+
+    @GET("rendimiento/proyecto/{idProyecto}")
+    Call<List<RendimientoIndicadorDto>> getRendimientoProyecto(
+            @Path("idProyecto") Integer idProyecto,
+            @Query("fechaInicio") String fechaInicio,
+            @Query("fechaFin") String fechaFin);
 }

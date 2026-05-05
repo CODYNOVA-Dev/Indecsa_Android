@@ -192,7 +192,55 @@
                     android:text="—"
                     android:textColor="@color/white"
                     android:textSize="15sp"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- ──── Rendimiento ──── -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"
+                    android:layout_marginBottom="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Rendimiento (últimos 30 días)"
+                        android:textColor="@color/label_color"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <ProgressBar
+                        android:id="@+id/progressRendimiento"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvRendimientoVacio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cargando..."
+                    android:textColor="#5A6A7A"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/containerRendimiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp" />
 
                 <!-- Botón Cerrar -->
                 <Button
