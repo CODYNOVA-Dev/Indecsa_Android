@@ -54,6 +54,9 @@ public class Panel_CapitalHumano extends AppCompatActivity {
                         case 1: tab.setText("Proyecto");    break;
                         case 2: tab.setText("Trabajadores"); break;
                         case 3: tab.setText("Relacionar");  break;
+                        case 4: tab.setText("Personal en Obra"); break;
+                        case 5: tab.setText("Reg. Horas");       break;
+                        case 6: tab.setText("Avance Obra");      break;
                     }
                 }
         ).attach();

@@ -5,8 +5,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.indecsa_v2.capitalhumano.avanceobra.Tab_CapitalHumano_AvanceObra;
 import com.example.indecsa_v2.capitalhumano.contratista.Tab_CapitalHumano_Contratista;
+import com.example.indecsa_v2.capitalhumano.personalobra.Tab_CapitalHumano_PersonalObra;
 import com.example.indecsa_v2.capitalhumano.proyecto.Tab_CapitalHumano_Proyecto;
+import com.example.indecsa_v2.capitalhumano.registrohoras.Tab_CapitalHumano_RegistroHoras;
 import com.example.indecsa_v2.capitalhumano.relacionar.Tab_CapitalHumano_Relacionar;
 import com.example.indecsa_v2.capitalhumano.trabajador.Tab_CapitalHumano_Trabajador;
 
@@ -18,6 +21,7 @@ import com.example.indecsa_v2.capitalhumano.trabajador.Tab_CapitalHumano_Trabaja
  *   1 → Tab_CapitalHumano_Proyecto
  *   2 → Tab_CapitalHumano_Trabajador
  *   3 → Tab_CapitalHumano_Relacionar
+ *   4 → Tab_CapitalHumano_PersonalObra
  */
 public class GestionCapitalHumanoAdapter extends FragmentStateAdapter {
 
@@ -33,12 +37,15 @@ public class GestionCapitalHumanoAdapter extends FragmentStateAdapter {
             case 1:  return new Tab_CapitalHumano_Proyecto();
             case 2:  return new Tab_CapitalHumano_Trabajador();
             case 3:  return new Tab_CapitalHumano_Relacionar();
+            case 4:  return new Tab_CapitalHumano_PersonalObra();
+            case 5:  return new Tab_CapitalHumano_RegistroHoras();
+            case 6:  return new Tab_CapitalHumano_AvanceObra();
             default: return new Tab_CapitalHumano_Contratista();
         }
     }
 
     @Override
     public int getItemCount() {
-        return 4; // era 3, faltaba el tab Relacionar
+        return 7;
     }
 }

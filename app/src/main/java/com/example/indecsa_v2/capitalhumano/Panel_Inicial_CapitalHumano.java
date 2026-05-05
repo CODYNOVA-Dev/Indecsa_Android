@@ -11,10 +11,13 @@ import com.example.indecsa_v2.R;
 
 public class Panel_Inicial_CapitalHumano extends AppCompatActivity {
 
-    public static final int TAB_CONTRATISTA = 0;
-    public static final int TAB_PROYECTO    = 1;
-    public static final int TAB_TRABAJADOR  = 2;
-    public static final int TAB_RELACIONAR  = 3;
+    public static final int TAB_CONTRATISTA   = 0;
+    public static final int TAB_PROYECTO      = 1;
+    public static final int TAB_TRABAJADOR    = 2;
+    public static final int TAB_RELACIONAR    = 3;
+    public static final int TAB_PERSONAL_OBRA = 4;
+    public static final int TAB_REGISTRO_HORAS = 5;
+    public static final int TAB_AVANCE_OBRA    = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +32,13 @@ public class Panel_Inicial_CapitalHumano extends AppCompatActivity {
     }
 
     private void setupCardListeners() {
-        View cardContratista = findViewById(R.id.card_caphum_contratista);
-        View cardProyecto    = findViewById(R.id.card_caphum_proyecto);
-        View cardTrabajador  = findViewById(R.id.card_caphum_trabajador);
-        View cardRelacionar  = findViewById(R.id.card_caphum_relacionar);
+        View cardContratista  = findViewById(R.id.card_caphum_contratista);
+        View cardProyecto     = findViewById(R.id.card_caphum_proyecto);
+        View cardTrabajador   = findViewById(R.id.card_caphum_trabajador);
+        View cardRelacionar   = findViewById(R.id.card_caphum_relacionar);
+        View cardPersonalObra = findViewById(R.id.card_caphum_personalobra);
+        View cardRegistroHoras = findViewById(R.id.card_caphum_registro_horas);
+        View cardAvanceObra    = findViewById(R.id.card_caphum_avance_obra);
 
         if (cardContratista != null)
             cardContratista.setOnClickListener(v -> openPanelCapitalHumano(TAB_CONTRATISTA));
@@ -42,6 +48,12 @@ public class Panel_Inicial_CapitalHumano extends AppCompatActivity {
             cardTrabajador.setOnClickListener(v -> openPanelCapitalHumano(TAB_TRABAJADOR));
         if (cardRelacionar != null)
             cardRelacionar.setOnClickListener(v -> openPanelCapitalHumano(TAB_RELACIONAR));
+        if (cardPersonalObra != null)
+            cardPersonalObra.setOnClickListener(v -> openPanelCapitalHumano(TAB_PERSONAL_OBRA));
+        if (cardRegistroHoras != null)
+            cardRegistroHoras.setOnClickListener(v -> openPanelCapitalHumano(TAB_REGISTRO_HORAS));
+        if (cardAvanceObra != null)
+            cardAvanceObra.setOnClickListener(v -> openPanelCapitalHumano(TAB_AVANCE_OBRA));
     }
 
     private void openPanelCapitalHumano(int tabIndex) {
