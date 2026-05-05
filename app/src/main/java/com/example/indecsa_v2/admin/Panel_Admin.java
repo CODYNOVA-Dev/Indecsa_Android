@@ -57,6 +57,7 @@ public class Panel_Admin extends AppCompatActivity {
                         case 4: tab.setText("Personal en Obra"); break;
                         case 5: tab.setText("Reg. Horas");       break;
                         case 6: tab.setText("Avance Obra");      break;
+                        case 7: tab.setText("Reportes");         break;
                     }
                 }
         ).attach();

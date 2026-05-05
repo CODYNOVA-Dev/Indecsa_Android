@@ -18,6 +18,7 @@ public class Panel_Inicial_Admin extends AppCompatActivity {
     public static final int TAB_PERSONAL_OBRA  = 4;
     public static final int TAB_REGISTRO_HORAS = 5;
     public static final int TAB_AVANCE_OBRA    = 6;
+    public static final int TAB_REPORTES       = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class Panel_Inicial_Admin extends AppCompatActivity {
         View cardPersonalObra  = findViewById(R.id.card_admin_personalobra);
         View cardRegistroHoras = findViewById(R.id.card_admin_registro_horas);
         View cardAvanceObra    = findViewById(R.id.card_admin_avance_obra);
+        View cardReportes      = findViewById(R.id.card_admin_reportes);
 
         if (cardContratista != null)
             cardContratista.setOnClickListener(v -> openPanelAdmin(TAB_CONTRATISTA));
@@ -54,6 +56,8 @@ public class Panel_Inicial_Admin extends AppCompatActivity {
             cardRegistroHoras.setOnClickListener(v -> openPanelAdmin(TAB_REGISTRO_HORAS));
         if (cardAvanceObra != null)
             cardAvanceObra.setOnClickListener(v -> openPanelAdmin(TAB_AVANCE_OBRA));
+        if (cardReportes != null)
+            cardReportes.setOnClickListener(v -> openPanelAdmin(TAB_REPORTES));
     }
 
     private void openPanelAdmin(int tabIndex) {

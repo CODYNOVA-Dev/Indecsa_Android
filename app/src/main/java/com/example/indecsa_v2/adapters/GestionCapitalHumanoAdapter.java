@@ -11,6 +11,7 @@ import com.example.indecsa_v2.capitalhumano.personalobra.Tab_CapitalHumano_Perso
 import com.example.indecsa_v2.capitalhumano.proyecto.Tab_CapitalHumano_Proyecto;
 import com.example.indecsa_v2.capitalhumano.registrohoras.Tab_CapitalHumano_RegistroHoras;
 import com.example.indecsa_v2.capitalhumano.relacionar.Tab_CapitalHumano_Relacionar;
+import com.example.indecsa_v2.capitalhumano.reportes.Tab_CapitalHumano_Reportes;
 import com.example.indecsa_v2.capitalhumano.trabajador.Tab_CapitalHumano_Trabajador;
 
 /**
@@ -40,12 +41,13 @@ public class GestionCapitalHumanoAdapter extends FragmentStateAdapter {
             case 4:  return new Tab_CapitalHumano_PersonalObra();
             case 5:  return new Tab_CapitalHumano_RegistroHoras();
             case 6:  return new Tab_CapitalHumano_AvanceObra();
+            case 7:  return new Tab_CapitalHumano_Reportes();
             default: return new Tab_CapitalHumano_Contratista();
         }
     }
 
     @Override
     public int getItemCount() {
-        return 7;
+        return 8;
     }
 }
