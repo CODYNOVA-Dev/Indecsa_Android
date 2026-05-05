@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_mas_claro">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Título -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Generar Reporte PDF"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Card formulario -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/card_bg"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Tipo de reporte -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tipo de reporte"
+                    android:textColor="@color/label_color"
+                    android:textSize="12sp"/>
+                <Spinner
+                    android:id="@+id/spinnerTipoReporte"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/spinner_bg"
+                    android:layout_marginBottom="14dp"/>
+
+                <!-- Selector Trabajador (visible para "Rendimiento por Trabajador") -->
+                <LinearLayout
+                    android:id="@+id/layoutSeleccionTrabajador"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Trabajador"
+                        android:textColor="@color/label_color"
+                        android:textSize="12sp"/>
+                    <Spinner
+                        android:id="@+id/spinnerTrabajador"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/spinner_bg"
+                        android:layout_marginBottom="14dp"/>
+                </LinearLayout>
+
+                <!-- Selector Proyecto (visible para "Horas" y "Avance") -->
+                <LinearLayout
+                    android:id="@+id/layoutSeleccionProyecto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Proyecto"
+                        android:textColor="@color/label_color"
+                        android:textSize="12sp"/>
+                    <Spinner
+                        android:id="@+id/spinnerProyecto"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/spinner_bg"
+                        android:layout_marginBottom="14dp"/>
+                </LinearLayout>
+
+                <!-- Fecha Inicio -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fecha inicio"
+                    android:textColor="@color/label_color"
+                    android:textSize="12sp"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnFechaInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/button_dark_bg"
+                    android:text="Seleccionar fecha"
+                    android:textAllCaps="false"
+                    android:textColor="#A0AEC0"
+                    android:textSize="14sp"
+                    android:gravity="center_vertical|start"
+                    android:paddingStart="14dp"
+                    android:layout_marginBottom="14dp"/>
+
+                <!-- Fecha Fin -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fecha fin"
+                    android:textColor="@color/label_color"
+                    android:textSize="12sp"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnFechaFin"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/button_dark_bg"
+                    android:text="Seleccionar fecha"
+                    android:textAllCaps="false"
+                    android:textColor="#A0AEC0"
+                    android:textSize="14sp"
+                    android:gravity="center_vertical|start"
+                    android:paddingStart="14dp"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- Estado / progreso -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <ProgressBar
+                        android:id="@+id/progressReporte"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:visibility="gone"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/tvEstadoReporte"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textColor="#A0AEC0"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+
+                <!-- Botón generar -->
+                <Button
+                    android:id="@+id/btnGenerarPdf"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/btn_teal"
+                    android:text="Generar PDF"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Info -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="#1A2B4C"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tipos de reporte disponibles"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📊  Rendimiento por Trabajador — tabla de indicadores con semáforo VERDE / AMARILLO / ROJO por proyecto."
+                    android:textColor="#A0AEC0"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="6dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="⏱  Horas por Proyecto — registros de horas con totales por trabajador y cuadrilla."
+                    android:textColor="#A0AEC0"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="6dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🏗  Avance de Obra — partidas ejecutadas vs. programadas con porcentaje de avance."
+                    android:textColor="#A0AEC0"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</ScrollView>

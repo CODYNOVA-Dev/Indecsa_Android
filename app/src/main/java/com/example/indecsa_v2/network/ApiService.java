@@ -15,6 +15,8 @@ import com.example.indecsa_v2.models.EmpleadoDto;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -24,6 +26,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Streaming;
 
 /**
  * CORRECCIONES respecto a la versión anterior:
@@ -233,6 +236,29 @@ public interface ApiService {
     @GET("rendimiento/proyecto/{idProyecto}")
     Call<List<RendimientoIndicadorDto>> getRendimientoProyecto(
             @Path("idProyecto") Integer idProyecto,
+            @Query("fechaInicio") String fechaInicio,
+            @Query("fechaFin") String fechaFin);
+
+    // ==================== REPORTES PDF ====================
+
+    @Streaming
+    @GET("reportes/rendimiento/trabajador/{id}")
+    Call<ResponseBody> descargarRendimientoTrabajador(
+            @Path("id") Integer id,
+            @Query("fechaInicio") String fechaInicio,
+            @Query("fechaFin") String fechaFin);
+
+    @Streaming
+    @GET("reportes/horas/proyecto/{id}")
+    Call<ResponseBody> descargarHorasProyecto(
+            @Path("id") Integer id,
+            @Query("fechaInicio") String fechaInicio,
+            @Query("fechaFin") String fechaFin);
+
+    @Streaming
+    @GET("reportes/avance/proyecto/{id}")
+    Call<ResponseBody> descargarAvanceObra(
+            @Path("id") Integer id,
             @Query("fechaInicio") String fechaInicio,
             @Query("fechaFin") String fechaFin);
 }

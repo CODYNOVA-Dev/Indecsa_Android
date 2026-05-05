@@ -12,7 +12,13 @@
       "mcp__Claude_in_Chrome__switch_browser",
       "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" devices)",
       "Bash(\"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" pr view 10 --repo CODYNOVA-Dev/Indecsa_Spring_Boot --json mergeable,mergeStateStatus,title)",
-      "Bash(./gradlew assembleDebug)"
+      "Bash(./gradlew assembleDebug)",
+      "Bash(git push *)",
+      "Bash(mvnw.cmd clean *)",
+      "Bash(./mvnw clean *)",
+      "Bash(bash mvnw *)",
+      "Bash(/c/Users/greco/Desktop/PREPA/CODYNOVA/todo/Indecsa_Android/Indecsa_Spring_Boot/mvnw clean *)",
+      "Bash('C:/Program Files/GitHub CLI/gh.exe' pr create --title 'feat: Etapa 4.1 — Generación de reportes PDF' --base main --head claude/pdf-reportes --body ' *)"
     ]
   }
 }

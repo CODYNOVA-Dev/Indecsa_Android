@@ -11,6 +11,7 @@ import com.example.indecsa_v2.admin.contratista.Tab_Admin_Contratista;
 import com.example.indecsa_v2.admin.personalobra.Tab_Admin_PersonalObra;
 import com.example.indecsa_v2.admin.proyecto.Tab_Admin_Proyecto;
 import com.example.indecsa_v2.admin.registrohoras.Tab_Admin_RegistroHoras;
+import com.example.indecsa_v2.admin.reportes.Tab_Admin_Reportes;
 import com.example.indecsa_v2.admin.trabajador.Tab_Admin_Trabajador;
 
 /**
@@ -40,12 +41,13 @@ public class GestionAdminAdapter extends FragmentStateAdapter {
             case 4:  return new Tab_Admin_PersonalObra();
             case 5:  return new Tab_Admin_RegistroHoras();
             case 6:  return new Tab_Admin_AvanceObra();
+            case 7:  return new Tab_Admin_Reportes();
             default: return new Tab_Admin_Contratista();
         }
     }
 
     @Override
     public int getItemCount() {
-        return 7;
+        return 8;
     }
 }
