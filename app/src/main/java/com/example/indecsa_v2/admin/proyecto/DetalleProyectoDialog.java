@@ -226,7 +226,8 @@ public class DetalleProyectoDialog extends DialogFragment {
         new Thread(() -> {
             try {
                 File dir = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-                if (dir != null && !dir.exists()) dir.mkdirs();
+                if (dir == null) throw new IOException("Almacenamiento externo no disponible");
+                if (!dir.exists()) dir.mkdirs();
                 File file = new File(dir, nombreArchivo);
                 try (InputStream is = body.byteStream();
                      FileOutputStream fos = new FileOutputStream(file)) {

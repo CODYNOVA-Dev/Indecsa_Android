@@ -173,7 +173,10 @@ public class Tab_Admin_Reportes extends Fragment {
                     spinnerProyecto.setAdapter(a);
                 }
             }
-            @Override public void onFailure(Call<List<ProyectoDto>> call, Throwable t) {}
+            @Override public void onFailure(Call<List<ProyectoDto>> call, Throwable t) {
+                if (!isAdded()) return;
+                Toast.makeText(requireContext(), "No se pudo cargar la lista de proyectos", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -193,7 +196,10 @@ public class Tab_Admin_Reportes extends Fragment {
                     spinnerTrabajador.setAdapter(a);
                 }
             }
-            @Override public void onFailure(Call<List<TrabajadorDto>> call, Throwable t) {}
+            @Override public void onFailure(Call<List<TrabajadorDto>> call, Throwable t) {
+                if (!isAdded()) return;
+                Toast.makeText(requireContext(), "No se pudo cargar la lista de trabajadores", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -285,7 +291,8 @@ public class Tab_Admin_Reportes extends Fragment {
         new Thread(() -> {
             try {
                 File dir = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-                if (dir != null && !dir.exists()) dir.mkdirs();
+                if (dir == null) throw new IOException("Almacenamiento externo no disponible");
+                if (!dir.exists()) dir.mkdirs();
                 File file = new File(dir, nombreArchivo);
 
                 try (InputStream is = body.byteStream();
