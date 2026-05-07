@@ -1,12 +1,17 @@
 package com.example.indecsa_v2.admin.proyecto;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.indecsa_v2.R;
@@ -21,6 +27,14 @@ import com.example.indecsa_v2.admin.contratista.ConfirmEliminarDialog;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.network.RetrofitClient;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Locale;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -139,11 +153,123 @@ public class DetalleProyectoDialog extends DialogFragment {
         RatingBar ratingBar = view.findViewById(R.id.dialogRatingBar);
         if (ratingBar != null) ratingBar.setRating(a.getInt(ARG_CALIFIC, 0));
 
-        // Botones
+        // Botones editar / eliminar
         view.<AppCompatButton>findViewById(R.id.btnEditar)
                 .setOnClickListener(v -> mostrarEditar(view));
         view.<AppCompatButton>findViewById(R.id.btnEliminar)
                 .setOnClickListener(v -> mostrarConfirmEliminar());
+
+        // Botones de reporte
+        view.findViewById(R.id.btnReporteHoras)
+                .setOnClickListener(v -> mostrarPickerFechas(view, false));
+        view.findViewById(R.id.btnReporteAvance)
+                .setOnClickListener(v -> mostrarPickerFechas(view, true));
+    }
+
+    // ─── REPORTES PDF ────────────────────────────────────────────────────────
+
+    private void mostrarPickerFechas(View rootView, boolean esAvance) {
+        Calendar cal = Calendar.getInstance();
+        new DatePickerDialog(requireContext(),
+                (dp, y, m, d) -> {
+                    String ini = String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d);
+                    Calendar cal2 = Calendar.getInstance();
+                    new DatePickerDialog(requireContext(),
+                            (dp2, y2, m2, d2) -> {
+                                String fin = String.format(Locale.US, "%04d-%02d-%02d", y2, m2 + 1, d2);
+                                int idP = getArguments() != null ? getArguments().getInt(ARG_ID, -1) : -1;
+                                ejecutarReporte(rootView, esAvance, idP, ini, fin);
+                            },
+                            cal2.get(Calendar.YEAR), cal2.get(Calendar.MONTH), cal2.get(Calendar.DAY_OF_MONTH))
+                            .show();
+                },
+                cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
+                .show();
+    }
+
+    private void ejecutarReporte(View rootView, boolean esAvance, int idProyecto, String ini, String fin) {
+        if (idProyecto <= 0) {
+            Toast.makeText(getContext(), "ID de proyecto inválido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Call<ResponseBody> call;
+        String nombre;
+        if (esAvance) {
+            call = RetrofitClient.getApiService().descargarAvanceObra(idProyecto, ini, fin);
+            nombre = "avance_obra_" + idProyecto + "_" + ini + ".pdf";
+        } else {
+            call = RetrofitClient.getApiService().descargarHorasProyecto(idProyecto, ini, fin);
+            nombre = "horas_proyecto_" + idProyecto + "_" + ini + ".pdf";
+        }
+        setLoadingReporte(rootView, true, "Generando PDF…");
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> c, Response<ResponseBody> r) {
+                if (!isAdded()) return;
+                if (r.isSuccessful() && r.body() != null) {
+                    guardarYAbrirPdf(rootView, r.body(), nombre);
+                } else {
+                    setLoadingReporte(rootView, false, "Error: " + r.code());
+                    Toast.makeText(getContext(), "Error al generar el reporte (" + r.code() + ")", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> c, Throwable t) {
+                if (!isAdded()) return;
+                setLoadingReporte(rootView, false, "Sin conexión");
+                Toast.makeText(getContext(), "No se pudo conectar al servidor", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void guardarYAbrirPdf(View rootView, ResponseBody body, String nombreArchivo) {
+        new Thread(() -> {
+            try {
+                File dir = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                if (dir != null && !dir.exists()) dir.mkdirs();
+                File file = new File(dir, nombreArchivo);
+                try (InputStream is = body.byteStream();
+                     FileOutputStream fos = new FileOutputStream(file)) {
+                    byte[] buf = new byte[4096];
+                    int len;
+                    while ((len = is.read(buf)) != -1) fos.write(buf, 0, len);
+                }
+                requireActivity().runOnUiThread(() -> {
+                    setLoadingReporte(rootView, false, "PDF guardado ✓");
+                    abrirPdf(file);
+                });
+            } catch (IOException e) {
+                requireActivity().runOnUiThread(() -> {
+                    setLoadingReporte(rootView, false, "Error al guardar");
+                    Toast.makeText(getContext(), "No se pudo guardar el PDF", Toast.LENGTH_LONG).show();
+                });
+            }
+        }).start();
+    }
+
+    private void abrirPdf(File file) {
+        try {
+            Uri uri = FileProvider.getUriForFile(requireContext(),
+                    requireContext().getPackageName() + ".provider", file);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "application/pdf");
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(Intent.createChooser(intent, "Abrir PDF con…"));
+        } catch (Exception e) {
+            Toast.makeText(getContext(),
+                    "PDF guardado. Instala un visor de PDF para abrirlo.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void setLoadingReporte(View rootView, boolean loading, String msg) {
+        ProgressBar pb = rootView.findViewById(R.id.progressReporteDialog);
+        TextView tv = rootView.findViewById(R.id.tvEstadoReporteDialog);
+        if (pb != null) pb.setVisibility(loading ? View.VISIBLE : View.GONE);
+        if (tv != null) tv.setText(msg);
+        View btnH = rootView.findViewById(R.id.btnReporteHoras);
+        View btnA = rootView.findViewById(R.id.btnReporteAvance);
+        if (btnH != null) btnH.setEnabled(!loading);
+        if (btnA != null) btnA.setEnabled(!loading);
     }
 
     // ─── MODO EDITAR ─────────────────────────────────────────────────────────
