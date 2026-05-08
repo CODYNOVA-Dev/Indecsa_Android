@@ -18,13 +18,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.models.AsignacionTrabajadorProyectoDto;
 import com.example.indecsa_v2.models.Contratista;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.models.TrabajadorDto;
 import com.example.indecsa_v2.network.RetrofitClient;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -323,26 +326,89 @@ public class AsignacionProyectoDialog extends DialogFragment {
     // ─── Guardar ─────────────────────────────────────────────────────────────
 
     private void guardar() {
-        if (contratistaAsignado == null) {
-            Toast.makeText(getContext(), "Asigna un contratista antes de guardar",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
         if (trabajadoresAsignados.isEmpty()) {
             Toast.makeText(getContext(), "Agrega al menos un trabajador",
                     Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // TODO: construir FichaCreateDto y llamar al API cuando el backend lo soporte
-        StringBuilder resumen = new StringBuilder();
-        resumen.append("Contratista: ").append(contratistaAsignado.getNombreContratista()).append("\n");
-        resumen.append("Trabajadores (").append(trabajadoresAsignados.size()).append("):\n");
-        for (TrabajadorDto t : trabajadoresAsignados)
-            resumen.append("  • ").append(t.getNombreTrabajador()).append("\n");
+        Bundle a = getArguments();
+        int proyectoId = a != null ? a.getInt(ARG_ID_PROYECTO, -1) : -1;
+        if (proyectoId == -1) {
+            Toast.makeText(getContext(), "ID de proyecto inválido.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        Toast.makeText(getContext(), "Asignación guardada:\n" + resumen, Toast.LENGTH_LONG).show();
-        dismiss();
+        // Contratista: endpoint pendiente en el backend — avisamos sin bloquear
+        if (contratistaAsignado != null) {
+            Toast.makeText(getContext(),
+                    "Contratista \"" + contratistaAsignado.getNombreContratista()
+                            + "\" registrado localmente — pendiente de soporte en servidor.",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        btnGuardar.setEnabled(false);
+
+        String fechaHoy = LocalDate.now().toString();
+        int total = trabajadoresAsignados.size();
+        AtomicInteger exitosos = new AtomicInteger(0);
+        AtomicInteger fallidos = new AtomicInteger(0);
+
+        for (TrabajadorDto trabajador : trabajadoresAsignados) {
+            AsignacionTrabajadorProyectoDto dto = new AsignacionTrabajadorProyectoDto();
+            dto.setIdTrabajador(trabajador.getIdTrabajador());
+            dto.setIdProyecto(proyectoId);
+            dto.setFechaInicio(fechaHoy);
+            dto.setEstatusAsignacion("ACTIVO");
+            if (trabajador.getEspecialidadTrabajador() != null) {
+                dto.setPuestoEnProyecto(trabajador.getEspecialidadTrabajador());
+            }
+
+            RetrofitClient.getApiService().createAsignacionTrabajador(dto).enqueue(
+                    new Callback<AsignacionTrabajadorProyectoDto>() {
+                        @Override
+                        public void onResponse(Call<AsignacionTrabajadorProyectoDto> call,
+                                               Response<AsignacionTrabajadorProyectoDto> response) {
+                            if (response.isSuccessful()) {
+                                exitosos.incrementAndGet();
+                            } else {
+                                fallidos.incrementAndGet();
+                            }
+                            verificarCompletado(total, exitosos, fallidos);
+                        }
+
+                        @Override
+                        public void onFailure(Call<AsignacionTrabajadorProyectoDto> call, Throwable t) {
+                            fallidos.incrementAndGet();
+                            verificarCompletado(total, exitosos, fallidos);
+                        }
+                    });
+        }
+    }
+
+    private void verificarCompletado(int total, AtomicInteger exitosos, AtomicInteger fallidos) {
+        if (exitosos.get() + fallidos.get() < total) return;
+
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(() -> {
+            if (fallidos.get() == 0) {
+                Toast.makeText(getContext(),
+                        exitosos.get() + " trabajador(es) asignado(s) correctamente.",
+                        Toast.LENGTH_LONG).show();
+                dismiss();
+            } else if (exitosos.get() > 0) {
+                Toast.makeText(getContext(),
+                        exitosos.get() + " asignado(s), " + fallidos.get()
+                                + " fallaron. Revisa e intenta de nuevo.",
+                        Toast.LENGTH_LONG).show();
+                btnGuardar.setEnabled(true);
+            } else {
+                Toast.makeText(getContext(),
+                        "Error al guardar las asignaciones. Verifica tu conexión.",
+                        Toast.LENGTH_LONG).show();
+                btnGuardar.setEnabled(true);
+            }
+        });
     }
 
     private int dpToPx(int dp) {

@@ -17,12 +17,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.models.AsignacionTrabajadorProyectoDto;
 import com.example.indecsa_v2.models.Contratista;
 import com.example.indecsa_v2.models.TrabajadorDto;
 import com.example.indecsa_v2.network.RetrofitClient;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,9 +44,6 @@ import retrofit2.Response;
  *       AsignarCapitalHumanoDialog.newInstance(proyectoId, proyectoNombre);
  *   dialog.show(getParentFragmentManager(), "asignar_capital_humano");
  *
- * NOTA: Este dialog gestiona el estado local de la asignación.
- * Cuando el backend exponga endpoints para asignar/desasignar,
- * reemplaza los métodos guardarAsignacion() con las llamadas Retrofit.
  */
 public class AsignarCapitalHumanoDialog extends DialogFragment {
 
@@ -313,18 +313,80 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
             return;
         }
 
-        // TODO: cuando el backend exponga el endpoint de asignación, llamarlo aquí.
-        // Ejemplo:
-        //   AsignacionDto dto = new AsignacionDto(proyectoId, contratistasAsignados, trabajadoresAsignados);
-        //   RetrofitClient.getApiService().asignarCapitalHumano(proyectoId, dto).enqueue(...)
+        if (trabajadoresAsignados.isEmpty() && contratistasAsignados.isEmpty()) {
+            Toast.makeText(getContext(), "Agrega al menos un trabajador o contratista.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Por ahora confirmamos con un Toast resumiendo la asignación
-        String resumen = "Proyecto " + proyectoId + ":\n"
-                + contratistasAsignados.size() + " contratista(s)\n"
-                + trabajadoresAsignados.size() + " trabajador(es)";
+        AppCompatButton btnGuardar = getView() != null ? getView().findViewById(R.id.btnGuardarAsignacion) : null;
+        if (btnGuardar != null) btnGuardar.setEnabled(false);
 
-        Toast.makeText(getContext(), "Asignación guardada\n" + resumen, Toast.LENGTH_LONG).show();
-        dismiss();
+        if (trabajadoresAsignados.isEmpty()) {
+            // Solo contratista — TODO: agregar endpoint cuando el backend lo exponga
+            Toast.makeText(getContext(), "Asignación de contratista pendiente de endpoint en servidor.", Toast.LENGTH_LONG).show();
+            if (btnGuardar != null) btnGuardar.setEnabled(true);
+            return;
+        }
+
+        String fechaHoy = LocalDate.now().toString();
+        int total = trabajadoresAsignados.size();
+        AtomicInteger exitosos = new AtomicInteger(0);
+        AtomicInteger fallidos = new AtomicInteger(0);
+
+        for (TrabajadorDto trabajador : trabajadoresAsignados) {
+            AsignacionTrabajadorProyectoDto dto = new AsignacionTrabajadorProyectoDto();
+            dto.setIdTrabajador(trabajador.getIdTrabajador());
+            dto.setIdProyecto(proyectoId);
+            dto.setFechaInicio(fechaHoy);
+            dto.setEstatusAsignacion("ACTIVO");
+            if (trabajador.getEspecialidadTrabajador() != null) {
+                dto.setPuestoEnProyecto(trabajador.getEspecialidadTrabajador());
+            }
+
+            RetrofitClient.getApiService().createAsignacionTrabajador(dto).enqueue(
+                    new Callback<AsignacionTrabajadorProyectoDto>() {
+                        @Override
+                        public void onResponse(Call<AsignacionTrabajadorProyectoDto> call,
+                                               Response<AsignacionTrabajadorProyectoDto> response) {
+                            if (response.isSuccessful()) {
+                                exitosos.incrementAndGet();
+                            } else {
+                                fallidos.incrementAndGet();
+                            }
+                            verificarCompletado(total, exitosos, fallidos, btnGuardar);
+                        }
+
+                        @Override
+                        public void onFailure(Call<AsignacionTrabajadorProyectoDto> call, Throwable t) {
+                            fallidos.incrementAndGet();
+                            verificarCompletado(total, exitosos, fallidos, btnGuardar);
+                        }
+                    });
+        }
+    }
+
+    private void verificarCompletado(int total, AtomicInteger exitosos, AtomicInteger fallidos,
+                                     AppCompatButton btnGuardar) {
+        int completados = exitosos.get() + fallidos.get();
+        if (completados < total) return;
+
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(() -> {
+            if (fallidos.get() == 0) {
+                Toast.makeText(getContext(),
+                        exitosos.get() + " trabajador(es) asignado(s) correctamente.", Toast.LENGTH_LONG).show();
+                dismiss();
+            } else if (exitosos.get() > 0) {
+                Toast.makeText(getContext(),
+                        exitosos.get() + " asignado(s), " + fallidos.get() + " fallaron. Revisa e intenta de nuevo.",
+                        Toast.LENGTH_LONG).show();
+                if (btnGuardar != null) btnGuardar.setEnabled(true);
+            } else {
+                Toast.makeText(getContext(),
+                        "Error al guardar las asignaciones. Verifica tu conexión.", Toast.LENGTH_LONG).show();
+                if (btnGuardar != null) btnGuardar.setEnabled(true);
+            }
+        });
     }
 
     // ─── CONTADORES ──────────────────────────────────────────────────────────
