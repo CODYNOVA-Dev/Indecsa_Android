@@ -18,8 +18,10 @@ public class AuthInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         String token = tokenManager.getToken();
         Request original = chain.request();
+        String path = original.url().encodedPath();
 
-        if (token == null) {
+        // Los endpoints de login no deben llevar token
+        if (token == null || path.endsWith("/auth/login") || path.endsWith("/empleados/login")) {
             return chain.proceed(original);
         }
 

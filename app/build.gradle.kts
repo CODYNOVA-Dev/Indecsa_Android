@@ -18,10 +18,7 @@ android {
 
     buildTypes {
         debug {
-            // Apunta al servidor en Railway para probar en celular físico o emulador.
-            // Si quieres apuntar a tu servidor local desde el emulador, cambia a:
-            //   "http://10.0.2.2:8080/api/"
-            buildConfigField("String", "BASE_URL", "\"https://indecsaspringboot-production.up.railway.app/api/\"")
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/api/\"")
         }
         release {
             isMinifyEnabled = false
@@ -59,5 +56,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
 }

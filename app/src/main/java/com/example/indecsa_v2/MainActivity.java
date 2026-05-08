@@ -19,7 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.indecsa_v2.admin.Panel_Inicial_Admin;
+import com.example.indecsa_v2.login.CorreoLoginActivity;
 import com.example.indecsa_v2.network.RetrofitClient;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler handler = new Handler(Looper.getMainLooper());
     private int progresoActual = 0;
+    private boolean splashTerminado = false;
 
     private final String[] mensajesCarga = {
             "Cargando",
@@ -58,6 +59,17 @@ public class MainActivity extends AppCompatActivity {
 
         iniciarAnimacionRespiracion();
         iniciarAnimacionCarga();
+    }
+
+    private void intentarNavegar() {
+        handler.post(() -> {
+            if (splashTerminado) {
+                // Borrar token anterior para que el login arranque limpio
+                RetrofitClient.getTokenManager().clearToken();
+                startActivity(new Intent(MainActivity.this, CorreoLoginActivity.class));
+                finish();
+            }
+        });
     }
 
     // ─── Efecto respiración en el CardView ───────────────────────────────────
@@ -99,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if (esElUltimo) {
                     animarProgreso(progreso, () -> {
-                        startActivity(new Intent(MainActivity.this, Panel_Inicial_Admin.class));
-                        finish();
+                        splashTerminado = true;
+                        intentarNavegar();
                     });
                 } else {
                     animarProgreso(progreso, null);

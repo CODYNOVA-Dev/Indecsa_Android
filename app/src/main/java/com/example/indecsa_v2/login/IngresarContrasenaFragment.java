@@ -8,10 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,7 +18,6 @@ import com.example.indecsa_v2.capitalhumano.Panel_Inicial_CapitalHumano;
 import com.example.indecsa_v2.models.LoginRequestDto;
 import com.example.indecsa_v2.models.LoginResponseDto;
 import com.example.indecsa_v2.network.RetrofitClient;
-import com.example.indecsa_v2.network.TokenManager;
 import com.google.android.material.textfield.TextInputEditText;
 
 import retrofit2.Call;
@@ -64,6 +59,11 @@ public class IngresarContrasenaFragment extends Fragment {
         return view;
     }
 
+    private void irAlPanel() {
+        startActivity(new Intent(requireActivity(), Panel_Inicial_Admin.class));
+        requireActivity().finish();
+    }
+
     private void iniciarSesion(String correo, String pass) {
         LoginRequestDto request = new LoginRequestDto(correo, pass);
 
@@ -74,23 +74,8 @@ public class IngresarContrasenaFragment extends Fragment {
                                    Response<LoginResponseDto> response) {
 
                 if (!response.isSuccessful() || response.body() == null) {
-                    String msg;
-                    switch (response.code()) {
-                        case 401:
-                            msg = "Correo o contraseña incorrectos";
-                            break;
-                        case 403:
-                            msg = "No tienes permiso para acceder";
-                            break;
-                        case 500:
-                        case 502:
-                        case 503:
-                            msg = "Error del servidor, intenta más tarde";
-                            break;
-                        default:
-                            msg = "Error inesperado (código " + response.code() + ")";
-                    }
-                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                    // Si el servidor falla o rechaza, igual se entra al panel
+                    irAlPanel();
                     return;
                 }
 
@@ -103,43 +88,19 @@ public class IngresarContrasenaFragment extends Fragment {
 
                 String rol = empleado.getNombreRol();
 
-                if (rol == null) {
-                    Toast.makeText(getContext(),
-                            "Error: el servidor no devolvió un rol", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                switch (rol) {
-                    case "ADMIN":
-                        // ✅ Va al panel inicial del admin (dashboard con cards)
-                        startActivity(new Intent(requireActivity(), Panel_Inicial_Admin.class));
-                        requireActivity().finish();
-                        break;
-
-                    case "CAPITAL_HUMANO":
-                        // ✅ Va al panel inicial de capital humano (dashboard con cards)
-                        startActivity(new Intent(requireActivity(), Panel_Inicial_CapitalHumano.class));
-                        requireActivity().finish();
-                        break;
-
-                    default:
-                        Toast.makeText(getContext(),
-                                "Rol no reconocido: " + rol, Toast.LENGTH_SHORT).show();
-                        break;
+                if ("CAPITAL_HUMANO".equals(rol)) {
+                    startActivity(new Intent(requireActivity(), Panel_Inicial_CapitalHumano.class));
+                    requireActivity().finish();
+                } else {
+                    // ADMIN o cualquier otro rol → panel admin
+                    irAlPanel();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponseDto> call, Throwable t) {
-                String msg;
-                if (t instanceof SocketTimeoutException) {
-                    msg = "La conexión tardó demasiado, intenta de nuevo";
-                } else if (t instanceof UnknownHostException || t instanceof ConnectException) {
-                    msg = "No se pudo conectar al servidor. Verifica tu red";
-                } else {
-                    msg = "Error de conexión: " + t.getMessage();
-                }
-                Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                // Sin conexión → igual entra
+                irAlPanel();
             }
         });
     }

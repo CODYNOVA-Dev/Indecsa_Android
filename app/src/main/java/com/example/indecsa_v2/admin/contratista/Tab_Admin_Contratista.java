@@ -30,6 +30,7 @@ import retrofit2.Response;
 public class Tab_Admin_Contratista extends Fragment {
 
     private RecyclerView recyclerViewAreas;
+    private android.widget.TextView textVacio;
     private EditText editBuscarArea;
     private AppCompatButton btnBuscar;
     private AppCompatButton btnAgregar;
@@ -47,6 +48,7 @@ public class Tab_Admin_Contratista extends Fragment {
         View vista = inflater.inflate(R.layout.fragment_tab__admin__contratista, container, false);
 
         recyclerViewAreas = vista.findViewById(R.id.recyclerViewAreas);
+        textVacio         = vista.findViewById(R.id.textVacio);
         editBuscarArea    = vista.findViewById(R.id.editBuscarArea);
         btnBuscar         = vista.findViewById(R.id.btnBuscar);
         btnAgregar        = vista.findViewById(R.id.btnAgregar);
@@ -70,25 +72,33 @@ public class Tab_Admin_Contratista extends Fragment {
     }
 
     private void cargarContratistas() {
-        recyclerViewAreas.setVisibility(View.GONE);
+        textVacio.setVisibility(View.GONE);
 
         RetrofitClient.getApiService().getAllContratistas().enqueue(new Callback<List<Contratista>>() {
             @Override
             public void onResponse(Call<List<Contratista>> call, Response<List<Contratista>> response) {
+                if (getContext() == null) return;
                 if (response.isSuccessful() && response.body() != null) {
                     listaContratistas.clear();
                     listaContratistas.addAll(response.body());
                     listaContratistasFiltrada.clear();
                     listaContratistasFiltrada.addAll(listaContratistas);
-                    recyclerViewAreas.setVisibility(listaContratistas.isEmpty() ? View.GONE : View.VISIBLE);
                     contratistaAdapter.notifyDataSetChanged();
+                    boolean vacio = listaContratistas.isEmpty();
+                    recyclerViewAreas.setVisibility(vacio ? View.GONE : View.VISIBLE);
+                    textVacio.setVisibility(vacio ? View.VISIBLE : View.GONE);
                 } else {
-                    Toast.makeText(getContext(), "Error al cargar contratistas", Toast.LENGTH_SHORT).show();
+                    textVacio.setText("Error al cargar (" + response.code() + ")");
+                    textVacio.setVisibility(View.VISIBLE);
+                    recyclerViewAreas.setVisibility(View.GONE);
                 }
             }
             @Override
             public void onFailure(Call<List<Contratista>> call, Throwable t) {
-                Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                if (getContext() == null) return;
+                textVacio.setText("Sin conexión: " + t.getMessage());
+                textVacio.setVisibility(View.VISIBLE);
+                recyclerViewAreas.setVisibility(View.GONE);
             }
         });
     }
@@ -108,7 +118,10 @@ public class Tab_Admin_Contratista extends Fragment {
             }
         }
         contratistaAdapter.notifyDataSetChanged();
-        recyclerViewAreas.setVisibility(listaContratistasFiltrada.isEmpty() ? View.GONE : View.VISIBLE);
+        boolean vacio = listaContratistasFiltrada.isEmpty();
+        recyclerViewAreas.setVisibility(vacio ? View.GONE : View.VISIBLE);
+        textVacio.setText(vacio ? "Sin resultados para esa búsqueda" : "");
+        textVacio.setVisibility(vacio ? View.VISIBLE : View.GONE);
     }
 
     // ─── ABRIR DIALOG ────────────────────────────────────────────────────────
