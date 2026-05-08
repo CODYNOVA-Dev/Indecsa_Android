@@ -18,7 +18,31 @@
       "Bash(./mvnw clean *)",
       "Bash(bash mvnw *)",
       "Bash(/c/Users/greco/Desktop/PREPA/CODYNOVA/todo/Indecsa_Android/Indecsa_Spring_Boot/mvnw clean *)",
-      "Bash('C:/Program Files/GitHub CLI/gh.exe' pr create --title 'feat: Etapa 4.1 — Generación de reportes PDF' --base main --head claude/pdf-reportes --body ' *)"
+      "Bash('C:/Program Files/GitHub CLI/gh.exe' pr create --title 'feat: Etapa 4.1 — Generación de reportes PDF' --base main --head claude/pdf-reportes --body ' *)",
+      "Bash(curl -s -o /dev/null -w \"HTTP Status: %{http_code}\\\\nTiempo de respuesta: %{time_total}s\\\\nURL final: %{url_effective}\\\\n\" https://indecsaspringboot-production.up.railway.app --max-time 30)",
+      "Bash(curl -s https://indecsaspringboot-production.up.railway.app/ --max-time 30)",
+      "Bash(curl -s https://indecsaspringboot-production.up.railway.app/actuator/health/liveness --max-time 15)",
+      "Bash(curl -s https://indecsaspringboot-production.up.railway.app/actuator/health/readiness --max-time 15)",
+      "Bash(curl -s https://indecsaspringboot-production.up.railway.app/actuator/info --max-time 15)",
+      "Bash(curl -s -X POST https://indecsaspringboot-production.up.railway.app/auth/login -H 'Content-Type: application/json' -d '{\"correoEmpleado\":\"test@test.com\",\"contrasena\":\"test\"}' --max-time 15)",
+      "Bash(curl -s https://indecsaspringboot-production.up.railway.app/actuator/env --max-time 10)",
+      "Bash(curl -s https://indecsaspringboot-production.up.railway.app/actuator/mappings --max-time 15)",
+      "Bash(curl -sv https://indecsaspringboot-production.up.railway.app/trabajadores --max-time 15)",
+      "Bash(curl -s -X OPTIONS https://indecsaspringboot-production.up.railway.app/auth/login -H 'Origin: http://localhost' -w '\\\\nHTTP: %{http_code}\\\\n' --max-time 10)",
+      "Bash(curl -s https://indecsaspringboot-production.up.railway.app/ruta-que-no-existe -w '\\\\nHTTP: %{http_code}\\\\n' --max-time 10)",
+      "Bash(curl -s https://indecsaspringboot-production.up.railway.app/v3/api-docs -w '\\\\nHTTP: %{http_code}\\\\n' --max-time 10)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\greco\\\\Desktop\\\\PREPA\\\\CODYNOVA\\\\todo\\\\Indecsa_Spring_Boot\" -Recurse -Depth 2)",
+      "Bash(Select-Object FullName)",
+      "Bash(ls -la \"C:/Users/greco/Desktop/PREPA/CODYNOVA/todo/Indecsa_Spring_Boot/\" 2>/dev/null | head -50)",
+      "Bash(grep -E \"\\\\.\\(java\\)$\")",
+      "Bash(xargs cat)",
+      "Bash(find \"C:/Users/greco/Desktop/PREPA/CODYNOVA/todo/Indecsa_Android\" -name \"build.gradle\" -o -name \"build.gradle.kts\" 2>/dev/null | head -5)",
+      "Bash(curl -s -X POST https://indecsaspringboot-production.up.railway.app/api/auth/login -H 'Content-Type: application/json' -d '{\"correoEmpleado\":\"admin@indecsa.com\",\"contrasena\":\"1234\"}' --max-time 15)",
+      "Bash(curl -s https://indecsaspringboot-production.up.railway.app/api/empleados --max-time 15)",
+      "Bash(javac -cp C:/Users/greco/.m2/repository/org/springframework/security/spring-security-crypto/7.0.3/spring-security-crypto-7.0.3.jar /tmp/BcryptTest.java -d /tmp/)",
+      "Bash(java -cp '/tmp;C:/Users/greco/.m2/repository/org/springframework/security/spring-security-crypto/7.0.3/spring-security-crypto-7.0.3.jar' BcryptTest)",
+      "Bash(ls /tmp/Bcrypt*)",
+      "Bash(ls /tmp/*.class)"
     ]
   }
 }
