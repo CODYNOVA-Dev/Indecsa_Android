@@ -19,7 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.indecsa_v2.login.CorreoLoginActivity;
+import com.example.indecsa_v2.admin.Panel_Inicial_Admin;
 import com.example.indecsa_v2.network.RetrofitClient;
 
 public class MainActivity extends AppCompatActivity {
@@ -99,8 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (esElUltimo) {
                     animarProgreso(progreso, () -> {
-                        // ✅ CORRECCIÓN: apunta a CorreoLoginActivity, no a Login
-                        startActivity(new Intent(MainActivity.this, CorreoLoginActivity.class));
+                        startActivity(new Intent(MainActivity.this, Panel_Inicial_Admin.class));
                         finish();
                     });
                 } else {

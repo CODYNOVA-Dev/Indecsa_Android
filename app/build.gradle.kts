@@ -18,7 +18,10 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/api/\"")
+            // Apunta al servidor en Railway para probar en celular físico o emulador.
+            // Si quieres apuntar a tu servidor local desde el emulador, cambia a:
+            //   "http://10.0.2.2:8080/api/"
+            buildConfigField("String", "BASE_URL", "\"https://indecsaspringboot-production.up.railway.app/api/\"")
         }
         release {
             isMinifyEnabled = false

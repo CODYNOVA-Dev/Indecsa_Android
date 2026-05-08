@@ -22,7 +22,7 @@ public class RetrofitClient {
         tokenManager = new TokenManager(context);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new AuthInterceptor(tokenManager))
-                .connectTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(40, TimeUnit.SECONDS)   // 40s para aguantar cold-start de Railway
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();

@@ -175,6 +175,12 @@ public interface ApiService {
     @GET("asignaciones-trabajador/{id}")
     Call<AsignacionTrabajadorProyectoDto> getAsignacionById(@Path("id") Integer id);
 
+    @POST("asignaciones-trabajador")
+    Call<AsignacionTrabajadorProyectoDto> createAsignacionTrabajador(@Body AsignacionTrabajadorProyectoDto dto);
+
+    @DELETE("asignaciones-trabajador/{id}")
+    Call<Void> deleteAsignacionTrabajador(@Path("id") Integer id);
+
     // ==================== CUADRILLAS ====================
 
     @GET("cuadrillas/proyecto/{idProyecto}")
