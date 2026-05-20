@@ -1,30 +1,38 @@
 package com.example.indecsa_v2.models;
 
+/**
+ * Refleja la entidad RegistroHoras del backend.
+ *
+ * Backend usa objetos anidados (asignacionTrabajadorProyecto, cuadrilla,
+ * empleadoRegistro) y no tiene los campos `tipoPeriodo` ni `observaciones`
+ * ni los flat ids planos `idTrabajador`/`idProyecto`. Estos se conservan
+ * como cache local o se derivan de los anidados.
+ */
 public class RegistroHorasDto {
 
-    private Integer idRegistro;
-    private Integer idAsignacionTp;
-    private Integer idCuadrilla;
-    private String  fechaRegistro;
-    private Double  horasTrabajadas;
-    private String  tipoPeriodo;
-    private String  observaciones;
+    private Integer                          idRegistro;
+    private AsignacionTrabajadorProyectoDto  asignacionTrabajadorProyecto;
+    private CuadrillaDto                     cuadrilla;
+    private EmpleadoDto                      empleadoRegistro;
+    private String                           fechaRegistro;
+    private Double                           horasTrabajadas;
 
-    // Response-only fields (populated by server)
-    private Integer idTrabajador;
-    private String  nombreTrabajador;
-    private Integer idProyecto;
-    private String  nombreProyecto;
-    private String  nombreCuadrilla;
+    private transient String tipoPeriodoLocal;
+    private transient String observacionesLocal;
+
+    public RegistroHorasDto() {}
 
     public Integer getIdRegistro()            { return idRegistro; }
     public void    setIdRegistro(Integer v)   { this.idRegistro = v; }
 
-    public Integer getIdAsignacionTp()           { return idAsignacionTp; }
-    public void    setIdAsignacionTp(Integer v)  { this.idAsignacionTp = v; }
+    public AsignacionTrabajadorProyectoDto getAsignacionTrabajadorProyecto()                    { return asignacionTrabajadorProyecto; }
+    public void                            setAsignacionTrabajadorProyecto(AsignacionTrabajadorProyectoDto v) { this.asignacionTrabajadorProyecto = v; }
 
-    public Integer getIdCuadrilla()           { return idCuadrilla; }
-    public void    setIdCuadrilla(Integer v)  { this.idCuadrilla = v; }
+    public CuadrillaDto getCuadrilla()              { return cuadrilla; }
+    public void         setCuadrilla(CuadrillaDto v){ this.cuadrilla = v; }
+
+    public EmpleadoDto getEmpleadoRegistro()             { return empleadoRegistro; }
+    public void        setEmpleadoRegistro(EmpleadoDto v){ this.empleadoRegistro = v; }
 
     public String  getFechaRegistro()         { return fechaRegistro; }
     public void    setFechaRegistro(String v) { this.fechaRegistro = v; }
@@ -32,24 +40,71 @@ public class RegistroHorasDto {
     public Double  getHorasTrabajadas()        { return horasTrabajadas; }
     public void    setHorasTrabajadas(Double v){ this.horasTrabajadas = v; }
 
-    public String  getTipoPeriodo()           { return tipoPeriodo; }
-    public void    setTipoPeriodo(String v)   { this.tipoPeriodo = v; }
+    // ---- atajos planos ----
+    public Integer getIdAsignacionTp() {
+        return asignacionTrabajadorProyecto != null
+                ? asignacionTrabajadorProyecto.getIdAsignacionTp()
+                : null;
+    }
+    public void setIdAsignacionTp(Integer id) {
+        if (id == null) { asignacionTrabajadorProyecto = null; return; }
+        if (asignacionTrabajadorProyecto == null) {
+            asignacionTrabajadorProyecto = new AsignacionTrabajadorProyectoDto();
+        }
+        asignacionTrabajadorProyecto.setIdAsignacionTp(id);
+    }
 
-    public String  getObservaciones()         { return observaciones; }
-    public void    setObservaciones(String v) { this.observaciones = v; }
+    public Integer getIdCuadrilla() {
+        return cuadrilla != null ? cuadrilla.getIdCuadrilla() : null;
+    }
+    public void setIdCuadrilla(Integer id) {
+        if (id == null) { cuadrilla = null; return; }
+        if (cuadrilla == null) cuadrilla = new CuadrillaDto();
+        cuadrilla.setIdCuadrilla(id);
+    }
 
-    public Integer getIdTrabajador()          { return idTrabajador; }
-    public void    setIdTrabajador(Integer v) { this.idTrabajador = v; }
+    public Integer getIdEmpleadoRegistro() {
+        return empleadoRegistro != null ? empleadoRegistro.getIdEmpleado() : null;
+    }
+    public void setIdEmpleadoRegistro(Integer id) {
+        if (id == null) { empleadoRegistro = null; return; }
+        if (empleadoRegistro == null) empleadoRegistro = new EmpleadoDto();
+        empleadoRegistro.setIdEmpleado(id);
+    }
 
-    public String  getNombreTrabajador()         { return nombreTrabajador; }
-    public void    setNombreTrabajador(String v) { this.nombreTrabajador = v; }
+    public Integer getIdTrabajador() {
+        if (asignacionTrabajadorProyecto == null) return null;
+        return asignacionTrabajadorProyecto.getIdTrabajador();
+    }
 
-    public Integer getIdProyecto()            { return idProyecto; }
-    public void    setIdProyecto(Integer v)   { this.idProyecto = v; }
+    public String getNombreTrabajador() {
+        if (asignacionTrabajadorProyecto != null && asignacionTrabajadorProyecto.getTrabajador() != null) {
+            return asignacionTrabajadorProyecto.getTrabajador().getNombreTrabajador();
+        }
+        return null;
+    }
 
-    public String  getNombreProyecto()         { return nombreProyecto; }
-    public void    setNombreProyecto(String v) { this.nombreProyecto = v; }
+    public Integer getIdProyecto() {
+        if (asignacionTrabajadorProyecto == null) return null;
+        return asignacionTrabajadorProyecto.getIdProyecto();
+    }
 
-    public String  getNombreCuadrilla()         { return nombreCuadrilla; }
-    public void    setNombreCuadrilla(String v) { this.nombreCuadrilla = v; }
+    public String getNombreProyecto() {
+        if (asignacionTrabajadorProyecto != null && asignacionTrabajadorProyecto.getProyecto() != null) {
+            return asignacionTrabajadorProyecto.getProyecto().getNombreProyecto();
+        }
+        return null;
+    }
+
+    public String getNombreCuadrilla() {
+        return cuadrilla != null ? cuadrilla.getNombreCuadrilla() : null;
+    }
+
+    /** Backend no persiste tipoPeriodo en RegistroHoras. */
+    public String getTipoPeriodo() { return tipoPeriodoLocal; }
+    public void   setTipoPeriodo(String v) { this.tipoPeriodoLocal = v; }
+
+    /** Backend no persiste observaciones en RegistroHoras. */
+    public String getObservaciones() { return observacionesLocal; }
+    public void   setObservaciones(String v) { this.observacionesLocal = v; }
 }

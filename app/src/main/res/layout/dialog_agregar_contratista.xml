@@ -56,6 +56,27 @@
                     android:inputType="textPersonName"
                     android:layout_marginBottom="12dp"/>
 
+                <!-- CURP -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CURP *"
+                    android:textColor="@color/label_color"
+                    android:textSize="12sp"/>
+                <EditText
+                    android:id="@+id/editCurp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg"
+                    android:padding="10dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:hint="CURP (18 caracteres)"
+                    android:textColorHint="@color/text_hint"
+                    android:maxLength="18"
+                    android:inputType="textCapCharacters"
+                    android:layout_marginBottom="12dp"/>
+
                 <!-- RFC -->
                 <TextView
                     android:layout_width="wrap_content"
@@ -116,24 +137,18 @@
                     android:inputType="phone"
                     android:layout_marginBottom="12dp"/>
 
-                <!-- Ubicación -->
+                <!-- Estado de operación (Estado FK) -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ubicación"
+                    android:text="Estado de operación *"
                     android:textColor="@color/label_color"
                     android:textSize="12sp"/>
-                <EditText
-                    android:id="@+id/editUbicacion"
+                <Spinner
+                    android:id="@+id/spinnerEstadoOperacion"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:hint="Ciudad, Estado"
-                    android:textColorHint="@color/text_hint"
-                    android:inputType="text"
+                    android:layout_height="48dp"
+                    android:background="@color/spinner_bg"
                     android:layout_marginBottom="12dp"/>
 
                 <!-- Experiencia -->

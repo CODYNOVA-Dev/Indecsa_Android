@@ -1,35 +1,56 @@
 package com.example.indecsa_v2.models;
 
+/**
+ * Refleja la entidad Cuadrilla del backend (proyecto anidado).
+ *
+ * El backend NO tiene una columna `observaciones` en esta tabla; el setter
+ * existe solo como cache local (no viaja en JSON).
+ */
 public class CuadrillaDto {
 
-    private Integer idCuadrilla;
-    private Integer idProyecto;
-    private String  nombreProyecto;
-    private String  nombreCuadrilla;
-    private String  frenteTrabajo;
-    private String  estatusCuadrilla;
-    private String  observaciones;
+    private Integer     idCuadrilla;
+    private ProyectoDto proyecto;
+    private String      nombreCuadrilla;
+    private String      frenteTrabajo;
+    private String      estatusCuadrilla; // ACTIVO, INACTIVO
 
-    public CuadrillaDto() { }
+    private transient String observacionesLocal;
+
+    public CuadrillaDto() {}
 
     public Integer getIdCuadrilla()         { return idCuadrilla; }
     public void    setIdCuadrilla(Integer v){ this.idCuadrilla = v; }
 
-    public Integer getIdProyecto()          { return idProyecto; }
-    public void    setIdProyecto(Integer v) { this.idProyecto = v; }
+    public ProyectoDto getProyecto()           { return proyecto; }
+    public void        setProyecto(ProyectoDto v){ this.proyecto = v; }
 
-    public String getNombreProyecto()       { return nombreProyecto; }
-    public void   setNombreProyecto(String v){ this.nombreProyecto = v; }
-
-    public String getNombreCuadrilla()      { return nombreCuadrilla; }
-    public void   setNombreCuadrilla(String v){ this.nombreCuadrilla = v; }
+    public String getNombreCuadrilla()         { return nombreCuadrilla; }
+    public void   setNombreCuadrilla(String v) { this.nombreCuadrilla = v; }
 
     public String getFrenteTrabajo()        { return frenteTrabajo; }
     public void   setFrenteTrabajo(String v){ this.frenteTrabajo = v; }
 
-    public String getEstatusCuadrilla()     { return estatusCuadrilla; }
+    public String getEstatusCuadrilla()      { return estatusCuadrilla; }
     public void   setEstatusCuadrilla(String v){ this.estatusCuadrilla = v; }
 
-    public String getObservaciones()        { return observaciones; }
-    public void   setObservaciones(String v){ this.observaciones = v; }
+    // ---- atajos planos ----
+    public Integer getIdProyecto() {
+        return proyecto != null ? proyecto.getIdProyecto() : null;
+    }
+    public void setIdProyecto(Integer id) {
+        if (id == null) { proyecto = null; return; }
+        if (proyecto == null) proyecto = new ProyectoDto();
+        proyecto.setIdProyecto(id);
+    }
+
+    public String getNombreProyecto() {
+        return proyecto != null ? proyecto.getNombreProyecto() : null;
+    }
+    public void setNombreProyecto(String v) {
+        if (proyecto == null) proyecto = new ProyectoDto();
+        proyecto.setNombreProyecto(v);
+    }
+
+    public String getObservaciones() { return observacionesLocal; }
+    public void   setObservaciones(String v) { this.observacionesLocal = v; }
 }

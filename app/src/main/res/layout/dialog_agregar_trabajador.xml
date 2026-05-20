@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Título -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,7 +21,6 @@
             android:textStyle="bold"
             android:layout_marginBottom="20dp"/>
 
-        <!-- Card principal -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,166 +35,193 @@
                 android:padding="16dp">
 
                 <!-- Nombre -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nombre Completo *"
-                    android:textColor="@color/label_color"
-                    android:textSize="12sp"/>
-                <EditText
-                    android:id="@+id/editNombre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:hint="Nombre del trabajador"
-                    android:textColorHint="@color/text_hint"
-                    android:inputType="textPersonName"
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Nombre Completo *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editNombre"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="Nombre del trabajador"
+                    android:textColorHint="@color/text_hint" android:inputType="textPersonName"
                     android:layout_marginBottom="12dp"/>
 
-                <!-- Especialidad -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Especialidad"
-                    android:textColor="@color/label_color"
-                    android:textSize="12sp"/>
-                <EditText
-                    android:id="@+id/editEspecialidad"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:hint="Albañil, Electricista, etc."
+                <!-- CURP -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="CURP *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editCurp"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="18 caracteres"
                     android:textColorHint="@color/text_hint"
-                    android:inputType="text"
+                    android:maxLength="18" android:inputType="textCapCharacters"
                     android:layout_marginBottom="12dp"/>
 
-                <!-- Correo -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Correo Electrónico"
-                    android:textColor="@color/label_color"
-                    android:textSize="12sp"/>
-                <EditText
-                    android:id="@+id/editCorreo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:hint="correo@ejemplo.com"
+                <!-- RFC -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="RFC *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editRfc"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="13 caracteres"
                     android:textColorHint="@color/text_hint"
-                    android:inputType="textEmailAddress"
-                    android:layout_marginBottom="12dp"/>
-
-                <!-- Teléfono -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Teléfono"
-                    android:textColor="@color/label_color"
-                    android:textSize="12sp"/>
-                <EditText
-                    android:id="@+id/editTelefono"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:hint="5512345678"
-                    android:textColorHint="@color/text_hint"
-                    android:inputType="phone"
+                    android:maxLength="13" android:inputType="textCapCharacters"
                     android:layout_marginBottom="12dp"/>
 
                 <!-- NSS -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="NSS (Número de Seguro Social)"
-                    android:textColor="@color/label_color"
-                    android:textSize="12sp"/>
-                <EditText
-                    android:id="@+id/editNss"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:hint="12345678901"
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="NSS" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editNss"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="11 dígitos"
                     android:textColorHint="@color/text_hint"
-                    android:inputType="number"
+                    android:maxLength="11" android:inputType="number"
                     android:layout_marginBottom="12dp"/>
 
-                <!-- Ubicación -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ubicación"
-                    android:textColor="@color/label_color"
-                    android:textSize="12sp"/>
-                <EditText
-                    android:id="@+id/editUbicacion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:hint="CDMX, Hidalgo, Puebla"
+                <!-- Nacionalidad -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Nacionalidad *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editNacionalidad"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="Mexicana"
+                    android:textColorHint="@color/text_hint" android:inputType="text"
+                    android:text="Mexicana"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Sexo -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Sexo *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <Spinner android:id="@+id/spinnerSexo"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:background="@color/spinner_bg" android:layout_marginBottom="12dp"/>
+
+                <!-- Correo -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Correo *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editCorreo"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="correo@ejemplo.com"
+                    android:textColorHint="@color/text_hint" android:inputType="textEmailAddress"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Teléfono -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Teléfono *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editTelefono"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="5512345678"
+                    android:textColorHint="@color/text_hint" android:inputType="phone"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Puesto -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Puesto *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editPuesto"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="Albañil, Plomero..."
+                    android:textColorHint="@color/text_hint" android:inputType="text"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Descripción del puesto -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Descripción del puesto *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editDescripcion"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="Detalle de funciones"
                     android:textColorHint="@color/text_hint"
-                    android:inputType="text"
+                    android:inputType="textMultiLine" android:minLines="2"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Especialidad -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Especialidad *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editEspecialidad"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="Electricista, Pintor..."
+                    android:textColorHint="@color/text_hint" android:inputType="text"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Escolaridad -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Escolaridad *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editEscolaridad"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="Secundaria, Bachillerato..."
+                    android:textColorHint="@color/text_hint" android:inputType="text"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Contratación -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Tipo de contratación *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editContratacion"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="Indeterminado, Por obra..."
+                    android:textColorHint="@color/text_hint" android:inputType="text"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Jornada -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Jornada *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editJornada"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="L-V 8-17, Por turnos..."
+                    android:textColorHint="@color/text_hint" android:inputType="text"
                     android:layout_marginBottom="12dp"/>
 
                 <!-- Experiencia -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Experiencia"
-                    android:textColor="@color/label_color"
-                    android:textSize="12sp"/>
-                <EditText
-                    android:id="@+id/editExperiencia"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:hint="Años de experiencia, proyectos previos..."
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Experiencia" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editExperiencia"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="Años, proyectos previos..."
                     android:textColorHint="@color/text_hint"
-                    android:inputType="textMultiLine"
-                    android:minLines="2"
+                    android:inputType="textMultiLine" android:minLines="2"
                     android:layout_marginBottom="12dp"/>
 
-                <!-- Descripción -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Descripción"
-                    android:textColor="@color/label_color"
-                    android:textSize="12sp"/>
-                <EditText
-                    android:id="@+id/editDescripcion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:hint="Descripción adicional del trabajador"
-                    android:textColorHint="@color/text_hint"
-                    android:inputType="textMultiLine"
-                    android:minLines="3"
-                    android:layout_marginBottom="20dp"/>
+                <!-- Fecha de ingreso -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Fecha de ingreso (yyyy-MM-dd) *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editFechaIngreso"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="2024-01-15"
+                    android:textColorHint="@color/text_hint" android:inputType="date"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Domicilio: calle + municipio -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Calle (domicilio) *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editCalle"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="Calle y número"
+                    android:textColorHint="@color/text_hint" android:inputType="text"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Municipio / Alcaldía *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editMunicipio"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:hint="Municipio o alcaldía"
+                    android:textColorHint="@color/text_hint" android:inputType="text"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Estado (Estado FK) — usado para domicilio + calidad de vida -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Estado *" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <Spinner android:id="@+id/spinnerEstadoGeo"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:background="@color/spinner_bg" android:layout_marginBottom="20dp"/>
 
                 <!-- Botones -->
                 <LinearLayout
@@ -205,30 +230,18 @@
                     android:orientation="horizontal"
                     android:gravity="end">
 
-                    <Button
-                        android:id="@+id/btnCancelar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:background="@drawable/btn_coral"
-                        android:text="Cancelar"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="14dp"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp"
+                    <Button android:id="@+id/btnCancelar"
+                        android:layout_width="wrap_content" android:layout_height="40dp"
+                        android:background="@drawable/btn_coral" android:text="Cancelar"
+                        android:textAllCaps="false" android:textColor="@color/white" android:textSize="14sp"
+                        android:paddingStart="20dp" android:paddingEnd="20dp"
                         android:layout_marginEnd="10dp"/>
 
-                    <Button
-                        android:id="@+id/btnGuardar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:background="@drawable/btn_teal"
-                        android:text="Guardar"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp"/>
+                    <Button android:id="@+id/btnGuardar"
+                        android:layout_width="wrap_content" android:layout_height="40dp"
+                        android:background="@drawable/btn_teal" android:text="Guardar"
+                        android:textAllCaps="false" android:textColor="@color/white" android:textSize="14sp"
+                        android:paddingStart="20dp" android:paddingEnd="20dp"/>
                 </LinearLayout>
 
             </LinearLayout>

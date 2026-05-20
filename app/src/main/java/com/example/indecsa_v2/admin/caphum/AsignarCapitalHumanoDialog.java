@@ -17,9 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.models.AsignacionProyectoContratistaDto;
 import com.example.indecsa_v2.models.AsignacionTrabajadorProyectoDto;
 import com.example.indecsa_v2.models.Contratista;
 import com.example.indecsa_v2.models.TrabajadorDto;
+import com.example.indecsa_v2.network.AsignacionPcHelper;
 import com.example.indecsa_v2.network.RetrofitClient;
 
 import java.time.LocalDate;
@@ -313,21 +315,49 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
             return;
         }
 
-        if (trabajadoresAsignados.isEmpty() && contratistasAsignados.isEmpty()) {
-            Toast.makeText(getContext(), "Agrega al menos un trabajador o contratista.", Toast.LENGTH_SHORT).show();
+        if (contratistasAsignados.isEmpty()) {
+            Toast.makeText(getContext(),
+                    "Asigna un contratista antes de guardar.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (trabajadoresAsignados.isEmpty()) {
+            Toast.makeText(getContext(),
+                    "Agrega al menos un trabajador.",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
         AppCompatButton btnGuardar = getView() != null ? getView().findViewById(R.id.btnGuardarAsignacion) : null;
         if (btnGuardar != null) btnGuardar.setEnabled(false);
 
-        if (trabajadoresAsignados.isEmpty()) {
-            // Solo contratista — TODO: agregar endpoint cuando el backend lo exponga
-            Toast.makeText(getContext(), "Asignación de contratista pendiente de endpoint en servidor.", Toast.LENGTH_LONG).show();
+        Contratista contratista = contratistasAsignados.get(0);
+        if (contratista.getIdContratista() == null) {
+            Toast.makeText(getContext(), "Contratista sin ID válido.", Toast.LENGTH_SHORT).show();
             if (btnGuardar != null) btnGuardar.setEnabled(true);
             return;
         }
 
+        AsignacionPcHelper.obtenerOCrear(
+                proyectoId,
+                contratista.getIdContratista(),
+                trabajadoresAsignados.size(),
+                new AsignacionPcHelper.Callback() {
+                    @Override
+                    public void onResolved(@NonNull AsignacionProyectoContratistaDto contrato) {
+                        crearAsignacionesTrabajadores(proyectoId, contrato.getIdAsignacionPc(), btnGuardar);
+                    }
+                    @Override
+                    public void onError(@NonNull String msg) {
+                        if (!isAdded()) return;
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                        if (btnGuardar != null) btnGuardar.setEnabled(true);
+                    }
+                });
+    }
+
+    private void crearAsignacionesTrabajadores(int proyectoId, Integer idAsignacionPc,
+                                               AppCompatButton btnGuardar) {
         String fechaHoy = LocalDate.now().toString();
         int total = trabajadoresAsignados.size();
         AtomicInteger exitosos = new AtomicInteger(0);
@@ -337,6 +367,7 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
             AsignacionTrabajadorProyectoDto dto = new AsignacionTrabajadorProyectoDto();
             dto.setIdTrabajador(trabajador.getIdTrabajador());
             dto.setIdProyecto(proyectoId);
+            dto.setIdAsignacionPc(idAsignacionPc);
             dto.setFechaInicio(fechaHoy);
             dto.setEstatusAsignacion("ACTIVO");
             if (trabajador.getEspecialidadTrabajador() != null) {
