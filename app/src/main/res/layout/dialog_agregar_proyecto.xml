@@ -56,6 +56,26 @@
                     android:inputType="text"
                     android:layout_marginBottom="12dp"/>
 
+                <!-- Cliente -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cliente *"
+                    android:textColor="@color/label_color"
+                    android:textSize="12sp"/>
+                <EditText
+                    android:id="@+id/editCliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg"
+                    android:padding="10dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:hint="Nombre del cliente"
+                    android:textColorHint="@color/text_hint"
+                    android:inputType="text"
+                    android:layout_marginBottom="12dp"/>
+
                 <!-- Tipo de proyecto -->
                 <TextView
                     android:layout_width="wrap_content"
@@ -63,17 +83,11 @@
                     android:text="Tipo de Proyecto"
                     android:textColor="@color/label_color"
                     android:textSize="12sp"/>
-                <EditText
-                    android:id="@+id/editTipo"
+                <Spinner
+                    android:id="@+id/spinnerTipo"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:hint="Construcción, Remodelación, etc."
-                    android:textColorHint="@color/text_hint"
-                    android:inputType="text"
+                    android:layout_height="48dp"
+                    android:background="@color/spinner_bg"
                     android:layout_marginBottom="12dp"/>
 
                 <!-- Lugar -->

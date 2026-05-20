@@ -64,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private void intentarNavegar() {
         handler.post(() -> {
             if (splashTerminado) {
-                // Borrar token anterior para que el login arranque limpio
-                RetrofitClient.getTokenManager().clearToken();
                 startActivity(new Intent(MainActivity.this, CorreoLoginActivity.class));
                 finish();
             }

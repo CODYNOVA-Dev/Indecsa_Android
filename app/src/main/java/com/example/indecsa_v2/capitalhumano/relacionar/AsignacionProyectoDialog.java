@@ -18,10 +18,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.models.AsignacionProyectoContratistaDto;
 import com.example.indecsa_v2.models.AsignacionTrabajadorProyectoDto;
 import com.example.indecsa_v2.models.Contratista;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.models.TrabajadorDto;
+import com.example.indecsa_v2.network.AsignacionPcHelper;
 import com.example.indecsa_v2.network.RetrofitClient;
 
 import java.time.LocalDate;
@@ -326,6 +328,12 @@ public class AsignacionProyectoDialog extends DialogFragment {
     // ─── Guardar ─────────────────────────────────────────────────────────────
 
     private void guardar() {
+        if (contratistaAsignado == null || contratistaAsignado.getIdContratista() == null) {
+            Toast.makeText(getContext(),
+                    "Asigna un contratista antes de guardar",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (trabajadoresAsignados.isEmpty()) {
             Toast.makeText(getContext(), "Agrega al menos un trabajador",
                     Toast.LENGTH_SHORT).show();
@@ -339,16 +347,28 @@ public class AsignacionProyectoDialog extends DialogFragment {
             return;
         }
 
-        // Contratista: endpoint pendiente en el backend — avisamos sin bloquear
-        if (contratistaAsignado != null) {
-            Toast.makeText(getContext(),
-                    "Contratista \"" + contratistaAsignado.getNombreContratista()
-                            + "\" registrado localmente — pendiente de soporte en servidor.",
-                    Toast.LENGTH_LONG).show();
-        }
-
         btnGuardar.setEnabled(false);
 
+        // 1) Resolver/crear el contrato Proyecto-Contratista, 2) crear asignaciones.
+        AsignacionPcHelper.obtenerOCrear(
+                proyectoId,
+                contratistaAsignado.getIdContratista(),
+                trabajadoresAsignados.size(),
+                new AsignacionPcHelper.Callback() {
+                    @Override
+                    public void onResolved(@NonNull AsignacionProyectoContratistaDto contrato) {
+                        crearAsignacionesTrabajadores(proyectoId, contrato.getIdAsignacionPc());
+                    }
+                    @Override
+                    public void onError(@NonNull String msg) {
+                        if (!isAdded()) return;
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                        btnGuardar.setEnabled(true);
+                    }
+                });
+    }
+
+    private void crearAsignacionesTrabajadores(int proyectoId, Integer idAsignacionPc) {
         String fechaHoy = LocalDate.now().toString();
         int total = trabajadoresAsignados.size();
         AtomicInteger exitosos = new AtomicInteger(0);
@@ -358,6 +378,7 @@ public class AsignacionProyectoDialog extends DialogFragment {
             AsignacionTrabajadorProyectoDto dto = new AsignacionTrabajadorProyectoDto();
             dto.setIdTrabajador(trabajador.getIdTrabajador());
             dto.setIdProyecto(proyectoId);
+            dto.setIdAsignacionPc(idAsignacionPc);
             dto.setFechaInicio(fechaHoy);
             dto.setEstatusAsignacion("ACTIVO");
             if (trabajador.getEspecialidadTrabajador() != null) {

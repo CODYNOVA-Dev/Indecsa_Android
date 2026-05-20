@@ -50,14 +50,15 @@ public class Panel_Admin extends AppCompatActivity {
         new TabLayoutMediator(tabLayoutAdmin, viewPagerAdmin,
                 (tab, position) -> {
                     switch (position) {
-                        case 0: tab.setText("Contratista");    break;
-                        case 1: tab.setText("Proyecto");       break;
-                        case 2: tab.setText("Trabajadores");   break;
-                        case 3: tab.setText("Capital Humano"); break;
-                        case 4: tab.setText("Personal en Obra"); break;
-                        case 5: tab.setText("Reg. Horas");       break;
-                        case 6: tab.setText("Avance Obra");      break;
-                        case 7: tab.setText("Reportes");         break;
+                        case 0: tab.setText("Contratista");      break;
+                        case 1: tab.setText("Proyecto");         break;
+                        case 2: tab.setText("Contratos");        break;
+                        case 3: tab.setText("Trabajadores");     break;
+                        case 4: tab.setText("Capital Humano");   break;
+                        case 5: tab.setText("Personal en Obra"); break;
+                        case 6: tab.setText("Reg. Horas");       break;
+                        case 7: tab.setText("Avance Obra");      break;
+                        case 8: tab.setText("Reportes");         break;
                     }
                 }
         ).attach();

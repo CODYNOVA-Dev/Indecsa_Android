@@ -199,29 +199,29 @@ public class DetalleTrabajadorDialog extends DialogFragment {
         RetrofitClient.getApiService()
                 .getRendimientoTrabajador(idTrabajador, fechaInicio, fechaFin)
                 .enqueue(new Callback<List<RendimientoIndicadorDto>>() {
-            @Override
-            public void onResponse(Call<List<RendimientoIndicadorDto>> call,
-                                   Response<List<RendimientoIndicadorDto>> response) {
-                if (!isAdded() || getView() == null) return;
-                progress.setVisibility(View.GONE);
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    tvVacio.setVisibility(View.GONE);
-                    for (RendimientoIndicadorDto r : response.body()) {
-                        agregarIndicadorRow(container, r);
+                    @Override
+                    public void onResponse(Call<List<RendimientoIndicadorDto>> call,
+                                           Response<List<RendimientoIndicadorDto>> response) {
+                        if (!isAdded() || getView() == null) return;
+                        progress.setVisibility(View.GONE);
+                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                            tvVacio.setVisibility(View.GONE);
+                            for (RendimientoIndicadorDto r : response.body()) {
+                                agregarIndicadorRow(container, r);
+                            }
+                        } else {
+                            tvVacio.setText("Sin datos de rendimiento en el período");
+                            tvVacio.setVisibility(View.VISIBLE);
+                        }
                     }
-                } else {
-                    tvVacio.setText("Sin datos de rendimiento en el período");
-                    tvVacio.setVisibility(View.VISIBLE);
-                }
-            }
-            @Override
-            public void onFailure(Call<List<RendimientoIndicadorDto>> call, Throwable t) {
-                if (!isAdded() || getView() == null) return;
-                progress.setVisibility(View.GONE);
-                tvVacio.setText("No se pudo cargar el rendimiento");
-                tvVacio.setVisibility(View.VISIBLE);
-            }
-        });
+                    @Override
+                    public void onFailure(Call<List<RendimientoIndicadorDto>> call, Throwable t) {
+                        if (!isAdded() || getView() == null) return;
+                        progress.setVisibility(View.GONE);
+                        tvVacio.setText("No se pudo cargar el rendimiento");
+                        tvVacio.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
     private void agregarIndicadorRow(LinearLayout container, RendimientoIndicadorDto r) {

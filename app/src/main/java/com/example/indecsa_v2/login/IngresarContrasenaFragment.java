@@ -59,48 +59,50 @@ public class IngresarContrasenaFragment extends Fragment {
         return view;
     }
 
-    private void irAlPanel() {
-        startActivity(new Intent(requireActivity(), Panel_Inicial_Admin.class));
-        requireActivity().finish();
-    }
-
     private void iniciarSesion(String correo, String pass) {
         LoginRequestDto request = new LoginRequestDto(correo, pass);
 
         RetrofitClient.getApiService().login(request).enqueue(new Callback<LoginResponseDto>() {
 
             @Override
-            public void onResponse(Call<LoginResponseDto> call,
-                                   Response<LoginResponseDto> response) {
+            public void onResponse(@NonNull Call<LoginResponseDto> call,
+                                   @NonNull Response<LoginResponseDto> response) {
+
+                if (response.code() == 401) {
+                    Toast.makeText(getContext(),
+                            "Correo o contraseña incorrectos",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if (!response.isSuccessful() || response.body() == null) {
-                    // Si el servidor falla o rechaza, igual se entra al panel
-                    irAlPanel();
+                    Toast.makeText(getContext(),
+                            "Error en el servidor (" + response.code() + ")",
+                            Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 LoginResponseDto empleado = response.body();
-
-                String token = empleado.getToken();
-                if (token != null) {
-                    RetrofitClient.getTokenManager().saveToken(token);
-                }
-
                 String rol = empleado.getNombreRol();
 
                 if ("CAPITAL_HUMANO".equals(rol)) {
                     startActivity(new Intent(requireActivity(), Panel_Inicial_CapitalHumano.class));
                     requireActivity().finish();
+                } else if ("ADMIN".equals(rol)) {
+                    startActivity(new Intent(requireActivity(), Panel_Inicial_Admin.class));
+                    requireActivity().finish();
                 } else {
-                    // ADMIN o cualquier otro rol → panel admin
-                    irAlPanel();
+                    Toast.makeText(getContext(),
+                            "Rol desconocido: " + rol,
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<LoginResponseDto> call, Throwable t) {
-                // Sin conexión → igual entra
-                irAlPanel();
+            public void onFailure(@NonNull Call<LoginResponseDto> call, @NonNull Throwable t) {
+                Toast.makeText(getContext(),
+                        "No hay conexión con el servidor",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
