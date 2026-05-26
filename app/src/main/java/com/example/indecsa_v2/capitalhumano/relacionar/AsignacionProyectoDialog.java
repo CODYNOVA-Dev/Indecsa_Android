@@ -25,6 +25,7 @@ import com.example.indecsa_v2.models.TrabajadorDto;
 import com.example.indecsa_v2.network.RetrofitClient;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,6 +52,7 @@ public class AsignacionProyectoDialog extends DialogFragment {
 
     private static final int MAX_CONTRATISTAS = 1;
     private static final int MAX_TRABAJADORES = 8;
+    private static final ZoneId ZONA_MX = ZoneId.of("America/Mexico_City");
 
     // ─── Estado en memoria ────────────────────────────────────────────────────
     private Contratista contratistaAsignado = null;
@@ -139,6 +141,12 @@ public class AsignacionProyectoDialog extends DialogFragment {
         // Estado inicial del botón contratista
         actualizarUIContratista();
 
+        // Bloqueamos los botones de selección hasta que la respectiva lista
+        // termine de cargar. Evita el caso "Selecciona un contratista primero"
+        // antes de que el spinner tenga items.
+        btnEliminarContratista.setEnabled(false);
+        btnAgregarTrabajador.setEnabled(false);
+
         // Cargar datos
         cargarContratistas();
         cargarTrabajadores();
@@ -156,14 +164,17 @@ public class AsignacionProyectoDialog extends DialogFragment {
         RetrofitClient.getApiService().getAllContratistas().enqueue(new Callback<List<Contratista>>() {
             @Override
             public void onResponse(Call<List<Contratista>> call, Response<List<Contratista>> response) {
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     listaContratistas.clear();
                     listaContratistas.addAll(response.body());
                     poblarSpinnerContratistas();
+                    btnEliminarContratista.setEnabled(true);
                 }
             }
             @Override
             public void onFailure(Call<List<Contratista>> call, Throwable t) {
+                if (!isAdded()) return;
                 Toast.makeText(getContext(), "Error cargando contratistas", Toast.LENGTH_SHORT).show();
             }
         });
@@ -220,14 +231,17 @@ public class AsignacionProyectoDialog extends DialogFragment {
         RetrofitClient.getApiService().getAllTrabajadores().enqueue(new Callback<List<TrabajadorDto>>() {
             @Override
             public void onResponse(Call<List<TrabajadorDto>> call, Response<List<TrabajadorDto>> response) {
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     listaTrabajadores.clear();
                     listaTrabajadores.addAll(response.body());
                     poblarSpinnerTrabajadores();
+                    btnAgregarTrabajador.setEnabled(true);
                 }
             }
             @Override
             public void onFailure(Call<List<TrabajadorDto>> call, Throwable t) {
+                if (!isAdded()) return;
                 Toast.makeText(getContext(), "Error cargando trabajadores", Toast.LENGTH_SHORT).show();
             }
         });
@@ -349,7 +363,7 @@ public class AsignacionProyectoDialog extends DialogFragment {
 
         btnGuardar.setEnabled(false);
 
-        String fechaHoy = LocalDate.now().toString();
+        String fechaHoy = LocalDate.now(ZONA_MX).toString();
         int total = trabajadoresAsignados.size();
         AtomicInteger exitosos = new AtomicInteger(0);
         AtomicInteger fallidos = new AtomicInteger(0);
@@ -388,27 +402,28 @@ public class AsignacionProyectoDialog extends DialogFragment {
 
     private void verificarCompletado(int total, AtomicInteger exitosos, AtomicInteger fallidos) {
         if (exitosos.get() + fallidos.get() < total) return;
+        // Retrofit invoca los callbacks en el main thread (Android default),
+        // así que no hace falta runOnUiThread. Lo único que necesitamos es
+        // confirmar que el dialog sigue vivo antes de tocar la UI.
+        if (!isAdded()) return;
 
-        if (getActivity() == null) return;
-        getActivity().runOnUiThread(() -> {
-            if (fallidos.get() == 0) {
-                Toast.makeText(getContext(),
-                        exitosos.get() + " trabajador(es) asignado(s) correctamente.",
-                        Toast.LENGTH_LONG).show();
-                dismiss();
-            } else if (exitosos.get() > 0) {
-                Toast.makeText(getContext(),
-                        exitosos.get() + " asignado(s), " + fallidos.get()
-                                + " fallaron. Revisa e intenta de nuevo.",
-                        Toast.LENGTH_LONG).show();
-                btnGuardar.setEnabled(true);
-            } else {
-                Toast.makeText(getContext(),
-                        "Error al guardar las asignaciones. Verifica tu conexión.",
-                        Toast.LENGTH_LONG).show();
-                btnGuardar.setEnabled(true);
-            }
-        });
+        if (fallidos.get() == 0) {
+            Toast.makeText(getContext(),
+                    exitosos.get() + " trabajador(es) asignado(s) correctamente.",
+                    Toast.LENGTH_LONG).show();
+            dismiss();
+        } else if (exitosos.get() > 0) {
+            Toast.makeText(getContext(),
+                    exitosos.get() + " asignado(s), " + fallidos.get()
+                            + " fallaron. Revisa e intenta de nuevo.",
+                    Toast.LENGTH_LONG).show();
+            btnGuardar.setEnabled(true);
+        } else {
+            Toast.makeText(getContext(),
+                    "Error al guardar las asignaciones. Verifica tu conexión.",
+                    Toast.LENGTH_LONG).show();
+            btnGuardar.setEnabled(true);
+        }
     }
 
     private int dpToPx(int dp) {

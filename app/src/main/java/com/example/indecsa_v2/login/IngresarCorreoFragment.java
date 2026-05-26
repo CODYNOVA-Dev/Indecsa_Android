@@ -28,8 +28,10 @@ public class IngresarCorreoFragment extends Fragment {
         view.findViewById(R.id.btnSiguiente).setOnClickListener(v -> {
             String correo = etCorreo.getText() != null ? etCorreo.getText().toString().trim() : "";
 
-            if (correo.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
-                Toast.makeText(getContext(), "Ingresa un correo válido", Toast.LENGTH_SHORT).show();
+            // El backend acepta tanto correo como usuario (ver ApiService#login).
+            // Solo validamos que no esté vacío ni contenga espacios.
+            if (correo.isEmpty() || correo.contains(" ")) {
+                Toast.makeText(getContext(), "Ingresa tu usuario o correo", Toast.LENGTH_SHORT).show();
                 return;
             }
 

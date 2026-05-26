@@ -26,6 +26,8 @@ import retrofit2.Response;
 
 public class IngresarContrasenaFragment extends Fragment {
 
+    private View btnIniciarSesion;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -42,8 +44,9 @@ public class IngresarContrasenaFragment extends Fragment {
         tvCorreoMostrado.setText(correo);
 
         TextInputEditText etContrasena = view.findViewById(R.id.etContrasena);
+        btnIniciarSesion = view.findViewById(R.id.btnIniciarSesion);
 
-        view.findViewById(R.id.btnIniciarSesion).setOnClickListener(v -> {
+        btnIniciarSesion.setOnClickListener(v -> {
             String pass = etContrasena.getText() != null
                     ? etContrasena.getText().toString().trim()
                     : "";
@@ -59,23 +62,37 @@ public class IngresarContrasenaFragment extends Fragment {
         return view;
     }
 
-    private void irAlPanel() {
-        startActivity(new Intent(requireActivity(), Panel_Inicial_Admin.class));
+    private void irAlPanelPorRol(String rol) {
+        Class<?> destino = "CAPITAL_HUMANO".equals(rol)
+                ? Panel_Inicial_CapitalHumano.class
+                : Panel_Inicial_Admin.class;
+        startActivity(new Intent(requireActivity(), destino));
         requireActivity().finish();
+    }
+
+    private void mostrarError(String msg) {
+        if (!isAdded()) return;
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        if (btnIniciarSesion != null) btnIniciarSesion.setEnabled(true);
     }
 
     private void iniciarSesion(String correo, String pass) {
         LoginRequestDto request = new LoginRequestDto(correo, pass);
+        btnIniciarSesion.setEnabled(false);
 
         RetrofitClient.getApiService().login(request).enqueue(new Callback<LoginResponseDto>() {
 
             @Override
             public void onResponse(Call<LoginResponseDto> call,
                                    Response<LoginResponseDto> response) {
+                if (!isAdded()) return;
 
+                if (response.code() == 401) {
+                    mostrarError("Correo o contraseña incorrectos");
+                    return;
+                }
                 if (!response.isSuccessful() || response.body() == null) {
-                    // Si el servidor falla o rechaza, igual se entra al panel
-                    irAlPanel();
+                    mostrarError("Error del servidor (" + response.code() + ")");
                     return;
                 }
 
@@ -87,20 +104,16 @@ public class IngresarContrasenaFragment extends Fragment {
                 }
 
                 String rol = empleado.getNombreRol();
-
-                if ("CAPITAL_HUMANO".equals(rol)) {
-                    startActivity(new Intent(requireActivity(), Panel_Inicial_CapitalHumano.class));
-                    requireActivity().finish();
-                } else {
-                    // ADMIN o cualquier otro rol → panel admin
-                    irAlPanel();
+                if (rol != null) {
+                    RetrofitClient.getTokenManager().saveRole(rol);
                 }
+
+                irAlPanelPorRol(rol);
             }
 
             @Override
             public void onFailure(Call<LoginResponseDto> call, Throwable t) {
-                // Sin conexión → igual entra
-                irAlPanel();
+                mostrarError("Sin conexión. Verifica tu red e intenta de nuevo.");
             }
         });
     }

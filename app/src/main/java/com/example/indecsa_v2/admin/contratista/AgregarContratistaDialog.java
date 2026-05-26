@@ -90,6 +90,7 @@ public class AgregarContratistaDialog extends DialogFragment {
                     .enqueue(new Callback<Contratista>() {
                         @Override
                         public void onResponse(Call<Contratista> call, Response<Contratista> response) {
+                            if (!isAdded()) return;
                             if (response.isSuccessful()) {
                                 Toast.makeText(getContext(), "Contratista agregado", Toast.LENGTH_SHORT).show();
                                 if (listener != null) listener.onAgregado();
@@ -100,6 +101,7 @@ public class AgregarContratistaDialog extends DialogFragment {
                         }
                         @Override
                         public void onFailure(Call<Contratista> call, Throwable t) {
+                            if (!isAdded()) return;
                             Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });

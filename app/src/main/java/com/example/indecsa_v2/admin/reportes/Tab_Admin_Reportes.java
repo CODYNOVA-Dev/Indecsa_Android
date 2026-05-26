@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -42,6 +43,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Tab_Admin_Reportes extends Fragment {
+
+    // Zona horaria del backend / negocio. Centralizada para que el "hoy" del
+    // usuario coincida con el del servidor, independiente del device.
+    private static final TimeZone TZ_MX = TimeZone.getTimeZone("America/Mexico_City");
 
     // ─── Tipos de reporte ────────────────────────────────────────────────────
     private static final int TIPO_RENDIMIENTO = 0;
@@ -124,7 +129,7 @@ public class Tab_Admin_Reportes extends Fragment {
     // ─── Fechas ──────────────────────────────────────────────────────────────
 
     private void setupFechasPorDefecto() {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TZ_MX);
         fechaFinStr = String.format(Locale.US, "%04d-%02d-%02d",
                 cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
         btnFechaFin.setText(fechaFinStr);
@@ -139,7 +144,7 @@ public class Tab_Admin_Reportes extends Fragment {
     }
 
     private void mostrarDatePicker(boolean esInicio) {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TZ_MX);
         new DatePickerDialog(requireContext(),
                 (dp, y, m, d) -> {
                     String fecha = String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d);

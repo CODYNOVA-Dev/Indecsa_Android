@@ -61,8 +61,6 @@ public class Tab_Admin_Trabajador extends Fragment {
 
         btnBuscar.setOnClickListener(v -> filtrarTrabajadores(editBuscarArea.getText().toString()));
 
-        // ✅ Configurar botón Agregar
-        AppCompatButton btnAgregar = vista.findViewById(R.id.btnAgregar);
         btnAgregar.setOnClickListener(v -> {
             AgregarTrabajadorDialog dialog = new AgregarTrabajadorDialog();
             dialog.setOnAgregadoListener(this::cargarTrabajadores);
@@ -78,6 +76,7 @@ public class Tab_Admin_Trabajador extends Fragment {
         RetrofitClient.getApiService().getAllTrabajadores().enqueue(new Callback<List<TrabajadorDto>>() {
             @Override
             public void onResponse(Call<List<TrabajadorDto>> call, Response<List<TrabajadorDto>> response) {
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     listaTrabajadores.clear();
                     listaTrabajadores.addAll(response.body());
@@ -91,6 +90,7 @@ public class Tab_Admin_Trabajador extends Fragment {
             }
             @Override
             public void onFailure(Call<List<TrabajadorDto>> call, Throwable t) {
+                if (!isAdded()) return;
                 Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

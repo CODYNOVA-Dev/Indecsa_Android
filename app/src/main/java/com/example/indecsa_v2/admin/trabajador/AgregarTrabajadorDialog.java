@@ -81,9 +81,11 @@ public class AgregarTrabajadorDialog extends DialogFragment {
             String descripcion  = getText(view, R.id.editDescripcion);
 
 
-            // ── Leer el estado geográfico del Spinner ─────────────────────────
+            // El spinner es la fuente de verdad para la ubicación: el backend
+            // solo acepta "CDMX" / "Hidalgo" / "Puebla". editUbicacion queda
+            // como UI informativa hasta que se decida si tiene sentido o se
+            // remueve del layout.
             String estadoGeo = spinnerEstadoGeo.getSelectedItem().toString();
-            // ──
 
             if (nombre.isEmpty()) {
                 Toast.makeText(getContext(), "El nombre es obligatorio", Toast.LENGTH_SHORT).show();
@@ -96,10 +98,9 @@ public class AgregarTrabajadorDialog extends DialogFragment {
             dto.setCorreoTrabajador(correo);
             dto.setTelefonoTrabajador(telefono);
             dto.setNssTrabajador(nss);
-            dto.setUbicacionTrabajador(ubicacion.isEmpty() ? "CDMX" : ubicacion);
+            dto.setUbicacionTrabajador(estadoGeo);
             dto.setExperiencia(experiencia);
             dto.setDescripcionTrabajador(descripcion);
-            // ✅ Valores por defecto para campos obligatorios
             dto.setEstadoTrabajador("ACTIVO");
             dto.setCalificacionTrabajador(0);
 
@@ -107,6 +108,7 @@ public class AgregarTrabajadorDialog extends DialogFragment {
                     .enqueue(new Callback<TrabajadorDto>() {
                         @Override
                         public void onResponse(Call<TrabajadorDto> call, Response<TrabajadorDto> response) {
+                            if (!isAdded()) return;
                             if (response.isSuccessful()) {
                                 Toast.makeText(getContext(), "Trabajador agregado", Toast.LENGTH_SHORT).show();
                                 if (listener != null) listener.onAgregado();
@@ -117,6 +119,7 @@ public class AgregarTrabajadorDialog extends DialogFragment {
                         }
                         @Override
                         public void onFailure(Call<TrabajadorDto> call, Throwable t) {
+                            if (!isAdded()) return;
                             Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });

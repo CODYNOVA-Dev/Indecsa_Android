@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +41,7 @@ import retrofit2.Response;
 
 public class Tab_Admin_RegistroHoras extends Fragment {
 
+    private static final TimeZone TZ_MX = TimeZone.getTimeZone("America/Mexico_City");
     private static final String SIN_CUADRILLA = "Sin cuadrilla";
     private static final String SIN_TRABAJADOR = "— Selecciona trabajador —";
 
@@ -224,6 +226,14 @@ public class Tab_Admin_RegistroHoras extends Fragment {
                     mostrarVacio("Selecciona un proyecto para registrar horas");
                 } else {
                     proyectoSeleccionado = true;
+                    // Reset SINCRÓNICO de listas dependientes: evita que el
+                    // usuario registre con una selección "stale" del proyecto
+                    // anterior mientras la nueva data carga async.
+                    listaAsignaciones.clear();
+                    listaCuadrillas.clear();
+                    setupSpinnerTrabajadorVacio();
+                    setupSpinnerCuadrillaVacio();
+
                     ProyectoDto p = listaProyectos.get(position - 1);
                     cargarAsignaciones(p.getIdProyecto());
                     cargarCuadrillas(p.getIdProyecto());
@@ -292,7 +302,7 @@ public class Tab_Admin_RegistroHoras extends Fragment {
     // ─── DATE PICKER ─────────────────────────────────────────────────────────
 
     private void mostrarDatePicker() {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TZ_MX);
         new DatePickerDialog(requireContext(), (view, year, month, day) -> {
             fechaSeleccionada = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day);
             btnFecha.setText(fechaSeleccionada);
@@ -336,7 +346,16 @@ public class Tab_Admin_RegistroHoras extends Fragment {
             return;
         }
 
-        AsignacionTrabajadorProyectoDto asignacion = listaAsignaciones.get(posTrabajador - 1);
+        // El usuario pudo cambiar de proyecto entre seleccionar trabajador y
+        // pulsar Registrar; validamos contra el tamaño actual de la lista.
+        int idxTrabajador = posTrabajador - 1;
+        if (idxTrabajador < 0 || idxTrabajador >= listaAsignaciones.size()) {
+            Toast.makeText(getContext(),
+                    "La selección de trabajador ya no es válida. Vuelve a seleccionarlo.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AsignacionTrabajadorProyectoDto asignacion = listaAsignaciones.get(idxTrabajador);
 
         RegistroHorasDto dto = new RegistroHorasDto();
         dto.setIdAsignacionTp(asignacion.getIdAsignacionTp());
@@ -345,7 +364,7 @@ public class Tab_Admin_RegistroHoras extends Fragment {
         dto.setTipoPeriodo(spinnerTipoPeriodo.getSelectedItem().toString());
 
         int posCuadrilla = spinnerCuadrilla.getSelectedItemPosition();
-        if (posCuadrilla > 0) {
+        if (posCuadrilla > 0 && posCuadrilla - 1 < listaCuadrillas.size()) {
             dto.setIdCuadrilla(listaCuadrillas.get(posCuadrilla - 1).getIdCuadrilla());
         }
 
@@ -363,7 +382,7 @@ public class Tab_Admin_RegistroHoras extends Fragment {
                     limpiarFormulario();
                     // Recargar lista
                     int posProyecto = spinnerProyecto.getSelectedItemPosition();
-                    if (posProyecto > 0) {
+                    if (posProyecto > 0 && posProyecto - 1 < listaProyectos.size()) {
                         cargarRegistros(listaProyectos.get(posProyecto - 1).getIdProyecto());
                     }
                 } else {

@@ -181,6 +181,7 @@ public class DetalleContratistaDialog extends DialogFragment {
                 .enqueue(new Callback<Contratista>() {
                     @Override
                     public void onResponse(Call<Contratista> call, Response<Contratista> response) {
+                        if (!isAdded()) return;
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "Contratista actualizado", Toast.LENGTH_SHORT).show();
                             if (onCambioListener != null) onCambioListener.onCambio();
@@ -191,6 +192,7 @@ public class DetalleContratistaDialog extends DialogFragment {
                     }
                     @Override
                     public void onFailure(Call<Contratista> call, Throwable t) {
+                        if (!isAdded()) return;
                         Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -215,6 +217,7 @@ public class DetalleContratistaDialog extends DialogFragment {
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (!isAdded()) return;
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "Contratista eliminado", Toast.LENGTH_SHORT).show();
                             if (onCambioListener != null) onCambioListener.onCambio();
@@ -225,6 +228,7 @@ public class DetalleContratistaDialog extends DialogFragment {
                     }
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
+                        if (!isAdded()) return;
                         Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

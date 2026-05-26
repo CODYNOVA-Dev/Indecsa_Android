@@ -19,8 +19,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.indecsa_v2.admin.Panel_Inicial_Admin;
+import com.example.indecsa_v2.capitalhumano.Panel_Inicial_CapitalHumano;
 import com.example.indecsa_v2.login.CorreoLoginActivity;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.network.TokenManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        RetrofitClient.init(this);
         setContentView(R.layout.activity_main);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -64,12 +66,28 @@ public class MainActivity extends AppCompatActivity {
     private void intentarNavegar() {
         handler.post(() -> {
             if (splashTerminado) {
-                // Borrar token anterior para que el login arranque limpio
-                RetrofitClient.getTokenManager().clearToken();
-                startActivity(new Intent(MainActivity.this, CorreoLoginActivity.class));
+                startActivity(new Intent(MainActivity.this, siguienteDestino()));
                 finish();
             }
         });
+    }
+
+    /**
+     * Decide a dónde ir tras el splash:
+     *   - Hay token + rol guardados → entra directo al panel correspondiente.
+     *   - Si falta cualquiera de los dos → al login.
+     */
+    private Class<?> siguienteDestino() {
+        TokenManager tm = RetrofitClient.getTokenManager();
+        if (tm == null) return CorreoLoginActivity.class;
+
+        String token = tm.getToken();
+        String rol   = tm.getRole();
+        if (token == null || rol == null) return CorreoLoginActivity.class;
+
+        return "CAPITAL_HUMANO".equals(rol)
+                ? Panel_Inicial_CapitalHumano.class
+                : Panel_Inicial_Admin.class;
     }
 
     // ─── Efecto respiración en el CardView ───────────────────────────────────

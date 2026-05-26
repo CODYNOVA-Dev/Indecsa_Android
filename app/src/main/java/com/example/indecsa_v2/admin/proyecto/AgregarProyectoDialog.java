@@ -94,6 +94,7 @@ public class AgregarProyectoDialog extends DialogFragment {
                     .enqueue(new Callback<ProyectoDto>() {
                         @Override
                         public void onResponse(Call<ProyectoDto> call, Response<ProyectoDto> response) {
+                            if (!isAdded()) return;
                             if (response.isSuccessful()) {
                                 Toast.makeText(getContext(), "Proyecto agregado", Toast.LENGTH_SHORT).show();
                                 if (listener != null) listener.onAgregado();
@@ -104,6 +105,7 @@ public class AgregarProyectoDialog extends DialogFragment {
                         }
                         @Override
                         public void onFailure(Call<ProyectoDto> call, Throwable t) {
+                            if (!isAdded()) return;
                             Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
