@@ -2,6 +2,8 @@ package com.example.indecsa_v2.network;
 
 import android.content.Context;
 
+import com.example.indecsa_v2.BuildConfig;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -21,7 +23,9 @@ public class RetrofitClient {
 
     public static void init(Context context) {
         HttpLoggingInterceptor logger = new HttpLoggingInterceptor();
-        logger.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logger.setLevel(BuildConfig.DEBUG
+                ? HttpLoggingInterceptor.Level.BODY
+                : HttpLoggingInterceptor.Level.NONE);
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(logger)

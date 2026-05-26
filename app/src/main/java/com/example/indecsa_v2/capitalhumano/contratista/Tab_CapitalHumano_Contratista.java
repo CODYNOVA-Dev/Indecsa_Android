@@ -62,6 +62,7 @@ public class Tab_CapitalHumano_Contratista extends Fragment {
         RetrofitClient.getApiService().getAllContratistas().enqueue(new Callback<List<Contratista>>() {
             @Override
             public void onResponse(Call<List<Contratista>> call, Response<List<Contratista>> response) {
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     lista.clear();
                     lista.addAll(response.body());
@@ -75,6 +76,7 @@ public class Tab_CapitalHumano_Contratista extends Fragment {
             }
             @Override
             public void onFailure(Call<List<Contratista>> call, Throwable t) {
+                if (!isAdded()) return;
                 Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

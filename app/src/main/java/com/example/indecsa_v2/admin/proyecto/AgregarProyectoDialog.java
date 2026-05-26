@@ -111,9 +111,11 @@ public class AgregarProyectoDialog extends DialogFragment {
             DomicilioHelper.crear(lugar, null, null, null, municipio, estadoGeo.getIdEstado(),
                     new DomicilioHelper.Callback() {
                         @Override public void onCreated(@NonNull Domicilio dom) {
+                            if (!isAdded()) return;
                             crearProyecto(nombre, cliente, tipo, fechaIni, fechaFin, dom);
                         }
                         @Override public void onError(@NonNull String msg) {
+                            if (!isAdded()) return;
                             Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -135,6 +137,7 @@ public class AgregarProyectoDialog extends DialogFragment {
                 .enqueue(new Callback<ProyectoDto>() {
                     @Override
                     public void onResponse(@NonNull Call<ProyectoDto> call, @NonNull Response<ProyectoDto> response) {
+                        if (!isAdded()) return;
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "Proyecto agregado", Toast.LENGTH_SHORT).show();
                             if (listener != null) listener.onAgregado();
@@ -147,6 +150,7 @@ public class AgregarProyectoDialog extends DialogFragment {
                     }
                     @Override
                     public void onFailure(@NonNull Call<ProyectoDto> call, @NonNull Throwable t) {
+                        if (!isAdded()) return;
                         Toast.makeText(getContext(),
                                 "Error de conexión: " + t.getMessage(),
                                 Toast.LENGTH_SHORT).show();

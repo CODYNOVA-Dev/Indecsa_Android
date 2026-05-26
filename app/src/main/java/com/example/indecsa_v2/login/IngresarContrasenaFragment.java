@@ -26,6 +26,8 @@ import retrofit2.Response;
 
 public class IngresarContrasenaFragment extends Fragment {
 
+    private View btnIniciarSesion;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -42,8 +44,9 @@ public class IngresarContrasenaFragment extends Fragment {
         tvCorreoMostrado.setText(correo);
 
         TextInputEditText etContrasena = view.findViewById(R.id.etContrasena);
+        btnIniciarSesion = view.findViewById(R.id.btnIniciarSesion);
 
-        view.findViewById(R.id.btnIniciarSesion).setOnClickListener(v -> {
+        btnIniciarSesion.setOnClickListener(v -> {
             String pass = etContrasena.getText() != null
                     ? etContrasena.getText().toString().trim()
                     : "";
@@ -59,26 +62,30 @@ public class IngresarContrasenaFragment extends Fragment {
         return view;
     }
 
+    private void mostrarError(String msg) {
+        if (!isAdded()) return;
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        if (btnIniciarSesion != null) btnIniciarSesion.setEnabled(true);
+    }
+
     private void iniciarSesion(String correo, String pass) {
         LoginRequestDto request = new LoginRequestDto(correo, pass);
+        btnIniciarSesion.setEnabled(false);
 
         RetrofitClient.getApiService().login(request).enqueue(new Callback<LoginResponseDto>() {
 
             @Override
             public void onResponse(@NonNull Call<LoginResponseDto> call,
                                    @NonNull Response<LoginResponseDto> response) {
+                if (!isAdded()) return;
 
                 if (response.code() == 401) {
-                    Toast.makeText(getContext(),
-                            "Correo o contraseña incorrectos",
-                            Toast.LENGTH_SHORT).show();
+                    mostrarError("Correo o contraseña incorrectos");
                     return;
                 }
 
                 if (!response.isSuccessful() || response.body() == null) {
-                    Toast.makeText(getContext(),
-                            "Error en el servidor (" + response.code() + ")",
-                            Toast.LENGTH_SHORT).show();
+                    mostrarError("Error en el servidor (" + response.code() + ")");
                     return;
                 }
 
@@ -92,17 +99,13 @@ public class IngresarContrasenaFragment extends Fragment {
                     startActivity(new Intent(requireActivity(), Panel_Inicial_Admin.class));
                     requireActivity().finish();
                 } else {
-                    Toast.makeText(getContext(),
-                            "Rol desconocido: " + rol,
-                            Toast.LENGTH_SHORT).show();
+                    mostrarError("Rol desconocido: " + rol);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<LoginResponseDto> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(),
-                        "No hay conexión con el servidor",
-                        Toast.LENGTH_SHORT).show();
+                mostrarError("No hay conexión con el servidor");
             }
         });
     }

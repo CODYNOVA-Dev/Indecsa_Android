@@ -124,12 +124,14 @@ public class AgregarTrabajadorDialog extends DialogFragment {
             DomicilioHelper.crear(calle, null, null, null, municipio, estadoGeo.getIdEstado(),
                     new DomicilioHelper.Callback() {
                         @Override public void onCreated(@NonNull Domicilio dom) {
+                            if (!isAdded()) return;
                             crearTrabajador(nombre, curp, rfc, nss, nacionalidad, sexo,
                                     correo, telefono, puesto, descPuesto, especialidad,
                                     escolaridad, contratacion, jornada, experiencia,
                                     fechaIngreso, dom, estadoGeo);
                         }
                         @Override public void onError(@NonNull String msg) {
+                            if (!isAdded()) return;
                             Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -168,6 +170,7 @@ public class AgregarTrabajadorDialog extends DialogFragment {
                 .enqueue(new Callback<TrabajadorDto>() {
                     @Override
                     public void onResponse(@NonNull Call<TrabajadorDto> call, @NonNull Response<TrabajadorDto> response) {
+                        if (!isAdded()) return;
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "Trabajador agregado", Toast.LENGTH_SHORT).show();
                             if (listener != null) listener.onAgregado();
@@ -180,6 +183,7 @@ public class AgregarTrabajadorDialog extends DialogFragment {
                     }
                     @Override
                     public void onFailure(@NonNull Call<TrabajadorDto> call, @NonNull Throwable t) {
+                        if (!isAdded()) return;
                         Toast.makeText(getContext(),
                                 "Error de conexión: " + t.getMessage(),
                                 Toast.LENGTH_SHORT).show();

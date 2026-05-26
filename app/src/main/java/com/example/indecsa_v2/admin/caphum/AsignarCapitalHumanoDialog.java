@@ -25,6 +25,7 @@ import com.example.indecsa_v2.network.AsignacionPcHelper;
 import com.example.indecsa_v2.network.RetrofitClient;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,6 +53,7 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
     // ─── Límites ─────────────────────────────────────────────────────────────
     private static final int MAX_CONTRATISTAS = 1;
     private static final int MAX_TRABAJADORES = 8;
+    private static final ZoneId ZONA_MX = ZoneId.of("America/Mexico_City");
 
     // ─── Args ────────────────────────────────────────────────────────────────
     private static final String ARG_PROYECTO_ID     = "proyectoId";
@@ -72,6 +74,9 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
     // ─── Views ───────────────────────────────────────────────────────────────
     private TextView tvContadorContratistas;
     private TextView tvContadorTrabajadores;
+    private AppCompatButton btnAgregarContratista;
+    private AppCompatButton btnAgregarTrabajador;
+    private AppCompatButton btnGuardar;
 
     // ─── Factory ─────────────────────────────────────────────────────────────
     public static AsignarCapitalHumanoDialog newInstance(int proyectoId, String proyectoNombre) {
@@ -143,15 +148,21 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
         rvTrabajadoresAsignados.setAdapter(adapterTrabajadoresAsignados);
 
         // Botones para agregar
-        AppCompatButton btnAgregarContratista = view.findViewById(R.id.btnAgregarContratista);
-        AppCompatButton btnAgregarTrabajador  = view.findViewById(R.id.btnAgregarTrabajador);
-        AppCompatButton btnGuardar            = view.findViewById(R.id.btnGuardarAsignacion);
-        AppCompatButton btnCerrar             = view.findViewById(R.id.btnCerrarAsignacion);
+        btnAgregarContratista        = view.findViewById(R.id.btnAgregarContratista);
+        btnAgregarTrabajador         = view.findViewById(R.id.btnAgregarTrabajador);
+        btnGuardar                   = view.findViewById(R.id.btnGuardarAsignacion);
+        AppCompatButton btnCerrar    = view.findViewById(R.id.btnCerrarAsignacion);
 
         btnAgregarContratista.setOnClickListener(v -> mostrarSelectorContratista());
         btnAgregarTrabajador.setOnClickListener(v -> mostrarSelectorTrabajador());
         btnGuardar.setOnClickListener(v -> guardarAsignacion());
         btnCerrar.setOnClickListener(v -> dismiss());
+
+        // Mientras las listas cargan, los botones quedan inactivos: evita el
+        // toast "Cargando, intenta de nuevo" y la confusión de no saber qué
+        // está pasando.
+        btnAgregarContratista.setEnabled(false);
+        btnAgregarTrabajador.setEnabled(false);
 
         // Cargar datos
         cargarContratistas();
@@ -165,12 +176,15 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
         RetrofitClient.getApiService().getAllContratistas().enqueue(new Callback<List<Contratista>>() {
             @Override
             public void onResponse(Call<List<Contratista>> call, Response<List<Contratista>> response) {
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     todosContratistas = response.body();
+                    btnAgregarContratista.setEnabled(true);
                 }
             }
             @Override
             public void onFailure(Call<List<Contratista>> call, Throwable t) {
+                if (!isAdded()) return;
                 Toast.makeText(getContext(), "No se pudieron cargar los contratistas", Toast.LENGTH_SHORT).show();
             }
         });
@@ -180,12 +194,15 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
         RetrofitClient.getApiService().getAllTrabajadores().enqueue(new Callback<List<TrabajadorDto>>() {
             @Override
             public void onResponse(Call<List<TrabajadorDto>> call, Response<List<TrabajadorDto>> response) {
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     todosTrabajadores = response.body();
+                    btnAgregarTrabajador.setEnabled(true);
                 }
             }
             @Override
             public void onFailure(Call<List<TrabajadorDto>> call, Throwable t) {
+                if (!isAdded()) return;
                 Toast.makeText(getContext(), "No se pudieron cargar los trabajadores", Toast.LENGTH_SHORT).show();
             }
         });
@@ -200,7 +217,9 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
             return;
         }
         if (todosContratistas.isEmpty()) {
-            Toast.makeText(getContext(), "Cargando contratistas, intenta de nuevo.", Toast.LENGTH_SHORT).show();
+            // El botón está deshabilitado hasta que la lista carga, así que
+            // este caso solo ocurre cuando el back devuelve la lista vacía.
+            Toast.makeText(getContext(), "No hay contratistas registrados.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -249,7 +268,7 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
             return;
         }
         if (todosTrabajadores.isEmpty()) {
-            Toast.makeText(getContext(), "Cargando trabajadores, intenta de nuevo.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No hay trabajadores registrados.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -328,7 +347,6 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
             return;
         }
 
-        AppCompatButton btnGuardar = getView() != null ? getView().findViewById(R.id.btnGuardarAsignacion) : null;
         if (btnGuardar != null) btnGuardar.setEnabled(false);
 
         Contratista contratista = contratistasAsignados.get(0);
@@ -345,6 +363,7 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
                 new AsignacionPcHelper.Callback() {
                     @Override
                     public void onResolved(@NonNull AsignacionProyectoContratistaDto contrato) {
+                        if (!isAdded()) return;
                         crearAsignacionesTrabajadores(proyectoId, contrato.getIdAsignacionPc(), btnGuardar);
                     }
                     @Override
@@ -358,7 +377,7 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
 
     private void crearAsignacionesTrabajadores(int proyectoId, Integer idAsignacionPc,
                                                AppCompatButton btnGuardar) {
-        String fechaHoy = LocalDate.now().toString();
+        String fechaHoy = LocalDate.now(ZONA_MX).toString();
         int total = trabajadoresAsignados.size();
         AtomicInteger exitosos = new AtomicInteger(0);
         AtomicInteger fallidos = new AtomicInteger(0);
@@ -384,40 +403,39 @@ public class AsignarCapitalHumanoDialog extends DialogFragment {
                             } else {
                                 fallidos.incrementAndGet();
                             }
-                            verificarCompletado(total, exitosos, fallidos, btnGuardar);
+                            verificarCompletado(total, exitosos, fallidos);
                         }
 
                         @Override
                         public void onFailure(Call<AsignacionTrabajadorProyectoDto> call, Throwable t) {
                             fallidos.incrementAndGet();
-                            verificarCompletado(total, exitosos, fallidos, btnGuardar);
+                            verificarCompletado(total, exitosos, fallidos);
                         }
                     });
         }
     }
 
-    private void verificarCompletado(int total, AtomicInteger exitosos, AtomicInteger fallidos,
-                                     AppCompatButton btnGuardar) {
+    private void verificarCompletado(int total, AtomicInteger exitosos, AtomicInteger fallidos) {
         int completados = exitosos.get() + fallidos.get();
         if (completados < total) return;
+        // Retrofit callbackea en main thread; solo confirmamos que el dialog
+        // sigue vivo antes de tocar la UI.
+        if (!isAdded()) return;
 
-        if (getActivity() == null) return;
-        getActivity().runOnUiThread(() -> {
-            if (fallidos.get() == 0) {
-                Toast.makeText(getContext(),
-                        exitosos.get() + " trabajador(es) asignado(s) correctamente.", Toast.LENGTH_LONG).show();
-                dismiss();
-            } else if (exitosos.get() > 0) {
-                Toast.makeText(getContext(),
-                        exitosos.get() + " asignado(s), " + fallidos.get() + " fallaron. Revisa e intenta de nuevo.",
-                        Toast.LENGTH_LONG).show();
-                if (btnGuardar != null) btnGuardar.setEnabled(true);
-            } else {
-                Toast.makeText(getContext(),
-                        "Error al guardar las asignaciones. Verifica tu conexión.", Toast.LENGTH_LONG).show();
-                if (btnGuardar != null) btnGuardar.setEnabled(true);
-            }
-        });
+        if (fallidos.get() == 0) {
+            Toast.makeText(getContext(),
+                    exitosos.get() + " trabajador(es) asignado(s) correctamente.", Toast.LENGTH_LONG).show();
+            dismiss();
+        } else if (exitosos.get() > 0) {
+            Toast.makeText(getContext(),
+                    exitosos.get() + " asignado(s), " + fallidos.get() + " fallaron. Revisa e intenta de nuevo.",
+                    Toast.LENGTH_LONG).show();
+            if (btnGuardar != null) btnGuardar.setEnabled(true);
+        } else {
+            Toast.makeText(getContext(),
+                    "Error al guardar las asignaciones. Verifica tu conexión.", Toast.LENGTH_LONG).show();
+            if (btnGuardar != null) btnGuardar.setEnabled(true);
+        }
     }
 
     // ─── CONTADORES ──────────────────────────────────────────────────────────

@@ -70,6 +70,7 @@ public class Tab_Admin_CapHum extends Fragment {
                     @Override
                     public void onResponse(Call<List<EmpleadoDto>> call,
                                            Response<List<EmpleadoDto>> response) {
+                        if (!isAdded()) return;
                         if (response.isSuccessful() && response.body() != null) {
                             lista.clear();
                             for (EmpleadoDto e : response.body()) {
@@ -89,6 +90,7 @@ public class Tab_Admin_CapHum extends Fragment {
                     }
                     @Override
                     public void onFailure(Call<List<EmpleadoDto>> call, Throwable t) {
+                        if (!isAdded()) return;
                         Toast.makeText(getContext(),
                                 "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }

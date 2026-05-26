@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +39,7 @@ import retrofit2.Response;
 
 public class Tab_Admin_AvanceObra extends Fragment {
 
+    private static final TimeZone TZ_MX = TimeZone.getTimeZone("America/Mexico_City");
     private static final String SIN_CUADRILLA = "Sin cuadrilla";
     private static final String SIN_ESTANDAR  = "Sin estándar";
     private static final String[] UNIDADES    = {"m2", "m3", "ml", "piezas", "porcentaje"};
@@ -203,6 +205,11 @@ public class Tab_Admin_AvanceObra extends Fragment {
                     mostrarVacio("Selecciona un proyecto para registrar avances");
                 } else {
                     proyectoSeleccionado = true;
+                    // Reset síncrono de cuadrillas para que el usuario no pueda
+                    // registrar con cuadrilla "stale" del proyecto anterior.
+                    listaCuadrillas.clear();
+                    setupSpinnerCuadrillaVacio();
+
                     ProyectoDto p = listaProyectos.get(position - 1);
                     cargarCuadrillas(p.getIdProyecto());
                     cargarAvances(p.getIdProyecto());
@@ -262,7 +269,7 @@ public class Tab_Admin_AvanceObra extends Fragment {
     // ─── DATE PICKER ─────────────────────────────────────────────────────────
 
     private void mostrarDatePicker() {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TZ_MX);
         new DatePickerDialog(requireContext(), (view, year, month, day) -> {
             fechaSeleccionada = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day);
             btnFecha.setText(fechaSeleccionada);
@@ -309,6 +316,11 @@ public class Tab_Admin_AvanceObra extends Fragment {
         }
 
         int posProyecto = spinnerProyecto.getSelectedItemPosition();
+        if (posProyecto <= 0 || posProyecto - 1 >= listaProyectos.size()) {
+            Toast.makeText(getContext(),
+                    "La selección de proyecto ya no es válida.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         ProyectoDto proyecto = listaProyectos.get(posProyecto - 1);
 
         AvancePartidaDto dto = new AvancePartidaDto();
@@ -319,10 +331,14 @@ public class Tab_Admin_AvanceObra extends Fragment {
         dto.setUnidadMedida(spinnerUnidad.getSelectedItem().toString());
 
         int posCuadrilla = spinnerCuadrilla.getSelectedItemPosition();
-        if (posCuadrilla > 0) dto.setIdCuadrilla(listaCuadrillas.get(posCuadrilla - 1).getIdCuadrilla());
+        if (posCuadrilla > 0 && posCuadrilla - 1 < listaCuadrillas.size()) {
+            dto.setIdCuadrilla(listaCuadrillas.get(posCuadrilla - 1).getIdCuadrilla());
+        }
 
         int posEstandar = spinnerEstandar.getSelectedItemPosition();
-        if (posEstandar > 0) dto.setIdEstandar(listaEstandares.get(posEstandar - 1).getIdEstandar());
+        if (posEstandar > 0 && posEstandar - 1 < listaEstandares.size()) {
+            dto.setIdEstandar(listaEstandares.get(posEstandar - 1).getIdEstandar());
+        }
 
         String cantProg = editCantidadProgramada.getText() != null
                 ? editCantidadProgramada.getText().toString().trim() : "";
@@ -448,8 +464,8 @@ public class Tab_Admin_AvanceObra extends Fragment {
                 if (a.getCantidadProgramada() != null && a.getCantidadProgramada() > 0
                         && a.getCantidadEjecutada() != null) {
                     layoutProgreso.setVisibility(View.VISIBLE);
-                    int pct = (int) Math.min(100,
-                            (a.getCantidadEjecutada() / a.getCantidadProgramada()) * 100);
+                    double ratio = (a.getCantidadEjecutada() / a.getCantidadProgramada()) * 100;
+                    int pct = (int) Math.max(0, Math.min(100, ratio));
                     progressAvance.setProgress(pct);
                     textPorcentaje.setText(pct + "%");
                 } else {
