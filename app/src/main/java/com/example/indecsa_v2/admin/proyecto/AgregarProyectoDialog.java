@@ -17,8 +17,14 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.models.Domicilio;
+import com.example.indecsa_v2.models.Estado;
 import com.example.indecsa_v2.models.ProyectoDto;
+import com.example.indecsa_v2.network.CatalogosCache;
+import com.example.indecsa_v2.network.DomicilioHelper;
 import com.example.indecsa_v2.network.RetrofitClient;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +35,13 @@ public class AgregarProyectoDialog extends DialogFragment {
     public interface OnAgregadoListener { void onAgregado(); }
     private OnAgregadoListener listener;
     public void setOnAgregadoListener(OnAgregadoListener l) { this.listener = l; }
+
+    /** Enum del backend: Proyecto.TipoProyecto. Debe coincidir literalmente. */
+    private static final String[] TIPOS_PROYECTO = {
+            "Construccion", "Remodelacion", "Venta_mobiliaria", "Instalacion_de_mobiliario"
+    };
+
+    private List<Estado> estadosCache;
 
     @NonNull
     @Override
@@ -56,14 +69,14 @@ public class AgregarProyectoDialog extends DialogFragment {
             getDialog().setCanceledOnTouchOutside(false);
         }
 
-        // ── Spinner de estado geográfico ──────────────────────────────────────
+        Spinner spinnerTipo = view.findViewById(R.id.spinnerTipo);
+        ArrayAdapter<String> tipoAdp = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_item, TIPOS_PROYECTO);
+        tipoAdp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTipo.setAdapter(tipoAdp);
+
         Spinner spinnerEstadoGeo = view.findViewById(R.id.spinnerEstadoGeo);
-        ArrayAdapter<String> adp = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_spinner_item,
-                new String[]{"CDMX", "Hidalgo", "Puebla"});
-        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerEstadoGeo.setAdapter(adp);
-        // ─────────────────────────────────────────────────────────────────────
+        cargarEstadosEnSpinner(spinnerEstadoGeo);
 
         AppCompatButton btnGuardar  = view.findViewById(R.id.btnGuardar);
         AppCompatButton btnCancelar = view.findViewById(R.id.btnCancelar);
@@ -72,45 +85,102 @@ public class AgregarProyectoDialog extends DialogFragment {
 
         btnGuardar.setOnClickListener(v -> {
             String nombre    = getText(view, R.id.editNombre);
-            String tipo      = getText(view, R.id.editTipo);
+            String cliente   = getText(view, R.id.editCliente);
             String lugar     = getText(view, R.id.editLugar);
             String municipio = getText(view, R.id.editMunicipio);
             String fechaIni  = getText(view, R.id.editFechaIni);
             String fechaFin  = getText(view, R.id.editFechaFin);
+            String tipo      = (String) spinnerTipo.getSelectedItem();
 
-            // ── Leer el estado geográfico del Spinner ─────────────────────────
-            String estadoGeo = spinnerEstadoGeo.getSelectedItem().toString();
-            // ─────────────────────────────────────────────────────────────────
-
-            if (nombre.isEmpty()) {
-                Toast.makeText(getContext(), "El nombre del proyecto es obligatorio", Toast.LENGTH_SHORT).show();
+            if (nombre.isEmpty() || cliente.isEmpty() || lugar.isEmpty() || municipio.isEmpty()) {
+                Toast.makeText(getContext(),
+                        "Completa nombre, cliente, calle y municipio",
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            ProyectoDto dto = new ProyectoDto(nombre, tipo, lugar);
-            dto.setEstadoProyectoGeo(estadoGeo); // ✅ viene del Spinner
+            Estado estadoGeo = obtenerEstadoSeleccionado(spinnerEstadoGeo);
+            if (estadoGeo == null) {
+                Toast.makeText(getContext(),
+                        "No hay estados disponibles. Crea uno en /api/estados primero",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
 
-            RetrofitClient.getApiService().createProyecto(dto)
-                    .enqueue(new Callback<ProyectoDto>() {
-                        @Override
-                        public void onResponse(Call<ProyectoDto> call, Response<ProyectoDto> response) {
+            // 1) Crear domicilio inline → 2) crear proyecto referenciándolo.
+            DomicilioHelper.crear(lugar, null, null, null, municipio, estadoGeo.getIdEstado(),
+                    new DomicilioHelper.Callback() {
+                        @Override public void onCreated(@NonNull Domicilio dom) {
                             if (!isAdded()) return;
-                            if (response.isSuccessful()) {
-                                Toast.makeText(getContext(), "Proyecto agregado", Toast.LENGTH_SHORT).show();
-                                if (listener != null) listener.onAgregado();
-                                dismiss();
-                            } else {
-                                Toast.makeText(getContext(), "Error al guardar (código " + response.code() + ")", Toast.LENGTH_SHORT).show();
-                            }
+                            crearProyecto(nombre, cliente, tipo, fechaIni, fechaFin, dom);
                         }
-                        @Override
-                        public void onFailure(Call<ProyectoDto> call, Throwable t) {
+                        @Override public void onError(@NonNull String msg) {
                             if (!isAdded()) return;
-                            Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                         }
                     });
         });
     }
+
+    private void crearProyecto(String nombre, String cliente, String tipo,
+                               String fechaIni, String fechaFin, Domicilio dom) {
+        ProyectoDto dto = new ProyectoDto();
+        dto.setNombreProyecto(nombre);
+        dto.setCliente(cliente);
+        dto.setTipoProyecto(tipo);
+        dto.setDomicilio(dom);
+        if (!fechaIni.isEmpty()) dto.setFechaEstimadaInicio(fechaIni);
+        if (!fechaFin.isEmpty()) dto.setFechaEstimadaFin(fechaFin);
+        dto.setEstatusProyecto("PLANEACION");
+
+        RetrofitClient.getApiService().createProyecto(dto)
+                .enqueue(new Callback<ProyectoDto>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ProyectoDto> call, @NonNull Response<ProyectoDto> response) {
+                        if (!isAdded()) return;
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(), "Proyecto agregado", Toast.LENGTH_SHORT).show();
+                            if (listener != null) listener.onAgregado();
+                            dismiss();
+                        } else {
+                            Toast.makeText(getContext(),
+                                    "Error al guardar (código " + response.code() + ")",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(@NonNull Call<ProyectoDto> call, @NonNull Throwable t) {
+                        if (!isAdded()) return;
+                        Toast.makeText(getContext(),
+                                "Error de conexión: " + t.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void cargarEstadosEnSpinner(Spinner spinner) {
+        CatalogosCache.getEstados(items -> {
+            estadosCache = items;
+            String[] labels = new String[items.size()];
+            for (int i = 0; i < items.size(); i++) {
+                Estado e = items.get(i);
+                labels[i] = e.getNombreEst() != null ? e.getNombreEst() : ("Estado #" + e.getIdEstado());
+            }
+            ArrayAdapter<String> adp = new ArrayAdapter<>(requireContext(),
+                    android.R.layout.simple_spinner_item, labels);
+            adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adp);
+        });
+    }
+
+    @Nullable
+    private Estado obtenerEstadoSeleccionado(Spinner spinner) {
+        if (estadosCache == null || estadosCache.isEmpty()) return null;
+        int pos = spinner.getSelectedItemPosition();
+        if (pos < 0 || pos >= estadosCache.size()) return null;
+        return estadosCache.get(pos);
+    }
+
     private String getText(View root, int id) {
         EditText et = root.findViewById(id);
         return et != null ? et.getText().toString().trim() : "";

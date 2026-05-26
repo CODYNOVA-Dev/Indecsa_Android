@@ -1,28 +1,57 @@
 package com.example.indecsa_v2.models;
 
-import com.google.gson.annotations.SerializedName;
-
+/**
+ * Refleja la entidad Empleado del backend (id, nombre, curp, correo, contrasena,
+ * foto y un Rol anidado). Mantiene getNombreRol() / setNombreRol() como atajos
+ * planos para no romper código de UI que los usaba.
+ */
 public class EmpleadoDto {
 
-    @SerializedName("idEmpleado")
     private Integer idEmpleado;
+    private String  nombreEmpleado;
+    private String  curp;
+    private String  correoEmpleado;
+    private String  contrasena;
+    private String  fotoPerfilUrl;
+    private Rol     rol;
 
-    @SerializedName("nombreEmpleado")
-    private String nombreEmpleado;
+    public EmpleadoDto() {}
 
-    @SerializedName("correoEmpleado")
-    private String correoEmpleado;
+    public Integer getIdEmpleado()         { return idEmpleado; }
+    public void    setIdEmpleado(Integer v){ this.idEmpleado = v; }
 
-    @SerializedName("nombreRol")
-    private String nombreRol;
+    public String  getNombreEmpleado()         { return nombreEmpleado; }
+    public void    setNombreEmpleado(String v) { this.nombreEmpleado = v; }
 
-    public Integer getIdEmpleado()    { return idEmpleado; }
-    public String getNombreEmpleado() { return nombreEmpleado; }
-    public String getCorreoEmpleado() { return correoEmpleado; }
-    public String getNombreRol()      { return nombreRol; }
+    public String  getCurp()                   { return curp; }
+    public void    setCurp(String v)           { this.curp = v; }
 
-    public void setIdEmpleado(Integer v)    { this.idEmpleado = v; }
-    public void setNombreEmpleado(String v) { this.nombreEmpleado = v; }
-    public void setCorreoEmpleado(String v) { this.correoEmpleado = v; }
-    public void setNombreRol(String v)      { this.nombreRol = v; }
+    public String  getCorreoEmpleado()         { return correoEmpleado; }
+    public void    setCorreoEmpleado(String v) { this.correoEmpleado = v; }
+
+    public String  getContrasena()             { return contrasena; }
+    public void    setContrasena(String v)     { this.contrasena = v; }
+
+    public String  getFotoPerfilUrl()          { return fotoPerfilUrl; }
+    public void    setFotoPerfilUrl(String v)  { this.fotoPerfilUrl = v; }
+
+    public Rol     getRol()                    { return rol; }
+    public void    setRol(Rol v)               { this.rol = v; }
+
+    // ---- atajos planos ----
+    public String getNombreRol() {
+        return rol != null ? rol.getNombreRol() : null;
+    }
+    public void setNombreRol(String nombreRol) {
+        if (rol == null) rol = new Rol();
+        rol.setNombreRol(nombreRol);
+    }
+
+    public Integer getIdRol() {
+        return rol != null ? rol.getIdRol() : null;
+    }
+    public void setIdRol(Integer idRol) {
+        if (rol == null) rol = new Rol();
+        rol.setIdRol(idRol);
+    }
 }

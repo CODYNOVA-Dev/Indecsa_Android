@@ -42,7 +42,21 @@
       "Bash(javac -cp C:/Users/greco/.m2/repository/org/springframework/security/spring-security-crypto/7.0.3/spring-security-crypto-7.0.3.jar /tmp/BcryptTest.java -d /tmp/)",
       "Bash(java -cp '/tmp;C:/Users/greco/.m2/repository/org/springframework/security/spring-security-crypto/7.0.3/spring-security-crypto-7.0.3.jar' BcryptTest)",
       "Bash(ls /tmp/Bcrypt*)",
-      "Bash(ls /tmp/*.class)"
+      "Bash(ls /tmp/*.class)",
+      "Bash(ls \"C:\\\\Users\\\\greco\\\\Desktop\\\\indecsa\\\\demo\")",
+      "Bash(./gradlew.bat assembleDebug)",
+      "Bash(./mvnw.cmd -q compile)",
+      "Bash(cp \"C:\\\\Users\\\\greco\\\\Desktop\\\\pre\\\\Indecsa_Android\\\\local.properties\" \"C:\\\\Users\\\\greco\\\\Desktop\\\\pre\\\\Indecsa_Android\\\\.claude\\\\worktrees\\\\serene-einstein-02a304\\\\local.properties\")",
+      "Bash(./gradlew.bat compileDebugJavaWithJavac)",
+      "Bash(./mvnw.cmd compile *)",
+      "Bash(./mvnw.cmd clean *)",
+      "Bash(findstr /i \"agregar\")",
+      "Bash(./gradlew.bat compileDebugJavaWithJavac -Xlint:deprecation --warning-mode all)",
+      "Bash(./gradlew.bat clean *)",
+      "Bash(git -C \"C:\\\\Users\\\\greco\\\\Desktop\\\\pre\\\\Indecsa_Android\\\\.claude\\\\worktrees\\\\serene-einstein-02a304\" status)",
+      "Bash(git -C \"C:\\\\Users\\\\greco\\\\Desktop\\\\indecsa\\\\demo\" add pom.xml src/main/java/com/example/demo/config/DataSeeder.java src/main/java/com/example/demo/config/PasswordConfig.java src/main/java/com/example/demo/controller/AuthController.java src/main/java/com/example/demo/controller/RendimientoController.java src/main/java/com/example/demo/controller/ReportesController.java src/main/java/com/example/demo/dto/ src/main/java/com/example/demo/repository/AvancePartidaRepository.java src/main/java/com/example/demo/repository/RegistroHorasRepository.java src/main/java/com/example/demo/repository/RolRepository.java src/main/java/com/example/demo/service/AuthService.java src/main/java/com/example/demo/service/EmpleadoService.java src/main/java/com/example/demo/service/RendimientoService.java src/main/java/com/example/demo/service/ReportePdfService.java)",
+      "Bash(git -C \"C:\\\\Users\\\\greco\\\\Desktop\\\\indecsa\\\\demo\" status)",
+      "Bash(git -C \"C:\\\\Users\\\\greco\\\\Desktop\\\\pre\\\\Indecsa_Android\\\\.claude\\\\worktrees\\\\serene-einstein-02a304\" add app/ .claude/settings.local.json)"
     ]
   }
 }

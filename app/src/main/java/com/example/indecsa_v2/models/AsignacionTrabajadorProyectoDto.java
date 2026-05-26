@@ -1,47 +1,89 @@
 package com.example.indecsa_v2.models;
 
 /**
- * Refleja AsignacionTrabajadorProyectoResponse del backend.
- * Las fechas se manejan como String (formato ISO yyyy-MM-dd).
+ * Refleja la entidad AsignacionTrabajadorProyecto del backend.
+ *
+ * El backend serializa Trabajador, Proyecto y AsignacionProyectoContratista
+ * como objetos anidados — no como FKs planas. Este DTO mantiene los atajos
+ * planos (getIdTrabajador / setIdTrabajador, etc.) para que la UI existente
+ * no necesite cambios.
+ *
+ * El backend NO tiene una columna `observaciones` en esta tabla; el setter
+ * existe solo como cache local (no viaja en JSON).
  */
 public class AsignacionTrabajadorProyectoDto {
 
-    private Integer idAsignacionTp;
-    private Integer idTrabajador;
-    private Integer idProyecto;
-    private Integer idAsignacionPc;
-    private String  puestoEnProyecto;
-    private String  fechaInicio;
-    private String  fechaFinEstimada;
-    private String  estatusAsignacion;
-    private String  observaciones;
+    private Integer                          idAsignacionTp;
+    private TrabajadorDto                    trabajador;
+    private ProyectoDto                      proyecto;
+    private AsignacionProyectoContratistaDto asignacionProyectoContratista;
+    private String                           puestoEnProyecto;
+    private String                           fechaInicio;
+    private String                           fechaFinEstimada;
+    private String                           estatusAsignacion; // ACTIVO, SUSPENDIDO, INCAPACIDAD, CANCELADO, VACACIONES, FINALIZADO
 
-    public AsignacionTrabajadorProyectoDto() { }
+    private transient String                 observacionesLocal;
 
-    public Integer getIdAsignacionTp()       { return idAsignacionTp; }
-    public void    setIdAsignacionTp(Integer v){ this.idAsignacionTp = v; }
+    public AsignacionTrabajadorProyectoDto() {}
 
-    public Integer getIdTrabajador()         { return idTrabajador; }
-    public void    setIdTrabajador(Integer v){ this.idTrabajador = v; }
+    public Integer getIdAsignacionTp()           { return idAsignacionTp; }
+    public void    setIdAsignacionTp(Integer v)  { this.idAsignacionTp = v; }
 
-    public Integer getIdProyecto()           { return idProyecto; }
-    public void    setIdProyecto(Integer v)  { this.idProyecto = v; }
+    public TrabajadorDto getTrabajador()                  { return trabajador; }
+    public void          setTrabajador(TrabajadorDto v)   { this.trabajador = v; }
 
-    public Integer getIdAsignacionPc()       { return idAsignacionPc; }
-    public void    setIdAsignacionPc(Integer v){ this.idAsignacionPc = v; }
+    public ProyectoDto getProyecto()                  { return proyecto; }
+    public void        setProyecto(ProyectoDto v)     { this.proyecto = v; }
 
-    public String getPuestoEnProyecto()      { return puestoEnProyecto; }
-    public void   setPuestoEnProyecto(String v){ this.puestoEnProyecto = v; }
+    public AsignacionProyectoContratistaDto getAsignacionProyectoContratista() { return asignacionProyectoContratista; }
+    public void setAsignacionProyectoContratista(AsignacionProyectoContratistaDto v) { this.asignacionProyectoContratista = v; }
 
-    public String getFechaInicio()           { return fechaInicio; }
-    public void   setFechaInicio(String v)   { this.fechaInicio = v; }
+    public String getPuestoEnProyecto()             { return puestoEnProyecto; }
+    public void   setPuestoEnProyecto(String v)     { this.puestoEnProyecto = v; }
 
-    public String getFechaFinEstimada()      { return fechaFinEstimada; }
-    public void   setFechaFinEstimada(String v){ this.fechaFinEstimada = v; }
+    public String getFechaInicio()                  { return fechaInicio; }
+    public void   setFechaInicio(String v)          { this.fechaInicio = v; }
 
-    public String getEstatusAsignacion()     { return estatusAsignacion; }
-    public void   setEstatusAsignacion(String v){ this.estatusAsignacion = v; }
+    public String getFechaFinEstimada()             { return fechaFinEstimada; }
+    public void   setFechaFinEstimada(String v)     { this.fechaFinEstimada = v; }
 
-    public String getObservaciones()         { return observaciones; }
-    public void   setObservaciones(String v) { this.observaciones = v; }
+    public String getEstatusAsignacion()            { return estatusAsignacion; }
+    public void   setEstatusAsignacion(String v)    { this.estatusAsignacion = v; }
+
+    // ---- atajos planos ----
+
+    public Integer getIdTrabajador() {
+        return trabajador != null ? trabajador.getIdTrabajador() : null;
+    }
+    public void setIdTrabajador(Integer id) {
+        if (id == null) { trabajador = null; return; }
+        if (trabajador == null) trabajador = new TrabajadorDto();
+        trabajador.setIdTrabajador(id);
+    }
+
+    public Integer getIdProyecto() {
+        return proyecto != null ? proyecto.getIdProyecto() : null;
+    }
+    public void setIdProyecto(Integer id) {
+        if (id == null) { proyecto = null; return; }
+        if (proyecto == null) proyecto = new ProyectoDto();
+        proyecto.setIdProyecto(id);
+    }
+
+    public Integer getIdAsignacionPc() {
+        return asignacionProyectoContratista != null
+                ? asignacionProyectoContratista.getIdAsignacionPc()
+                : null;
+    }
+    public void setIdAsignacionPc(Integer id) {
+        if (id == null) { asignacionProyectoContratista = null; return; }
+        if (asignacionProyectoContratista == null) {
+            asignacionProyectoContratista = new AsignacionProyectoContratistaDto();
+        }
+        asignacionProyectoContratista.setIdAsignacionPc(id);
+    }
+
+    /** Cache local. Backend no persiste este campo en esta tabla. */
+    public String getObservaciones() { return observacionesLocal; }
+    public void   setObservaciones(String v) { this.observacionesLocal = v; }
 }

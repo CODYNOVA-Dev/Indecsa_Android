@@ -64,7 +64,8 @@ public class Tab_Admin_CapHum extends Fragment {
     private void cargar() {
         recyclerViewAreas.setVisibility(View.GONE);
 
-        RetrofitClient.getApiService().getEmpleadosByRol(2)
+        // Backend no expone /empleados/rol/{id}; traemos todos y filtramos por rol.
+        RetrofitClient.getApiService().getAllEmpleados()
                 .enqueue(new Callback<List<EmpleadoDto>>() {
                     @Override
                     public void onResponse(Call<List<EmpleadoDto>> call,
@@ -72,7 +73,11 @@ public class Tab_Admin_CapHum extends Fragment {
                         if (!isAdded()) return;
                         if (response.isSuccessful() && response.body() != null) {
                             lista.clear();
-                            lista.addAll(response.body());
+                            for (EmpleadoDto e : response.body()) {
+                                if ("CAPITAL_HUMANO".equals(e.getNombreRol())) {
+                                    lista.add(e);
+                                }
+                            }
                             listaFiltrada.clear();
                             listaFiltrada.addAll(lista);
                             recyclerViewAreas.setVisibility(

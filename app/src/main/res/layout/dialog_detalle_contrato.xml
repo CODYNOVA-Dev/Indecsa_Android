@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/dialog_bg"
+    android:padding="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvDetalleContratoTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contrato"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/card_bg"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView android:id="@+id/tvDetProyecto"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textColor="@color/white" android:textSize="13sp"/>
+                <TextView android:id="@+id/tvDetContratista"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textColor="@color/white" android:textSize="13sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Número de contrato" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editDetNumero"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:textColorHint="@color/text_hint" android:inputType="text"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Personal asignado" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editDetPersonal"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:textColorHint="@color/text_hint" android:inputType="number"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Fecha inicio (yyyy-MM-dd)" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editDetFechaInicio"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:textColorHint="@color/text_hint" android:inputType="date"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Fecha fin estimada (yyyy-MM-dd)" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editDetFechaFin"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:textColorHint="@color/text_hint" android:inputType="date"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Estatus" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <Spinner android:id="@+id/spinnerDetEstatus"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:background="@color/spinner_bg" android:layout_marginBottom="12dp"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Observaciones" android:textColor="@color/label_color" android:textSize="12sp"/>
+                <EditText android:id="@+id/editDetObservaciones"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg" android:padding="10dp" android:textSize="15sp"
+                    android:textColor="@color/white" android:textColorHint="@color/text_hint"
+                    android:inputType="textMultiLine" android:minLines="2"
+                    android:layout_marginBottom="20dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end">
+
+                    <Button android:id="@+id/btnDetEliminar"
+                        android:layout_width="wrap_content" android:layout_height="40dp"
+                        android:background="@drawable/btn_coral" android:text="Eliminar"
+                        android:textAllCaps="false" android:textColor="@color/white" android:textSize="14sp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:layout_marginEnd="8dp"/>
+
+                    <Button android:id="@+id/btnDetCerrar"
+                        android:layout_width="wrap_content" android:layout_height="40dp"
+                        android:background="@drawable/btn_coral" android:text="Cerrar"
+                        android:textAllCaps="false" android:textColor="@color/white" android:textSize="14sp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:layout_marginEnd="8dp"/>
+
+                    <Button android:id="@+id/btnDetGuardar"
+                        android:layout_width="wrap_content" android:layout_height="40dp"
+                        android:background="@drawable/btn_teal" android:text="Guardar"
+                        android:textAllCaps="false" android:textColor="@color/white" android:textSize="14sp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</ScrollView>

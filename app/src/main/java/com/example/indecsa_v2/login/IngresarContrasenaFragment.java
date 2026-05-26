@@ -62,14 +62,6 @@ public class IngresarContrasenaFragment extends Fragment {
         return view;
     }
 
-    private void irAlPanelPorRol(String rol) {
-        Class<?> destino = "CAPITAL_HUMANO".equals(rol)
-                ? Panel_Inicial_CapitalHumano.class
-                : Panel_Inicial_Admin.class;
-        startActivity(new Intent(requireActivity(), destino));
-        requireActivity().finish();
-    }
-
     private void mostrarError(String msg) {
         if (!isAdded()) return;
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
@@ -83,37 +75,37 @@ public class IngresarContrasenaFragment extends Fragment {
         RetrofitClient.getApiService().login(request).enqueue(new Callback<LoginResponseDto>() {
 
             @Override
-            public void onResponse(Call<LoginResponseDto> call,
-                                   Response<LoginResponseDto> response) {
+            public void onResponse(@NonNull Call<LoginResponseDto> call,
+                                   @NonNull Response<LoginResponseDto> response) {
                 if (!isAdded()) return;
 
                 if (response.code() == 401) {
                     mostrarError("Correo o contraseña incorrectos");
                     return;
                 }
+
                 if (!response.isSuccessful() || response.body() == null) {
-                    mostrarError("Error del servidor (" + response.code() + ")");
+                    mostrarError("Error en el servidor (" + response.code() + ")");
                     return;
                 }
 
                 LoginResponseDto empleado = response.body();
-
-                String token = empleado.getToken();
-                if (token != null) {
-                    RetrofitClient.getTokenManager().saveToken(token);
-                }
-
                 String rol = empleado.getNombreRol();
-                if (rol != null) {
-                    RetrofitClient.getTokenManager().saveRole(rol);
-                }
 
-                irAlPanelPorRol(rol);
+                if ("CAPITAL_HUMANO".equals(rol)) {
+                    startActivity(new Intent(requireActivity(), Panel_Inicial_CapitalHumano.class));
+                    requireActivity().finish();
+                } else if ("ADMIN".equals(rol)) {
+                    startActivity(new Intent(requireActivity(), Panel_Inicial_Admin.class));
+                    requireActivity().finish();
+                } else {
+                    mostrarError("Rol desconocido: " + rol);
+                }
             }
 
             @Override
-            public void onFailure(Call<LoginResponseDto> call, Throwable t) {
-                mostrarError("Sin conexión. Verifica tu red e intenta de nuevo.");
+            public void onFailure(@NonNull Call<LoginResponseDto> call, @NonNull Throwable t) {
+                mostrarError("No hay conexión con el servidor");
             }
         });
     }
