@@ -16,6 +16,29 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * Manejo global de auth en la capa de red. Política definida en F5.3:
+ *
+ * <h3>Códigos que maneja este interceptor</h3>
+ * <ul>
+ *   <li><b>401 Unauthorized</b> (token inválido, expirado o ausente, excepto
+ *       en endpoints de login): limpia la sesión local y redirige al login
+ *       con CLEAR_TASK. Es siempre un error de sesión, nunca de permisos.</li>
+ *   <li><b>403 Forbidden</b>: NO se maneja acá. El interceptor deja propagar
+ *       el response al caller, porque 403 significa "el JWT es válido pero
+ *       tu rol no puede hacer esta acción" — el caller sabe el contexto
+ *       (qué intentaba hacer) y muestra el mensaje específico vía
+ *       {@link com.example.indecsa_v2.util.ApiErrorMessages#forCode(int)},
+ *       que devuelve la string "Esta acción requiere permisos de
+ *       administrador". Cerrar sesión en 403 sería UX horrible — el usuario
+ *       sigue logueado, solo perdió una acción puntual.</li>
+ *   <li><b>5xx / IOException</b>: tampoco se manejan acá. Cada caller los
+ *       muestra como Toast vía ApiErrorMessages.</li>
+ * </ul>
+ *
+ * <h3>Matriz de roles (BE5)</h3>
+ * Ver Javadoc del header de {@link ApiService} para qué puede cada rol.
+ */
 public class AuthInterceptor implements Interceptor {
 
     private final TokenManager tokenManager;

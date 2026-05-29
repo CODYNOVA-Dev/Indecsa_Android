@@ -51,7 +51,7 @@
 
     <!-- ─── Mensajes de error de API ─────────────────────────────────────── -->
     <string name="api_error_401">Tu sesión expiró. Inicia sesión de nuevo.</string>
-    <string name="api_error_403">No tenés permiso para realizar esta acción.</string>
+    <string name="api_error_403">Esta acción requiere permisos de administrador. Pedile al admin que la realice por vos.</string>
     <string name="api_error_404">El recurso solicitado no existe.</string>
     <string name="api_error_4xx">No pudimos procesar la solicitud. Revisá los datos e intentá de nuevo.</string>
     <string name="api_error_5xx">El servidor tuvo un problema. Intentá de nuevo en un momento.</string>

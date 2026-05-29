@@ -70,6 +70,36 @@ import retrofit2.http.Streaming;
  * Toda lista grande se trae completa y se filtra client-side. Si el backend
  * agrega Pageable en el futuro, recuperar PageDto del historial (commit
  * previo a PR-F).
+ *
+ * <h3>Matriz de permisos por rol (definida en F5.3 / BE5)</h3>
+ * El backend valida {@code Authorization: Bearer} en TODOS los endpoints y
+ * autoriza por rol con {@code @PreAuthorize}. Cuando un endpoint protegido
+ * recibe un JWT de un rol sin permiso, devuelve 403 y el cliente muestra
+ * "Esta acción requiere permisos de administrador" (ver
+ * {@link com.example.indecsa_v2.util.ApiErrorMessages}).
+ *
+ * <table>
+ *   <caption>Permisos por rol</caption>
+ *   <tr>
+ *     <th>Recurso</th><th>ADMIN</th><th>CAPITAL_HUMANO</th>
+ *   </tr>
+ *   <tr><td>empleados</td><td>GET + POST + PUT + DELETE</td><td>GET</td></tr>
+ *   <tr><td>trabajadores</td><td>GET + POST + PUT + DELETE + PATCH</td><td>GET</td></tr>
+ *   <tr><td>contratistas</td><td>GET + POST + PUT + DELETE + PATCH</td><td>GET</td></tr>
+ *   <tr><td>proyectos</td><td>GET + POST + PUT + DELETE + PATCH</td><td>GET</td></tr>
+ *   <tr><td>cuadrillas</td><td>GET + POST + PUT + DELETE + PATCH</td><td>GET + POST + PUT + DELETE + PATCH</td></tr>
+ *   <tr><td>asignaciones/*</td><td>GET + POST + PUT + DELETE + PATCH</td><td>GET + POST + PUT + DELETE + PATCH</td></tr>
+ *   <tr><td>registros-horas</td><td>GET + POST + PUT + DELETE</td><td>GET + POST + PUT + DELETE</td></tr>
+ *   <tr><td>avances-partida</td><td>GET + POST + PUT + DELETE</td><td>GET + POST + PUT + DELETE</td></tr>
+ *   <tr><td>reportes / rendimiento</td><td>GET</td><td>GET</td></tr>
+ *   <tr><td>estandares-rendimiento</td><td>GET + POST + PUT + DELETE</td><td>GET</td></tr>
+ *   <tr><td>estados / roles / domicilios</td><td>GET + POST + PUT + DELETE</td><td>GET</td></tr>
+ *   <tr><td>registros-migratorios</td><td>GET + POST + PUT + DELETE + PATCH</td><td>GET</td></tr>
+ * </table>
+ *
+ * Resumen: <b>CAPITAL_HUMANO</b> es lectura + operación (asignar cuadrillas,
+ * registrar horas/avances, generar reportes). <b>ADMIN</b> agrega gestión
+ * de personal, contratistas, proyectos y catálogos.
  */
 public interface ApiService {
 
