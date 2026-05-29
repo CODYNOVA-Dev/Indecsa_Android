@@ -19,6 +19,7 @@ import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.admin.contratista.ConfirmEliminarDialog;
 import com.example.indecsa_v2.models.EmpleadoDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,14 +87,14 @@ public class Tab_Admin_CapHum extends Fragment {
                             adapter.notifyDataSetChanged();
                         } else {
                             Toast.makeText(getContext(),
-                                    "Error al cargar empleados", Toast.LENGTH_SHORT).show();
+                                    ApiErrorMessages.forCode(response.code()), Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<List<EmpleadoDto>> call, Throwable t) {
                         if (!isAdded()) return;
                         Toast.makeText(getContext(),
-                                "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -222,7 +223,7 @@ public class Tab_Admin_CapHum extends Fragment {
                                         Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(v.getContext(),
-                                        com.example.indecsa_v2.util.ApiErrorMessages.forCode(response.code()),
+                                        ApiErrorMessages.forCode(response.code()),
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -230,7 +231,7 @@ public class Tab_Admin_CapHum extends Fragment {
                         public void onFailure(Call<Void> call, Throwable t) {
                             if (!isAdded()) return;
                             Toast.makeText(v.getContext(),
-                                    com.example.indecsa_v2.util.ApiErrorMessages.forThrowable(t),
+                                    ApiErrorMessages.forThrowable(t),
                                     Toast.LENGTH_SHORT).show();
                         }
                     });

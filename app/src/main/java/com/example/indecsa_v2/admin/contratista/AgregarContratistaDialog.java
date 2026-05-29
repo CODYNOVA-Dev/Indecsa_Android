@@ -21,6 +21,7 @@ import com.example.indecsa_v2.models.Contratista;
 import com.example.indecsa_v2.models.Estado;
 import com.example.indecsa_v2.network.CatalogosCache;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.List;
 
@@ -118,7 +119,7 @@ public class AgregarContratistaDialog extends DialogFragment {
                                 dismiss();
                             } else {
                                 Toast.makeText(getContext(),
-                                        "Error al guardar (código " + response.code() + ")",
+                                        ApiErrorMessages.forCode(response.code()),
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -126,7 +127,7 @@ public class AgregarContratistaDialog extends DialogFragment {
                         public void onFailure(@NonNull Call<Contratista> call, @NonNull Throwable t) {
                             if (!isAdded()) return;
                             Toast.makeText(getContext(),
-                                    "Error de conexión: " + t.getMessage(),
+                                    ApiErrorMessages.forThrowable(t),
                                     Toast.LENGTH_SHORT).show();
                         }
                     });

@@ -23,6 +23,7 @@ import com.example.indecsa_v2.models.TrabajadorDto;
 import com.example.indecsa_v2.network.CatalogosCache;
 import com.example.indecsa_v2.network.DomicilioHelper;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.List;
 
@@ -177,7 +178,7 @@ public class AgregarTrabajadorDialog extends DialogFragment {
                             dismiss();
                         } else {
                             Toast.makeText(getContext(),
-                                    "Error al guardar (código " + response.code() + ")",
+                                    ApiErrorMessages.forCode(response.code()),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -185,7 +186,7 @@ public class AgregarTrabajadorDialog extends DialogFragment {
                     public void onFailure(@NonNull Call<TrabajadorDto> call, @NonNull Throwable t) {
                         if (!isAdded()) return;
                         Toast.makeText(getContext(),
-                                "Error de conexión: " + t.getMessage(),
+                                ApiErrorMessages.forThrowable(t),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });

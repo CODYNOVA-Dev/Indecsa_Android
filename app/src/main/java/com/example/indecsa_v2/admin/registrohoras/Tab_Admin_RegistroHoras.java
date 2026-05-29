@@ -27,6 +27,7 @@ import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.models.RegistroHorasDto;
 import com.example.indecsa_v2.models.TrabajadorDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -116,7 +117,7 @@ public class Tab_Admin_RegistroHoras extends Fragment {
             @Override
             public void onFailure(Call<List<ProyectoDto>> call, Throwable t) {
                 if (!isAdded()) return;
-                Toast.makeText(getContext(), "Error al cargar proyectos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -409,14 +410,14 @@ public class Tab_Admin_RegistroHoras extends Fragment {
                     }
                 } else {
                     Toast.makeText(getContext(),
-                            "Error al registrar: " + response.code(), Toast.LENGTH_SHORT).show();
+                            ApiErrorMessages.forCode(response.code()), Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onFailure(Call<RegistroHorasDto> call, Throwable t) {
                 if (!isAdded()) return;
                 btnRegistrar.setEnabled(true);
-                Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
             }
         });
     }

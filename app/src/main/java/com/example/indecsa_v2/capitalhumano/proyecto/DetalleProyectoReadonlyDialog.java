@@ -2,10 +2,7 @@ package com.example.indecsa_v2.capitalhumano.proyecto;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +15,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
+import com.example.indecsa_v2.util.PdfHelper;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -178,64 +173,36 @@ public class DetalleProyectoReadonlyDialog extends DialogFragment {
                     guardarYAbrirPdf(rootView, r.body(), nombre);
                 } else {
                     setLoadingReporte(rootView, false, "Error: " + r.code());
-                    Toast.makeText(getContext(), "Error al generar el reporte (" + r.code() + ")", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), ApiErrorMessages.forCode(r.code()), Toast.LENGTH_LONG).show();
                 }
             }
             @Override
             public void onFailure(Call<ResponseBody> c, Throwable t) {
                 if (!isAdded()) return;
                 setLoadingReporte(rootView, false, "Sin conexión");
-                Toast.makeText(getContext(), "No se pudo conectar al servidor", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void guardarYAbrirPdf(View rootView, ResponseBody body, String nombreArchivo) {
-        new Thread(() -> {
-            File file = null;
-            try {
-                File dir = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-                // Antes: hacía `new File(dir, ...)` aunque dir fuera null → NPE silencioso.
-                if (dir == null) throw new IOException("Almacenamiento externo no disponible");
-                if (!dir.exists()) dir.mkdirs();
-                file = new File(dir, nombreArchivo);
-                try (InputStream is = body.byteStream();
-                     FileOutputStream fos = new FileOutputStream(file)) {
-                    byte[] buf = new byte[4096];
-                    int len;
-                    while ((len = is.read(buf)) != -1) fos.write(buf, 0, len);
-                }
-                final File finalFile = file;
-                requireActivity().runOnUiThread(() -> {
-                    setLoadingReporte(rootView, false, "PDF guardado ✓");
-                    abrirPdf(finalFile);
-                });
-            } catch (IOException e) {
-                // Borrar archivo parcial para no dejar basura ni que el usuario lo abra creyendo válido.
-                if (file != null && file.exists()) {
-                    //noinspection ResultOfMethodCallIgnored
-                    file.delete();
-                }
-                requireActivity().runOnUiThread(() -> {
-                    setLoadingReporte(rootView, false, "Error al guardar");
-                    Toast.makeText(getContext(), "No se pudo guardar el PDF", Toast.LENGTH_LONG).show();
-                });
-            }
-        }).start();
-    }
+        PdfHelper.guardarYAbrir(
+                requireContext().getApplicationContext(),
+                body,
+                nombreArchivo,
+                new PdfHelper.Callback() {
+                    @Override public void onSuccess(@NonNull File file) {
+                        if (!isAdded()) return;
+                        setLoadingReporte(rootView, false, "PDF guardado ✓");
+                        PdfHelper.abrir(requireContext(), file);
+                    }
 
-    private void abrirPdf(File file) {
-        try {
-            Uri uri = FileProvider.getUriForFile(requireContext(),
-                    requireContext().getPackageName() + ".provider", file);
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "application/pdf");
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(Intent.createChooser(intent, "Abrir PDF con…"));
-        } catch (Exception e) {
-            Toast.makeText(getContext(),
-                    "PDF guardado. Instala un visor de PDF para abrirlo.", Toast.LENGTH_LONG).show();
-        }
+                    @Override public void onError(@NonNull String msg) {
+                        if (!isAdded()) return;
+                        setLoadingReporte(rootView, false, "Error al guardar");
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private void setLoadingReporte(View rootView, boolean loading, String msg) {
