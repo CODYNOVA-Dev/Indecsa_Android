@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.login.CorreoLoginActivity;
+import com.example.indecsa_v2.network.RetrofitClient;
 
 public class Panel_Inicial_CapitalHumano extends AppCompatActivity {
 
@@ -26,10 +29,29 @@ public class Panel_Inicial_CapitalHumano extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_panel_inicial_capital_humano);
 
-        // ✅ Se eliminó el ViewCompat.setOnApplyWindowInsetsListener
-        // porque R.id.main no existe en este layout y causaba NullPointerException
-
         setupCardListeners();
+        setupLogoutButton();
+    }
+
+    private void setupLogoutButton() {
+        View btnLogout = findViewById(R.id.btnCerrarSesion);
+        if (btnLogout == null) return;
+        btnLogout.setOnClickListener(v -> new AlertDialog.Builder(this)
+                .setTitle(R.string.logout_confirm_title)
+                .setMessage(R.string.logout_confirm_msg)
+                .setPositiveButton(R.string.logout_confirm_ok, (d, w) -> cerrarSesion())
+                .setNegativeButton(R.string.logout_confirm_cancel, null)
+                .show());
+    }
+
+    private void cerrarSesion() {
+        if (RetrofitClient.getTokenManager() != null) {
+            RetrofitClient.getTokenManager().clearSession();
+        }
+        Intent intent = new Intent(this, CorreoLoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void setupCardListeners() {

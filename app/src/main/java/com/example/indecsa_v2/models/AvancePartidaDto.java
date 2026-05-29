@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad AvancePartida del backend.
  *
@@ -10,14 +12,14 @@ package com.example.indecsa_v2.models;
  */
 public class AvancePartidaDto {
 
-    private Integer                idAvance;
-    private ProyectoDto            proyecto;
-    private CuadrillaDto           cuadrilla;
-    private EstandarRendimientoDto estandar;
-    private EmpleadoDto            empleadoRegistro;
-    private String                 nombrePartida;
-    private String                 fechaRegistro;
-    private Double                 cantidadEjecutada;
+    @SerializedName("idAvance")          private Integer                idAvance;
+    @SerializedName("proyecto")          private ProyectoDto            proyecto;
+    @SerializedName("cuadrilla")         private CuadrillaDto           cuadrilla;
+    @SerializedName("estandar")          private EstandarRendimientoDto estandar;
+    @SerializedName("empleadoRegistro")  private EmpleadoDto            empleadoRegistro;
+    @SerializedName("nombrePartida")     private String                 nombrePartida;
+    @SerializedName("fechaRegistro")     private String                 fechaRegistro;
+    @SerializedName("cantidadEjecutada") private Double                 cantidadEjecutada;
 
     // ---- cache local solo-cliente (no enviado al backend) ----
     private transient String unidadMedidaLocal;

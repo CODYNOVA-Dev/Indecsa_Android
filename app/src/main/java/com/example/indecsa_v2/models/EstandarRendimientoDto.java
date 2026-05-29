@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad EstandarRendimiento del backend.
  * Backend NO tiene un campo `descripcion`; se conserva como cache local
@@ -7,10 +9,10 @@ package com.example.indecsa_v2.models;
  */
 public class EstandarRendimientoDto {
 
-    private Integer idEstandar;
-    private String  nombreActividad;
-    private String  unidadMedida;        // m2, m3, ml, piezas, porcentaje
-    private Double  rendimientoEsperado;
+    @SerializedName("idEstandar")          private Integer idEstandar;
+    @SerializedName("nombreActividad")     private String  nombreActividad;
+    @SerializedName("unidadMedida")        private String  unidadMedida;        // m2, m3, ml, piezas, porcentaje
+    @SerializedName("rendimientoEsperado") private Double  rendimientoEsperado;
 
     private transient String descripcionLocal;
 

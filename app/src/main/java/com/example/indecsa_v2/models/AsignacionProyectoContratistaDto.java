@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad AsignacionProyectoContratista del backend.
  * Vincula un Proyecto con un Contratista (contrato marco) sobre el que luego
@@ -7,15 +9,15 @@ package com.example.indecsa_v2.models;
  */
 public class AsignacionProyectoContratistaDto {
 
-    private Integer       idAsignacionPc;
-    private ProyectoDto   proyecto;
-    private Contratista   contratista;
-    private String        numeroContrato;
-    private String        fechaInicio;
-    private String        fechaFinEstimada;
-    private Integer       personalAsignado;
-    private String        estatusContrato; // ACTIVO, VIGENTE, SUSPENDIDO, FINALIZADO, CANCELADO
-    private String        observaciones;
+    @SerializedName("idAsignacionPc")   private Integer       idAsignacionPc;
+    @SerializedName("proyecto")         private ProyectoDto   proyecto;
+    @SerializedName("contratista")      private Contratista   contratista;
+    @SerializedName("numeroContrato")   private String        numeroContrato;
+    @SerializedName("fechaInicio")      private String        fechaInicio;
+    @SerializedName("fechaFinEstimada") private String        fechaFinEstimada;
+    @SerializedName("personalAsignado") private Integer       personalAsignado;
+    @SerializedName("estatusContrato")  private String        estatusContrato; // ACTIVO, VIGENTE, SUSPENDIDO, FINALIZADO, CANCELADO
+    @SerializedName("observaciones")    private String        observaciones;
 
     public AsignacionProyectoContratistaDto() {}
 

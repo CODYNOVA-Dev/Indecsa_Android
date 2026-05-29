@@ -19,7 +19,9 @@ import retrofit2.Response;
  * requiere un idAsignacionPc en el backend.
  *
  * Estrategia:
- *   1. GET asignaciones-proyecto-contratista?idProyecto=X&idContratista=Y
+ *   1. GET asignaciones/proyecto-contratista/proyecto/{idProyecto}
+ *      (el backend no soporta filtrar por proyecto+contratista en un solo
+ *      request; filtramos por contratista en cliente sobre el resultado)
  *   2. Si hay alguno con estatus ACTIVO o VIGENTE → reutilizar el más reciente
  *   3. Si no → crear uno nuevo con personalAsignado estimado y estatus VIGENTE
  */
@@ -38,13 +40,21 @@ public final class AsignacionPcHelper {
                                      @NonNull Callback cb) {
 
         RetrofitClient.getApiService()
-                .getAllAsignacionesProyectoContratista(idProyecto, idContratista)
+                .getAsignacionesPcByProyecto(idProyecto)
                 .enqueue(new retrofit2.Callback<List<AsignacionProyectoContratistaDto>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<AsignacionProyectoContratistaDto>> call,
                                            @NonNull Response<List<AsignacionProyectoContratistaDto>> r) {
                         if (r.isSuccessful() && r.body() != null) {
+                            Integer targetContratista = idContratista;
                             for (AsignacionProyectoContratistaDto a : r.body()) {
+                                // Filtrar client-side por contratista (backend solo filtra por proyecto).
+                                // Usamos .equals() en vez de != para no depender de auto-unboxing
+                                // y blindar contra futuros refactors de int → Integer.
+                                if (a.getIdContratista() == null
+                                        || !a.getIdContratista().equals(targetContratista)) {
+                                    continue;
+                                }
                                 String est = a.getEstatusContrato();
                                 if ("ACTIVO".equals(est) || "VIGENTE".equals(est)) {
                                     cb.onResolved(a);

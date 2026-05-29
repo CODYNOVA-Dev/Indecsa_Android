@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad Trabajador del backend.
  *
@@ -16,35 +18,35 @@ package com.example.indecsa_v2.models;
 public class TrabajadorDto {
 
     // ---- campos serializados al/desde backend ----
-    private Integer idTrabajador;
-    private String  nombreTrabajador;
-    private String  curp;
-    private String  rfc;
-    private String  nssTrabajador;
-    private String  nacionalidad;
-    private RegistroMigratorio registroMigratorio;
-    private Domicilio domicilio;
-    private String  fotoPerfilUrl;
-    private String  puesto;
-    private String  descPuesto;
-    private String  especialidadTrabajador;
-    private String  escolaridad;
-    private String  experiencia;
-    private String  telefonoTrabajador;
-    private String  correoTrabajador;
-    private String  contratacion;
-    private String  jornada;
-    private String  estadoTrabajador; // enum: DESCANSO, VACACIONES, INCAPACIDAD, ACTIVO, INACTIVO, BAJA, BOLETINADO
-    private Integer evaluacionTrabajador; // backend es Byte; Gson lo deserializa OK
-    private String  fechaIngreso;     // ISO yyyy-MM-dd
-    private Estado  estadoCalidadVida;
-    private String  sexo;             // Masculino, Femenino, Otro
-    private String  antPenal;
-    private String  deudorAlim;
-    private String  folioLicCond;
-    private String  estadoCivil;
-    private String  idiomas;
-    private String  lenguaIndigena;
+    @SerializedName("idTrabajador")           private Integer idTrabajador;
+    @SerializedName("nombreTrabajador")       private String  nombreTrabajador;
+    @SerializedName("curp")                   private String  curp;
+    @SerializedName("rfc")                    private String  rfc;
+    @SerializedName("nssTrabajador")          private String  nssTrabajador;
+    @SerializedName("nacionalidad")           private String  nacionalidad;
+    @SerializedName("registroMigratorio")     private RegistroMigratorio registroMigratorio;
+    @SerializedName("domicilio")              private Domicilio domicilio;
+    @SerializedName("fotoPerfilUrl")          private String  fotoPerfilUrl;
+    @SerializedName("puesto")                 private String  puesto;
+    @SerializedName("descPuesto")             private String  descPuesto;
+    @SerializedName("especialidadTrabajador") private String  especialidadTrabajador;
+    @SerializedName("escolaridad")            private String  escolaridad;
+    @SerializedName("experiencia")            private String  experiencia;
+    @SerializedName("telefonoTrabajador")     private String  telefonoTrabajador;
+    @SerializedName("correoTrabajador")       private String  correoTrabajador;
+    @SerializedName("contratacion")           private String  contratacion;
+    @SerializedName("jornada")                private String  jornada;
+    @SerializedName("estadoTrabajador")       private String  estadoTrabajador; // enum: DESCANSO, VACACIONES, INCAPACIDAD, ACTIVO, INACTIVO, BAJA, BOLETINADO
+    @SerializedName("evaluacionTrabajador")   private Integer evaluacionTrabajador; // backend es Byte; Gson lo deserializa OK
+    @SerializedName("fechaIngreso")           private String  fechaIngreso;     // ISO yyyy-MM-dd
+    @SerializedName("estadoCalidadVida")      private Estado  estadoCalidadVida;
+    @SerializedName("sexo")                   private String  sexo;             // Masculino, Femenino, Otro
+    @SerializedName("antPenal")               private String  antPenal;
+    @SerializedName("deudorAlim")             private String  deudorAlim;
+    @SerializedName("folioLicCond")           private String  folioLicCond;
+    @SerializedName("estadoCivil")            private String  estadoCivil;
+    @SerializedName("idiomas")                private String  idiomas;
+    @SerializedName("lenguaIndigena")         private String  lenguaIndigena;
 
     // ---- cache local solo-cliente (no viaja al backend) ----
     private transient String descripcionTrabajadorLocal;

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * NUEVO: Reemplaza a LoginRequestAdmin y LoginRequestCapHum.
  *
- * El backend ahora tiene un único endpoint POST /api/v1/empleados/login
+ * El backend tiene un único endpoint POST /api/empleados/login
  * que acepta { correoEmpleado, contrasena } y devuelve el rol en
  * LoginResponseDto. Ya no existen endpoints separados por rol.
  */

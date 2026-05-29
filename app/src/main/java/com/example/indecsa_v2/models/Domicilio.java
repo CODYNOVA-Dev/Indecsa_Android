@@ -1,15 +1,17 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Domicilio {
 
-    private Integer idDomicilio;
-    private String  calle;
-    private String  numExt;
-    private String  numInt;
-    private String  colonia;
-    private Integer codPost;
-    private String  munAlc;
-    private Estado  estado;
+    @SerializedName("idDomicilio") private Integer idDomicilio;
+    @SerializedName("calle")       private String  calle;
+    @SerializedName("numExt")      private String  numExt;
+    @SerializedName("numInt")      private String  numInt;
+    @SerializedName("colonia")     private String  colonia;
+    @SerializedName("codPost")     private Integer codPost;
+    @SerializedName("munAlc")      private String  munAlc;
+    @SerializedName("estado")      private Estado  estado;
 
     public Domicilio() {}
 

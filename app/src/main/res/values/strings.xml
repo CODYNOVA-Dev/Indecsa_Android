@@ -26,4 +26,35 @@
     <string name="title_activity_admin_tab_trabajadores">Admin_Tab_Trabajadores</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+
+    <!-- ─── Login ─────────────────────────────────────────────────────────── -->
+    <string name="login_correo_vacio">Ingresa tu usuario o correo</string>
+    <string name="login_password_vacio">Ingresa tu contraseña</string>
+    <string name="login_error_credenciales">Correo o contraseña incorrectos</string>
+    <string name="login_error_servidor">Error en el servidor (%1$d)</string>
+    <string name="login_error_red">No hay conexión con el servidor</string>
+    <string name="login_error_sin_rol">Rol inválido en respuesta del servidor</string>
+    <string name="login_error_sin_token">El servidor no devolvió token de sesión</string>
+    <string name="login_error_rol_desconocido">Rol desconocido: %1$s</string>
+
+    <!-- ─── Sesión ────────────────────────────────────────────────────────── -->
+    <string name="sesion_expirada">Sesión expirada. Inicia sesión de nuevo.</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="logout_confirm_title">¿Cerrar sesión?</string>
+    <string name="logout_confirm_msg">Vas a salir de la cuenta actual. ¿Continuar?</string>
+    <string name="logout_confirm_ok">Sí, cerrar sesión</string>
+    <string name="logout_confirm_cancel">Cancelar</string>
+
+    <!-- ─── Catálogos / placeholders comunes ─────────────────────────────── -->
+    <string name="sin_cuadrilla">Sin cuadrilla</string>
+    <string name="sin_estandar">Sin estándar</string>
+
+    <!-- ─── Mensajes de error de API ─────────────────────────────────────── -->
+    <string name="api_error_401">Tu sesión expiró. Inicia sesión de nuevo.</string>
+    <string name="api_error_403">No tenés permiso para realizar esta acción.</string>
+    <string name="api_error_404">El recurso solicitado no existe.</string>
+    <string name="api_error_4xx">No pudimos procesar la solicitud. Revisá los datos e intentá de nuevo.</string>
+    <string name="api_error_5xx">El servidor tuvo un problema. Intentá de nuevo en un momento.</string>
+    <string name="api_error_network">Sin conexión. Verificá tu internet e intentá de nuevo.</string>
+    <string name="api_error_unknown">Ocurrió un error inesperado.</string>
 </resources>

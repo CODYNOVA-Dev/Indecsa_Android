@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad Contratista del backend.
  *
@@ -16,18 +18,18 @@ package com.example.indecsa_v2.models;
  */
 public class Contratista {
 
-    private Integer idContratista;
-    private String  nombreContratista;
-    private String  curp;
-    private String  rfcContratista;
-    private String  telefonoContratista;
-    private String  correoContratista;
-    private String  descripcionContratista;
-    private String  fotoPerfilUrl;
-    private String  experiencia;
-    private Integer calificacionContratista; // backend usa Byte; Gson lo deserializa OK como Integer
-    private String  estadoContratista;
-    private Estado  estadoOperacion;
+    @SerializedName("idContratista")          private Integer idContratista;
+    @SerializedName("nombreContratista")      private String  nombreContratista;
+    @SerializedName("curp")                   private String  curp;
+    @SerializedName("rfcContratista")         private String  rfcContratista;
+    @SerializedName("telefonoContratista")    private String  telefonoContratista;
+    @SerializedName("correoContratista")      private String  correoContratista;
+    @SerializedName("descripcionContratista") private String  descripcionContratista;
+    @SerializedName("fotoPerfilUrl")          private String  fotoPerfilUrl;
+    @SerializedName("experiencia")            private String  experiencia;
+    @SerializedName("calificacionContratista") private Integer calificacionContratista; // backend usa Byte; Gson lo deserializa OK como Integer
+    @SerializedName("estadoContratista")      private String  estadoContratista;
+    @SerializedName("estadoOperacion")        private Estado  estadoOperacion;
 
     // Campo legacy solo-cliente (no enviar al backend, no leer de él)
     private transient String ubicacionContratista;

@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad Cuadrilla del backend (proyecto anidado).
  *
@@ -8,11 +10,11 @@ package com.example.indecsa_v2.models;
  */
 public class CuadrillaDto {
 
-    private Integer     idCuadrilla;
-    private ProyectoDto proyecto;
-    private String      nombreCuadrilla;
-    private String      frenteTrabajo;
-    private String      estatusCuadrilla; // ACTIVO, INACTIVO
+    @SerializedName("idCuadrilla")      private Integer     idCuadrilla;
+    @SerializedName("proyecto")         private ProyectoDto proyecto;
+    @SerializedName("nombreCuadrilla")  private String      nombreCuadrilla;
+    @SerializedName("frenteTrabajo")    private String      frenteTrabajo;
+    @SerializedName("estatusCuadrilla") private String      estatusCuadrilla; // ACTIVO, INACTIVO
 
     private transient String observacionesLocal;
 
