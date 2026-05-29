@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.models.TrabajadorDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,13 +86,17 @@ public class Tab_Admin_Trabajador extends Fragment {
                     recyclerViewAreas.setVisibility(listaTrabajadores.isEmpty() ? View.GONE : View.VISIBLE);
                     trabajadorAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getContext(), "Error al cargar trabajadores", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),
+                            ApiErrorMessages.forCode(response.code()),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onFailure(Call<List<TrabajadorDto>> call, Throwable t) {
                 if (!isAdded()) return;
-                Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),
+                        ApiErrorMessages.forThrowable(t),
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -214,7 +219,6 @@ public class Tab_Admin_Trabajador extends Fragment {
                     ratingBar.setVisibility(View.GONE);
                 }
 
-                // ✅ Ahora abre el dialog real
                 itemView.setOnClickListener(v -> abrirDetalleTrabajador(t));
             }
         }

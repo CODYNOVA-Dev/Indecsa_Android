@@ -367,17 +367,23 @@ public class DetalleTrabajadorDialog extends DialogFragment {
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (!isAdded()) return;
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "Trabajador eliminado", Toast.LENGTH_SHORT).show();
                             if (onCambioListener != null) onCambioListener.onCambio();
                             dismiss();
                         } else {
-                            Toast.makeText(getContext(), "Error al eliminar", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),
+                                    com.example.indecsa_v2.util.ApiErrorMessages.forCode(response.code()),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (!isAdded()) return;
+                        Toast.makeText(getContext(),
+                                com.example.indecsa_v2.util.ApiErrorMessages.forThrowable(t),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }

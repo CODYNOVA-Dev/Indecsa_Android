@@ -224,22 +224,29 @@ public class DetalleProyectoDialog extends DialogFragment {
 
     private void guardarYAbrirPdf(View rootView, ResponseBody body, String nombreArchivo) {
         new Thread(() -> {
+            File file = null;
             try {
                 File dir = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
                 if (dir == null) throw new IOException("Almacenamiento externo no disponible");
                 if (!dir.exists()) dir.mkdirs();
-                File file = new File(dir, nombreArchivo);
+                file = new File(dir, nombreArchivo);
                 try (InputStream is = body.byteStream();
                      FileOutputStream fos = new FileOutputStream(file)) {
                     byte[] buf = new byte[4096];
                     int len;
                     while ((len = is.read(buf)) != -1) fos.write(buf, 0, len);
                 }
+                final File finalFile = file;
                 requireActivity().runOnUiThread(() -> {
                     setLoadingReporte(rootView, false, "PDF guardado ✓");
-                    abrirPdf(file);
+                    abrirPdf(finalFile);
                 });
             } catch (IOException e) {
+                // Borrar archivo parcial para no dejar basura ni que el usuario lo abra creyendo válido.
+                if (file != null && file.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    file.delete();
+                }
                 requireActivity().runOnUiThread(() -> {
                     setLoadingReporte(rootView, false, "Error al guardar");
                     Toast.makeText(getContext(), "No se pudo guardar el PDF", Toast.LENGTH_LONG).show();
@@ -343,17 +350,23 @@ public class DetalleProyectoDialog extends DialogFragment {
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (!isAdded()) return;
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "Proyecto eliminado", Toast.LENGTH_SHORT).show();
                             if (onCambioListener != null) onCambioListener.onCambio();
                             dismiss();
                         } else {
-                            Toast.makeText(getContext(), "Error al eliminar", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),
+                                    com.example.indecsa_v2.util.ApiErrorMessages.forCode(response.code()),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (!isAdded()) return;
+                        Toast.makeText(getContext(),
+                                com.example.indecsa_v2.util.ApiErrorMessages.forThrowable(t),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }

@@ -223,13 +223,17 @@ public class DetalleContratistaDialog extends DialogFragment {
                             if (onCambioListener != null) onCambioListener.onCambio();
                             dismiss();
                         } else {
-                            Toast.makeText(getContext(), "Error al eliminar", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),
+                                    com.example.indecsa_v2.util.ApiErrorMessages.forCode(response.code()),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
                         if (!isAdded()) return;
-                        Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),
+                                com.example.indecsa_v2.util.ApiErrorMessages.forThrowable(t),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }

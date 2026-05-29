@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.indecsa_v2.R;
+import com.example.indecsa_v2.admin.contratista.ConfirmEliminarDialog;
 import com.example.indecsa_v2.models.EmpleadoDto;
 import com.example.indecsa_v2.network.RetrofitClient;
 
@@ -192,33 +193,47 @@ public class Tab_Admin_CapHum extends Fragment {
                 if (btnEliminar != null)
                     btnEliminar.setOnClickListener(v -> {
                         if (e.getIdEmpleado() == null) return;
-                        RetrofitClient.getApiService().deleteEmpleado(e.getIdEmpleado())
-                                .enqueue(new Callback<Void>() {
-                                    @Override
-                                    public void onResponse(Call<Void> call,
-                                                           Response<Void> response) {
-                                        if (response.isSuccessful()) {
-                                            lista.remove(e);
-                                            listaFiltrada.remove(e);
-                                            notifyDataSetChanged();
-                                            Toast.makeText(v.getContext(),
-                                                    nombre + " eliminado",
-                                                    Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(v.getContext(),
-                                                    "Error al eliminar",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                    @Override
-                                    public void onFailure(Call<Void> call, Throwable t) {
-                                        Toast.makeText(v.getContext(),
-                                                "Error de conexión",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                        // Antes: borrado inmediato sin confirmación → toque accidental
+                        // en pantalla táctil eliminaba al empleado para siempre.
+                        ConfirmEliminarDialog confirm = ConfirmEliminarDialog.newInstance(
+                                "¿Eliminar empleado?",
+                                "Esta acción no se puede deshacer.\n\""
+                                        + (nombre != null ? nombre : "—")
+                                        + "\" será eliminado permanentemente."
+                        );
+                        confirm.setOnConfirmListener(() -> ejecutarEliminarEmpleado(e, nombre, v));
+                        confirm.show(getParentFragmentManager(), "confirm_eliminar_empleado");
                     });
             }
+        }
+
+        private void ejecutarEliminarEmpleado(EmpleadoDto e, String nombre, View v) {
+            RetrofitClient.getApiService().deleteEmpleado(e.getIdEmpleado())
+                    .enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (!isAdded()) return;
+                            if (response.isSuccessful()) {
+                                lista.remove(e);
+                                listaFiltrada.remove(e);
+                                notifyDataSetChanged();
+                                Toast.makeText(v.getContext(),
+                                        nombre + " eliminado",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(v.getContext(),
+                                        com.example.indecsa_v2.util.ApiErrorMessages.forCode(response.code()),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            if (!isAdded()) return;
+                            Toast.makeText(v.getContext(),
+                                    com.example.indecsa_v2.util.ApiErrorMessages.forThrowable(t),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
 }

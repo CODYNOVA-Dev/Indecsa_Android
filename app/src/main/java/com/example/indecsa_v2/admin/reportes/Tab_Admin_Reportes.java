@@ -294,11 +294,12 @@ public class Tab_Admin_Reportes extends Fragment {
 
     private void guardarYAbrirPdf(ResponseBody body, String nombreArchivo) {
         new Thread(() -> {
+            File file = null;
             try {
                 File dir = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
                 if (dir == null) throw new IOException("Almacenamiento externo no disponible");
                 if (!dir.exists()) dir.mkdirs();
-                File file = new File(dir, nombreArchivo);
+                file = new File(dir, nombreArchivo);
 
                 try (InputStream is = body.byteStream();
                      FileOutputStream fos = new FileOutputStream(file)) {
@@ -307,12 +308,20 @@ public class Tab_Admin_Reportes extends Fragment {
                     while ((len = is.read(buf)) != -1) fos.write(buf, 0, len);
                 }
 
+                final File finalFile = file;
                 requireActivity().runOnUiThread(() -> {
                     setLoading(false, "PDF guardado ✓");
-                    abrirPdf(file);
+                    abrirPdf(finalFile);
                 });
 
             } catch (IOException e) {
+                // El stream pudo haber escrito parte del PDF antes de fallar.
+                // Borramos el archivo a medio hacer para no dejar basura en /Documents
+                // ni que el usuario lo abra creyendo que es válido.
+                if (file != null && file.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    file.delete();
+                }
                 requireActivity().runOnUiThread(() -> {
                     setLoading(false, "Error al guardar");
                     Toast.makeText(requireContext(), "No se pudo guardar el PDF", Toast.LENGTH_LONG).show();

@@ -192,21 +192,30 @@ public class DetalleProyectoReadonlyDialog extends DialogFragment {
 
     private void guardarYAbrirPdf(View rootView, ResponseBody body, String nombreArchivo) {
         new Thread(() -> {
+            File file = null;
             try {
                 File dir = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-                if (dir != null && !dir.exists()) dir.mkdirs();
-                File file = new File(dir, nombreArchivo);
+                // Antes: hacía `new File(dir, ...)` aunque dir fuera null → NPE silencioso.
+                if (dir == null) throw new IOException("Almacenamiento externo no disponible");
+                if (!dir.exists()) dir.mkdirs();
+                file = new File(dir, nombreArchivo);
                 try (InputStream is = body.byteStream();
                      FileOutputStream fos = new FileOutputStream(file)) {
                     byte[] buf = new byte[4096];
                     int len;
                     while ((len = is.read(buf)) != -1) fos.write(buf, 0, len);
                 }
+                final File finalFile = file;
                 requireActivity().runOnUiThread(() -> {
                     setLoadingReporte(rootView, false, "PDF guardado ✓");
-                    abrirPdf(file);
+                    abrirPdf(finalFile);
                 });
             } catch (IOException e) {
+                // Borrar archivo parcial para no dejar basura ni que el usuario lo abra creyendo válido.
+                if (file != null && file.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    file.delete();
+                }
                 requireActivity().runOnUiThread(() -> {
                     setLoadingReporte(rootView, false, "Error al guardar");
                     Toast.makeText(getContext(), "No se pudo guardar el PDF", Toast.LENGTH_LONG).show();

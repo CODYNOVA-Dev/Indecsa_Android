@@ -2,6 +2,7 @@ package com.example.indecsa_v2.admin.registrohoras;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -179,7 +180,10 @@ public class Tab_Admin_RegistroHoras extends Fragment {
     }
 
     private void cargarRegistros(Integer idProyecto) {
-        RetrofitClient.getApiService().getRegistroHorasByProyecto(idProyecto, null, null)
+        // Backend NO expone filtro por proyecto en /registros-horas — traemos
+        // todos y filtramos client-side. Si la lista crece mucho, considerar
+        // iterar getRegistrosHorasByAsignacion() por cada asignación del proyecto.
+        RetrofitClient.getApiService().getAllRegistrosHoras()
                 .enqueue(new Callback<List<RegistroHorasDto>>() {
             @Override
             public void onResponse(Call<List<RegistroHorasDto>> call,
@@ -187,7 +191,25 @@ public class Tab_Admin_RegistroHoras extends Fragment {
                 if (!isAdded()) return;
                 listaRegistros.clear();
                 if (response.isSuccessful() && response.body() != null) {
-                    listaRegistros.addAll(response.body());
+                    int descartadosPorNull = 0;
+                    for (RegistroHorasDto r : response.body()) {
+                        if (idProyecto == null) {
+                            listaRegistros.add(r);
+                        } else if (r.getIdProyecto() != null && r.getIdProyecto().equals(idProyecto)) {
+                            listaRegistros.add(r);
+                        } else if (r.getIdProyecto() == null) {
+                            descartadosPorNull++;
+                        }
+                    }
+                    // Si MUCHOS registros vienen sin proyecto anidado, el backend
+                    // probablemente cambió el serialization (FK plana en vez de
+                    // objeto eager). El filtro client-side queda inservible:
+                    // mostraríamos lista vacía cuando en realidad hay datos.
+                    if (descartadosPorNull > 0 && idProyecto != null) {
+                        Log.w("Tab_Admin_RegistroHoras",
+                                "Descartados " + descartadosPorNull + " registros sin proyecto anidado. "
+                                        + "¿Backend dejó de incluir asignacionTrabajadorProyecto eager?");
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 actualizarVisibilidadLista();
@@ -481,7 +503,7 @@ public class Tab_Admin_RegistroHoras extends Fragment {
                                 : "Trabajador");
                 textAvatar.setText(nombre.isEmpty() ? "?" : String.valueOf(nombre.charAt(0)).toUpperCase());
                 textNombre.setText(nombre);
-                textCuadrilla.setText(r.getNombreCuadrilla() != null ? r.getNombreCuadrilla() : "Sin cuadrilla");
+                textCuadrilla.setText(r.getNombreCuadrilla() != null ? r.getNombreCuadrilla() : itemView.getContext().getString(R.string.sin_cuadrilla));
                 textFecha.setText(r.getFechaRegistro() != null ? r.getFechaRegistro() : "—");
                 textHoras.setText(r.getHorasTrabajadas() != null
                         ? String.format(Locale.US, "%.1f h", r.getHorasTrabajadas()) : "—");

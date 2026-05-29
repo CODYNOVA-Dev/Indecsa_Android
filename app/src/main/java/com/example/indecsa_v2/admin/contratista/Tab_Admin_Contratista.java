@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.models.Contratista;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,7 @@ public class Tab_Admin_Contratista extends Fragment {
         RetrofitClient.getApiService().getAllContratistas().enqueue(new Callback<List<Contratista>>() {
             @Override
             public void onResponse(Call<List<Contratista>> call, Response<List<Contratista>> response) {
-                if (getContext() == null) return;
+                if (!isAdded() || getContext() == null) return;
                 if (response.isSuccessful() && response.body() != null) {
                     listaContratistas.clear();
                     listaContratistas.addAll(response.body());
@@ -88,15 +89,15 @@ public class Tab_Admin_Contratista extends Fragment {
                     recyclerViewAreas.setVisibility(vacio ? View.GONE : View.VISIBLE);
                     textVacio.setVisibility(vacio ? View.VISIBLE : View.GONE);
                 } else {
-                    textVacio.setText("Error al cargar (" + response.code() + ")");
+                    textVacio.setText(ApiErrorMessages.forCode(response.code()));
                     textVacio.setVisibility(View.VISIBLE);
                     recyclerViewAreas.setVisibility(View.GONE);
                 }
             }
             @Override
             public void onFailure(Call<List<Contratista>> call, Throwable t) {
-                if (getContext() == null) return;
-                textVacio.setText("Sin conexión: " + t.getMessage());
+                if (!isAdded() || getContext() == null) return;
+                textVacio.setText(ApiErrorMessages.forThrowable(t));
                 textVacio.setVisibility(View.VISIBLE);
                 recyclerViewAreas.setVisibility(View.GONE);
             }
