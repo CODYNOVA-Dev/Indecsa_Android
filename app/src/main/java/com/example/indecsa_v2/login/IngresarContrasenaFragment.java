@@ -52,7 +52,7 @@ public class IngresarContrasenaFragment extends Fragment {
                     : "";
 
             if (pass.isEmpty()) {
-                Toast.makeText(getContext(), "Ingresa tu contraseña", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.login_password_vacio, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -80,17 +80,33 @@ public class IngresarContrasenaFragment extends Fragment {
                 if (!isAdded()) return;
 
                 if (response.code() == 401) {
-                    mostrarError("Correo o contraseña incorrectos");
+                    mostrarError(getString(R.string.login_error_credenciales));
                     return;
                 }
 
                 if (!response.isSuccessful() || response.body() == null) {
-                    mostrarError("Error en el servidor (" + response.code() + ")");
+                    mostrarError(getString(R.string.login_error_servidor, response.code()));
                     return;
                 }
 
                 LoginResponseDto empleado = response.body();
                 String rol = empleado.getNombreRol();
+
+                if (rol == null) {
+                    mostrarError(getString(R.string.login_error_sin_rol));
+                    return;
+                }
+
+                String token = empleado.getToken();
+                if (token == null || token.isEmpty()) {
+                    mostrarError(getString(R.string.login_error_sin_token));
+                    return;
+                }
+
+                // Persistir sesión ANTES de navegar para que el primer request
+                // del panel ya tenga el Bearer adjuntado por AuthInterceptor.
+                RetrofitClient.getTokenManager().saveToken(token);
+                RetrofitClient.getTokenManager().saveRole(rol);
 
                 if ("CAPITAL_HUMANO".equals(rol)) {
                     startActivity(new Intent(requireActivity(), Panel_Inicial_CapitalHumano.class));
@@ -99,13 +115,14 @@ public class IngresarContrasenaFragment extends Fragment {
                     startActivity(new Intent(requireActivity(), Panel_Inicial_Admin.class));
                     requireActivity().finish();
                 } else {
-                    mostrarError("Rol desconocido: " + rol);
+                    RetrofitClient.getTokenManager().clearSession();
+                    mostrarError(getString(R.string.login_error_rol_desconocido, rol));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<LoginResponseDto> call, @NonNull Throwable t) {
-                mostrarError("No hay conexión con el servidor");
+                mostrarError(getString(R.string.login_error_red));
             }
         });
     }

@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad RegistroHoras del backend.
  *
@@ -10,12 +12,12 @@ package com.example.indecsa_v2.models;
  */
 public class RegistroHorasDto {
 
-    private Integer                          idRegistro;
-    private AsignacionTrabajadorProyectoDto  asignacionTrabajadorProyecto;
-    private CuadrillaDto                     cuadrilla;
-    private EmpleadoDto                      empleadoRegistro;
-    private String                           fechaRegistro;
-    private Double                           horasTrabajadas;
+    @SerializedName("idRegistro")                   private Integer                          idRegistro;
+    @SerializedName("asignacionTrabajadorProyecto") private AsignacionTrabajadorProyectoDto  asignacionTrabajadorProyecto;
+    @SerializedName("cuadrilla")                    private CuadrillaDto                     cuadrilla;
+    @SerializedName("empleadoRegistro")             private EmpleadoDto                      empleadoRegistro;
+    @SerializedName("fechaRegistro")                private String                           fechaRegistro;
+    @SerializedName("horasTrabajadas")              private Double                           horasTrabajadas;
 
     private transient String tipoPeriodoLocal;
     private transient String observacionesLocal;

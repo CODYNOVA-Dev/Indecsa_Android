@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,13 +74,17 @@ public class Tab_CapitalHumano_Proyecto extends Fragment {
                     recyclerView.setVisibility(lista.isEmpty() ? View.GONE : View.VISIBLE);
                     adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getContext(), "Error al cargar proyectos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),
+                            ApiErrorMessages.forCode(response.code()),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onFailure(Call<List<ProyectoDto>> call, Throwable t) {
                 if (!isAdded()) return;
-                Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),
+                        ApiErrorMessages.forThrowable(t),
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }

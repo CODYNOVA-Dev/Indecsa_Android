@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad Empleado del backend (id, nombre, curp, correo, contrasena,
  * foto y un Rol anidado). Mantiene getNombreRol() / setNombreRol() como atajos
@@ -7,13 +9,13 @@ package com.example.indecsa_v2.models;
  */
 public class EmpleadoDto {
 
-    private Integer idEmpleado;
-    private String  nombreEmpleado;
-    private String  curp;
-    private String  correoEmpleado;
-    private String  contrasena;
-    private String  fotoPerfilUrl;
-    private Rol     rol;
+    @SerializedName("idEmpleado")     private Integer idEmpleado;
+    @SerializedName("nombreEmpleado") private String  nombreEmpleado;
+    @SerializedName("curp")           private String  curp;
+    @SerializedName("correoEmpleado") private String  correoEmpleado;
+    @SerializedName("contrasena")     private String  contrasena;
+    @SerializedName("fotoPerfilUrl")  private String  fotoPerfilUrl;
+    @SerializedName("rol")            private Rol     rol;
 
     public EmpleadoDto() {}
 

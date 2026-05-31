@@ -1,22 +1,24 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class RendimientoIndicadorDto {
 
-    private Integer idTrabajador;
-    private String  nombreTrabajador;
-    private Integer idProyecto;
-    private String  nombreProyecto;
-    private Integer idCuadrilla;
-    private String  nombreCuadrilla;
-    private String  periodoInicio;
-    private String  periodoFin;
-    private Double  totalHorasTrabajadas;
-    private Double  totalAvanceEjecutado;
-    private String  unidadMedida;
-    private Double  rendimientoReal;
-    private Double  rendimientoEsperado;
-    private Double  porcentajeDesviacion;
-    private String  indicadorSemaforo;
+    @SerializedName("idTrabajador")         private Integer idTrabajador;
+    @SerializedName("nombreTrabajador")     private String  nombreTrabajador;
+    @SerializedName("idProyecto")           private Integer idProyecto;
+    @SerializedName("nombreProyecto")       private String  nombreProyecto;
+    @SerializedName("idCuadrilla")          private Integer idCuadrilla;
+    @SerializedName("nombreCuadrilla")      private String  nombreCuadrilla;
+    @SerializedName("periodoInicio")        private String  periodoInicio;
+    @SerializedName("periodoFin")           private String  periodoFin;
+    @SerializedName("totalHorasTrabajadas") private Double  totalHorasTrabajadas;
+    @SerializedName("totalAvanceEjecutado") private Double  totalAvanceEjecutado;
+    @SerializedName("unidadMedida")         private String  unidadMedida;
+    @SerializedName("rendimientoReal")      private Double  rendimientoReal;
+    @SerializedName("rendimientoEsperado")  private Double  rendimientoEsperado;
+    @SerializedName("porcentajeDesviacion") private Double  porcentajeDesviacion;
+    @SerializedName("indicadorSemaforo")    private String  indicadorSemaforo;
 
     public Integer getIdTrabajador()             { return idTrabajador; }
     public void    setIdTrabajador(Integer v)    { this.idTrabajador = v; }

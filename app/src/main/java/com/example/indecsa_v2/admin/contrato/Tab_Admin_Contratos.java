@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.models.AsignacionProyectoContratistaDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,12 +77,12 @@ public class Tab_Admin_Contratos extends Fragment {
         textVacio.setVisibility(View.GONE);
 
         RetrofitClient.getApiService()
-                .getAllAsignacionesProyectoContratista(null, null)
+                .getAllAsignacionesProyectoContratista()
                 .enqueue(new Callback<List<AsignacionProyectoContratistaDto>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<AsignacionProyectoContratistaDto>> call,
                                            @NonNull Response<List<AsignacionProyectoContratistaDto>> response) {
-                        if (getContext() == null) return;
+                        if (!isAdded() || getContext() == null) return;
                         if (response.isSuccessful() && response.body() != null) {
                             lista.clear();
                             lista.addAll(response.body());
@@ -90,7 +91,7 @@ public class Tab_Admin_Contratos extends Fragment {
                             adapter.notifyDataSetChanged();
                             mostrarOcultarVacio();
                         } else {
-                            textVacio.setText("Error al cargar (" + response.code() + ")");
+                            textVacio.setText(ApiErrorMessages.forCode(response.code()));
                             textVacio.setVisibility(View.VISIBLE);
                             recycler.setVisibility(View.GONE);
                         }
@@ -99,8 +100,8 @@ public class Tab_Admin_Contratos extends Fragment {
                     @Override
                     public void onFailure(@NonNull Call<List<AsignacionProyectoContratistaDto>> call,
                                           @NonNull Throwable t) {
-                        if (getContext() == null) return;
-                        textVacio.setText("Sin conexión: " + t.getMessage());
+                        if (!isAdded() || getContext() == null) return;
+                        textVacio.setText(ApiErrorMessages.forThrowable(t));
                         textVacio.setVisibility(View.VISIBLE);
                         recycler.setVisibility(View.GONE);
                     }

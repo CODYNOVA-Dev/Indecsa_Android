@@ -2,10 +2,7 @@ package com.example.indecsa_v2.admin.proyecto;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +16,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.admin.contratista.ConfirmEliminarDialog;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
+import com.example.indecsa_v2.util.PdfHelper;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -210,56 +205,36 @@ public class DetalleProyectoDialog extends DialogFragment {
                     guardarYAbrirPdf(rootView, r.body(), nombre);
                 } else {
                     setLoadingReporte(rootView, false, "Error: " + r.code());
-                    Toast.makeText(getContext(), "Error al generar el reporte (" + r.code() + ")", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), ApiErrorMessages.forCode(r.code()), Toast.LENGTH_LONG).show();
                 }
             }
             @Override
             public void onFailure(Call<ResponseBody> c, Throwable t) {
                 if (!isAdded()) return;
                 setLoadingReporte(rootView, false, "Sin conexión");
-                Toast.makeText(getContext(), "No se pudo conectar al servidor", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void guardarYAbrirPdf(View rootView, ResponseBody body, String nombreArchivo) {
-        new Thread(() -> {
-            try {
-                File dir = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-                if (dir == null) throw new IOException("Almacenamiento externo no disponible");
-                if (!dir.exists()) dir.mkdirs();
-                File file = new File(dir, nombreArchivo);
-                try (InputStream is = body.byteStream();
-                     FileOutputStream fos = new FileOutputStream(file)) {
-                    byte[] buf = new byte[4096];
-                    int len;
-                    while ((len = is.read(buf)) != -1) fos.write(buf, 0, len);
-                }
-                requireActivity().runOnUiThread(() -> {
-                    setLoadingReporte(rootView, false, "PDF guardado ✓");
-                    abrirPdf(file);
-                });
-            } catch (IOException e) {
-                requireActivity().runOnUiThread(() -> {
-                    setLoadingReporte(rootView, false, "Error al guardar");
-                    Toast.makeText(getContext(), "No se pudo guardar el PDF", Toast.LENGTH_LONG).show();
-                });
-            }
-        }).start();
-    }
+        PdfHelper.guardarYAbrir(
+                requireContext().getApplicationContext(),
+                body,
+                nombreArchivo,
+                new PdfHelper.Callback() {
+                    @Override public void onSuccess(@NonNull File file) {
+                        if (!isAdded()) return;
+                        setLoadingReporte(rootView, false, "PDF guardado ✓");
+                        PdfHelper.abrir(requireContext(), file);
+                    }
 
-    private void abrirPdf(File file) {
-        try {
-            Uri uri = FileProvider.getUriForFile(requireContext(),
-                    requireContext().getPackageName() + ".provider", file);
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "application/pdf");
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(Intent.createChooser(intent, "Abrir PDF con…"));
-        } catch (Exception e) {
-            Toast.makeText(getContext(),
-                    "PDF guardado. Instala un visor de PDF para abrirlo.", Toast.LENGTH_LONG).show();
-        }
+                    @Override public void onError(@NonNull String msg) {
+                        if (!isAdded()) return;
+                        setLoadingReporte(rootView, false, "Error al guardar");
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private void setLoadingReporte(View rootView, boolean loading, String msg) {
@@ -314,12 +289,16 @@ public class DetalleProyectoDialog extends DialogFragment {
                             if (onCambioListener != null) onCambioListener.onCambio();
                             dismiss();
                         } else {
-                            Toast.makeText(getContext(), "Error al actualizar", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),
+                                    ApiErrorMessages.forCode(response.code()),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<ProyectoDto> call, Throwable t) {
-                        Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),
+                                ApiErrorMessages.forThrowable(t),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -343,17 +322,23 @@ public class DetalleProyectoDialog extends DialogFragment {
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (!isAdded()) return;
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "Proyecto eliminado", Toast.LENGTH_SHORT).show();
                             if (onCambioListener != null) onCambioListener.onCambio();
                             dismiss();
                         } else {
-                            Toast.makeText(getContext(), "Error al eliminar", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),
+                                    com.example.indecsa_v2.util.ApiErrorMessages.forCode(response.code()),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (!isAdded()) return;
+                        Toast.makeText(getContext(),
+                                com.example.indecsa_v2.util.ApiErrorMessages.forThrowable(t),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }

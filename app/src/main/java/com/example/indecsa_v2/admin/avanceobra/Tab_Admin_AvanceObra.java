@@ -26,6 +26,7 @@ import com.example.indecsa_v2.models.CuadrillaDto;
 import com.example.indecsa_v2.models.EstandarRendimientoDto;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,9 +41,13 @@ import retrofit2.Response;
 public class Tab_Admin_AvanceObra extends Fragment {
 
     private static final TimeZone TZ_MX = TimeZone.getTimeZone("America/Mexico_City");
-    private static final String SIN_CUADRILLA = "Sin cuadrilla";
-    private static final String SIN_ESTANDAR  = "Sin estándar";
-    private static final String[] UNIDADES    = {"m2", "m3", "ml", "piezas", "porcentaje"};
+    private static final String[] UNIDADES = {"m2", "m3", "ml", "piezas", "porcentaje"};
+
+    // Sentinelas de "sin selección" para los spinners. Inicializados desde
+    // strings.xml en onCreateView para que i18n / cambios de copia sean una
+    // sola fuente de verdad. No son static porque getString() necesita Context.
+    private String sinCuadrilla;
+    private String sinEstandar;
 
     private Spinner         spinnerProyecto;
     private Spinner         spinnerCuadrilla;
@@ -71,6 +76,9 @@ public class Tab_Admin_AvanceObra extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View vista = inflater.inflate(R.layout.fragment_tab__avance_obra, container, false);
+
+        sinCuadrilla = getString(R.string.sin_cuadrilla);
+        sinEstandar  = getString(R.string.sin_estandar);
 
         spinnerProyecto       = vista.findViewById(R.id.spinnerProyecto);
         spinnerCuadrilla      = vista.findViewById(R.id.spinnerCuadrilla);
@@ -117,7 +125,7 @@ public class Tab_Admin_AvanceObra extends Fragment {
             @Override
             public void onFailure(Call<List<ProyectoDto>> call, Throwable t) {
                 if (!isAdded()) return;
-                Toast.makeText(getContext(), "Error al cargar proyectos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -160,7 +168,7 @@ public class Tab_Admin_AvanceObra extends Fragment {
     }
 
     private void cargarAvances(Integer idProyecto) {
-        RetrofitClient.getApiService().getAvancesByProyecto(idProyecto, null, null)
+        RetrofitClient.getApiService().getAvancesByProyecto(idProyecto)
                 .enqueue(new Callback<List<AvancePartidaDto>>() {
             @Override
             public void onResponse(Call<List<AvancePartidaDto>> call,
@@ -221,7 +229,7 @@ public class Tab_Admin_AvanceObra extends Fragment {
 
     private void setupSpinnerCuadrillaVacio() {
         List<String> opciones = new ArrayList<>();
-        opciones.add(SIN_CUADRILLA);
+        opciones.add(sinCuadrilla);
         ArrayAdapter<String> ad = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, opciones);
         ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -230,7 +238,7 @@ public class Tab_Admin_AvanceObra extends Fragment {
 
     private void setupSpinnerCuadrilla() {
         List<String> nombres = new ArrayList<>();
-        nombres.add(SIN_CUADRILLA);
+        nombres.add(sinCuadrilla);
         for (CuadrillaDto c : listaCuadrillas) {
             nombres.add(c.getNombreCuadrilla() != null ? c.getNombreCuadrilla() : "Cuadrilla #" + c.getIdCuadrilla());
         }
@@ -242,7 +250,7 @@ public class Tab_Admin_AvanceObra extends Fragment {
 
     private void setupSpinnerEstandarVacio() {
         List<String> opciones = new ArrayList<>();
-        opciones.add(SIN_ESTANDAR);
+        opciones.add(sinEstandar);
         ArrayAdapter<String> ad = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, opciones);
         ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -251,7 +259,7 @@ public class Tab_Admin_AvanceObra extends Fragment {
 
     private void setupSpinnerEstandar() {
         List<String> nombres = new ArrayList<>();
-        nombres.add(SIN_ESTANDAR);
+        nombres.add(sinEstandar);
         for (EstandarRendimientoDto e : listaEstandares) nombres.add(e.toString());
         ArrayAdapter<String> ad = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, nombres);
@@ -362,14 +370,14 @@ public class Tab_Admin_AvanceObra extends Fragment {
                     cargarAvances(proyecto.getIdProyecto());
                 } else {
                     Toast.makeText(getContext(),
-                            "Error al registrar: " + response.code(), Toast.LENGTH_SHORT).show();
+                            ApiErrorMessages.forCode(response.code()), Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onFailure(Call<AvancePartidaDto> call, Throwable t) {
                 if (!isAdded()) return;
                 btnRegistrar.setEnabled(true);
-                Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -452,8 +460,8 @@ public class Tab_Admin_AvanceObra extends Fragment {
 
             void bind(AvancePartidaDto a) {
                 textNombrePartida.setText(a.getNombrePartida() != null ? a.getNombrePartida() : "Partida");
-                textActividad.setText(a.getNombreActividad() != null ? a.getNombreActividad() : "Sin estándar");
-                textCuadrilla.setText(a.getNombreCuadrilla() != null ? a.getNombreCuadrilla() : "Sin cuadrilla");
+                textActividad.setText(a.getNombreActividad() != null ? a.getNombreActividad() : itemView.getContext().getString(R.string.sin_estandar));
+                textCuadrilla.setText(a.getNombreCuadrilla() != null ? a.getNombreCuadrilla() : itemView.getContext().getString(R.string.sin_cuadrilla));
                 textFecha.setText(a.getFechaRegistro() != null ? a.getFechaRegistro() : "—");
 
                 String cantStr = a.getCantidadEjecutada() != null

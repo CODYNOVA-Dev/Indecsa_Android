@@ -21,6 +21,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.models.AsignacionProyectoContratistaDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -161,12 +162,12 @@ public class DetalleContratoDialog extends DialogFragment {
                                 if (listener != null) listener.onCambio();
                                 dismiss();
                             } else {
-                                Toast.makeText(getContext(), "Error (" + r.code() + ")", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), ApiErrorMessages.forCode(r.code()), Toast.LENGTH_SHORT).show();
                             }
                         }
                         @Override
                         public void onFailure(@NonNull Call<AsignacionProyectoContratistaDto> call, @NonNull Throwable t) {
-                            if (isAdded()) Toast.makeText(getContext(), "Sin conexión", Toast.LENGTH_SHORT).show();
+                            if (isAdded()) Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
                         }
                     });
         });
@@ -187,12 +188,12 @@ public class DetalleContratoDialog extends DialogFragment {
                                         dismiss();
                                     } else {
                                         Toast.makeText(getContext(),
-                                                "No se pudo eliminar (" + r.code() + ")", Toast.LENGTH_SHORT).show();
+                                                ApiErrorMessages.forCode(r.code()), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 @Override
                                 public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                                    if (isAdded()) Toast.makeText(getContext(), "Sin conexión", Toast.LENGTH_SHORT).show();
+                                    if (isAdded()) Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
                                 }
                             });
                 })

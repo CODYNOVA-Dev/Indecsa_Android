@@ -3,7 +3,7 @@ package com.example.indecsa_v2.models;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Coincide con LoginResponse del backend (POST /api/v1/empleados/login).
+ * Coincide con LoginResponse del backend (POST /api/empleados/login).
  * Devuelve los datos del empleado autenticado, con el rol "aplanado" en
  * idRol / nombreRol / descripcionRol.
  */
@@ -33,6 +33,11 @@ public class LoginResponseDto {
     @SerializedName("descripcionRol")
     private String descripcionRol;
 
+    // JWT emitido por el backend en login exitoso. Persistido por TokenManager
+    // y adjuntado por AuthInterceptor en requests posteriores.
+    @SerializedName("token")
+    private String token;
+
     public Integer getIdEmpleado()    { return idEmpleado; }
     public String  getNombreEmpleado(){ return nombreEmpleado; }
     public String  getCorreoEmpleado(){ return correoEmpleado; }
@@ -41,4 +46,5 @@ public class LoginResponseDto {
     public Integer getIdRol()         { return idRol; }
     public String  getNombreRol()     { return nombreRol; }
     public String  getDescripcionRol(){ return descripcionRol; }
+    public String  getToken()         { return token; }
 }

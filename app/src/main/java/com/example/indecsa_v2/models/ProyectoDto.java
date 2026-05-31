@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad Proyecto del backend.
  *
@@ -12,18 +14,18 @@ package com.example.indecsa_v2.models;
  */
 public class ProyectoDto {
 
-    private Integer   idProyecto;
-    private String    nombreProyecto;
-    private String    tipoProyecto;   // Construccion, Remodelacion, Venta_mobiliaria, Instalacion_de_mobiliario
-    private String    ofertaTrabajo;
-    private String    cliente;
-    private Domicilio domicilio;
-    private String    fechaEstimadaInicio;
-    private String    fechaEstimadaFin;
-    private Integer   calificacionProyecto; // backend es Byte
-    private String    estatusProyecto;      // PLANEACION, EN_CURSO, PENDIENTE, FINALIZADO, CANCELADO
-    private String    descripcionProyecto;
-    private String    imagenProyectoUrl;
+    @SerializedName("idProyecto")           private Integer   idProyecto;
+    @SerializedName("nombreProyecto")       private String    nombreProyecto;
+    @SerializedName("tipoProyecto")         private String    tipoProyecto;   // Construccion, Remodelacion, Venta_mobiliaria, Instalacion_de_mobiliario
+    @SerializedName("ofertaTrabajo")        private String    ofertaTrabajo;
+    @SerializedName("cliente")              private String    cliente;
+    @SerializedName("domicilio")            private Domicilio domicilio;
+    @SerializedName("fechaEstimadaInicio")  private String    fechaEstimadaInicio;
+    @SerializedName("fechaEstimadaFin")     private String    fechaEstimadaFin;
+    @SerializedName("calificacionProyecto") private Integer   calificacionProyecto; // backend es Byte
+    @SerializedName("estatusProyecto")      private String    estatusProyecto;      // PLANEACION, EN_CURSO, PENDIENTE, FINALIZADO, CANCELADO
+    @SerializedName("descripcionProyecto")  private String    descripcionProyecto;
+    @SerializedName("imagenProyectoUrl")    private String    imagenProyectoUrl;
 
     // ---- cache local solo-cliente ----
     private transient String lugarProyectoLocal;

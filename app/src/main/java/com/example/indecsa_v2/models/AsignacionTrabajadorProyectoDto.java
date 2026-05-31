@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad AsignacionTrabajadorProyecto del backend.
  *
@@ -13,14 +15,14 @@ package com.example.indecsa_v2.models;
  */
 public class AsignacionTrabajadorProyectoDto {
 
-    private Integer                          idAsignacionTp;
-    private TrabajadorDto                    trabajador;
-    private ProyectoDto                      proyecto;
-    private AsignacionProyectoContratistaDto asignacionProyectoContratista;
-    private String                           puestoEnProyecto;
-    private String                           fechaInicio;
-    private String                           fechaFinEstimada;
-    private String                           estatusAsignacion; // ACTIVO, SUSPENDIDO, INCAPACIDAD, CANCELADO, VACACIONES, FINALIZADO
+    @SerializedName("idAsignacionTp")                private Integer                          idAsignacionTp;
+    @SerializedName("trabajador")                    private TrabajadorDto                    trabajador;
+    @SerializedName("proyecto")                      private ProyectoDto                      proyecto;
+    @SerializedName("asignacionProyectoContratista") private AsignacionProyectoContratistaDto asignacionProyectoContratista;
+    @SerializedName("puestoEnProyecto")              private String                           puestoEnProyecto;
+    @SerializedName("fechaInicio")                   private String                           fechaInicio;
+    @SerializedName("fechaFinEstimada")              private String                           fechaFinEstimada;
+    @SerializedName("estatusAsignacion")             private String                           estatusAsignacion; // ACTIVO, SUSPENDIDO, INCAPACIDAD, CANCELADO, VACACIONES, FINALIZADO
 
     private transient String                 observacionesLocal;
 

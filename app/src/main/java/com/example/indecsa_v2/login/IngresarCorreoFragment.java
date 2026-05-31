@@ -31,7 +31,7 @@ public class IngresarCorreoFragment extends Fragment {
             // El backend acepta tanto correo como usuario (ver ApiService#login).
             // Solo validamos que no esté vacío ni contenga espacios.
             if (correo.isEmpty() || correo.contains(" ")) {
-                Toast.makeText(getContext(), "Ingresa tu usuario o correo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.login_correo_vacio, Toast.LENGTH_SHORT).show();
                 return;
             }
 

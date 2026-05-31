@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.models.Contratista;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,13 +72,17 @@ public class Tab_CapitalHumano_Contratista extends Fragment {
                     recyclerView.setVisibility(lista.isEmpty() ? View.GONE : View.VISIBLE);
                     adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getContext(), "Error al cargar contratistas", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),
+                            ApiErrorMessages.forCode(response.code()),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onFailure(Call<List<Contratista>> call, Throwable t) {
                 if (!isAdded()) return;
-                Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),
+                        ApiErrorMessages.forThrowable(t),
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }

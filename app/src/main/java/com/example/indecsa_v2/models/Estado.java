@@ -1,5 +1,7 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Catálogo Estado del backend.
  * Sirve tanto para "estado civil de calidad de vida" del Trabajador
@@ -8,8 +10,8 @@ package com.example.indecsa_v2.models;
  */
 public class Estado {
 
-    private Integer idEstado;
-    private String  nombreEst;
+    @SerializedName("idEstado")  private Integer idEstado;
+    @SerializedName("nombreEst") private String  nombreEst;
 
     public Estado() {}
 

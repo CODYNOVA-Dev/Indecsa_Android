@@ -1,14 +1,16 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Refleja la entidad Rol del backend. `nombreRol` es un enum
  * serializado como String: "ADMIN" o "CAPITAL_HUMANO".
  */
 public class Rol {
 
-    private Integer idRol;
-    private String  nombreRol;
-    private String  descripcionRol;
+    @SerializedName("idRol")          private Integer idRol;
+    @SerializedName("nombreRol")      private String  nombreRol;
+    @SerializedName("descripcionRol") private String  descripcionRol;
 
     public Rol() {}
 

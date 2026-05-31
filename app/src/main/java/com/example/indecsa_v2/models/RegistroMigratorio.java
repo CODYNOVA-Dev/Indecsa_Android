@@ -1,15 +1,17 @@
 package com.example.indecsa_v2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class RegistroMigratorio {
 
-    private Integer idMigratorio;
-    private String  folioDocumento;
-    private String  categoria;
-    private String  fechaEmision;
-    private Integer diasVigencia;
-    private String  fechaVencimiento;
-    private Boolean permisoTrabajo;
-    private Boolean activo;
+    @SerializedName("idMigratorio")     private Integer idMigratorio;
+    @SerializedName("folioDocumento")   private String  folioDocumento;
+    @SerializedName("categoria")        private String  categoria;
+    @SerializedName("fechaEmision")     private String  fechaEmision;
+    @SerializedName("diasVigencia")     private Integer diasVigencia;
+    @SerializedName("fechaVencimiento") private String  fechaVencimiento;
+    @SerializedName("permisoTrabajo")   private Boolean permisoTrabajo;
+    @SerializedName("activo")           private Boolean activo;
 
     public RegistroMigratorio() {}
 

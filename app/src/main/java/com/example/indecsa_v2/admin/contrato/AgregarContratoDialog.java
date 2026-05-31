@@ -21,6 +21,7 @@ import com.example.indecsa_v2.models.AsignacionProyectoContratistaDto;
 import com.example.indecsa_v2.models.Contratista;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.util.ApiErrorMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,12 +184,12 @@ public class AgregarContratoDialog extends DialogFragment {
                             if (listener != null) listener.onAgregado();
                             dismiss();
                         } else {
-                            Toast.makeText(getContext(), "Error al guardar (" + r.code() + ")", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), ApiErrorMessages.forCode(r.code()), Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(@NonNull Call<AsignacionProyectoContratistaDto> call, @NonNull Throwable t) {
-                        if (isAdded()) Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
+                        if (isAdded()) Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

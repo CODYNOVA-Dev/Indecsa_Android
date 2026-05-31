@@ -19,7 +19,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.indecsa_v2.admin.Panel_Inicial_Admin;
+import com.example.indecsa_v2.capitalhumano.Panel_Inicial_CapitalHumano;
 import com.example.indecsa_v2.login.CorreoLoginActivity;
+import com.example.indecsa_v2.network.RetrofitClient;
+import com.example.indecsa_v2.network.TokenManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,10 +65,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void intentarNavegar() {
         handler.post(() -> {
-            if (splashTerminado) {
-                startActivity(new Intent(MainActivity.this, CorreoLoginActivity.class));
-                finish();
+            if (!splashTerminado) return;
+
+            TokenManager tm = RetrofitClient.getTokenManager();
+            String token = tm != null ? tm.getToken() : null;
+            String rol   = tm != null ? tm.getRole()  : null;
+
+            Intent next;
+            if (token != null && !token.isEmpty() && "ADMIN".equals(rol)) {
+                next = new Intent(MainActivity.this, Panel_Inicial_Admin.class);
+            } else if (token != null && !token.isEmpty() && "CAPITAL_HUMANO".equals(rol)) {
+                next = new Intent(MainActivity.this, Panel_Inicial_CapitalHumano.class);
+            } else {
+                next = new Intent(MainActivity.this, CorreoLoginActivity.class);
             }
+
+            startActivity(next);
+            finish();
         });
     }
 
