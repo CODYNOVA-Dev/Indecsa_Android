@@ -16,14 +16,14 @@ public class RetrofitClient {
 
     // BASE_URL ahora se inyecta desde BuildConfig:
     //   debug   → http://10.0.2.2:8080/api/        (emulador → backend local)
-    //   release → https://springbootindecsa-production.up.railway.app/api/
+    //   release → https://springbootindecsa-production-e42a.up.railway.app/api/
     // Cambiar el valor en app/build.gradle.kts, no aquí.
     private static final String BASE_URL = BuildConfig.BASE_URL;
 
     // Host de producción contra el que se aplica certificate pinning.
     // El pinner SOLO valida hosts declarados; el debug (10.0.2.2/localhost)
     // pasa sin verificación porque no aparece en la lista.
-    private static final String PROD_HOST = "springbootindecsa-production.up.railway.app";
+    private static final String PROD_HOST = "springbootindecsa-production-e42a.up.railway.app";
 
     // Pins SHA-256 del SubjectPublicKeyInfo capturados el 2026-05-26:
     //   leaf         CN=*.up.railway.app           expira 2026-08-02
@@ -34,8 +34,8 @@ public class RetrofitClient {
     // subdomain del backend.
     //
     // Para regenerar tras una rotación de Let's Encrypt:
-    //   openssl s_client -connect springbootindecsa-production.up.railway.app:443 \
-    //       -servername springbootindecsa-production.up.railway.app -showcerts </dev/null \
+    //   openssl s_client -connect springbootindecsa-production-e42a.up.railway.app:443 \
+    //       -servername springbootindecsa-production-e42a.up.railway.app -showcerts </dev/null \
     //     | awk '/-----BEGIN/{c++; out="c"c".pem"} {if(out) print > out} /-----END/{out=""}'
     //   for f in c1.pem c2.pem; do
     //     openssl x509 -in $f -pubkey -noout \
