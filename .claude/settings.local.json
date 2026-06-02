@@ -56,7 +56,11 @@
       "Bash(git -C \"C:\\\\Users\\\\greco\\\\Desktop\\\\pre\\\\Indecsa_Android\\\\.claude\\\\worktrees\\\\serene-einstein-02a304\" status)",
       "Bash(git -C \"C:\\\\Users\\\\greco\\\\Desktop\\\\indecsa\\\\demo\" add pom.xml src/main/java/com/example/demo/config/DataSeeder.java src/main/java/com/example/demo/config/PasswordConfig.java src/main/java/com/example/demo/controller/AuthController.java src/main/java/com/example/demo/controller/RendimientoController.java src/main/java/com/example/demo/controller/ReportesController.java src/main/java/com/example/demo/dto/ src/main/java/com/example/demo/repository/AvancePartidaRepository.java src/main/java/com/example/demo/repository/RegistroHorasRepository.java src/main/java/com/example/demo/repository/RolRepository.java src/main/java/com/example/demo/service/AuthService.java src/main/java/com/example/demo/service/EmpleadoService.java src/main/java/com/example/demo/service/RendimientoService.java src/main/java/com/example/demo/service/ReportePdfService.java)",
       "Bash(git -C \"C:\\\\Users\\\\greco\\\\Desktop\\\\indecsa\\\\demo\" status)",
-      "Bash(git -C \"C:\\\\Users\\\\greco\\\\Desktop\\\\pre\\\\Indecsa_Android\\\\.claude\\\\worktrees\\\\serene-einstein-02a304\" add app/ .claude/settings.local.json)"
+      "Bash(git -C \"C:\\\\Users\\\\greco\\\\Desktop\\\\pre\\\\Indecsa_Android\\\\.claude\\\\worktrees\\\\serene-einstein-02a304\" add app/ .claude/settings.local.json)",
+      "Bash(git stash *)",
+      "Bash(git checkout *)",
+      "Bash(git rm *)",
+      "Bash(./gradlew :app:compileDebugSources -q)"
     ]
   }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_caphum_contratista"
+        android:icon="@drawable/contratistas"
+        android:title="Contratista" />
+    <item
+        android:id="@+id/nav_caphum_proyecto"
+        android:icon="@drawable/proyectos"
+        android:title="Proyecto" />
+    <item
+        android:id="@+id/nav_caphum_trabajador"
+        android:icon="@drawable/trabajadores"
+        android:title="Trabajadores" />
+    <item
+        android:id="@+id/nav_caphum_relacionar"
+        android:icon="@drawable/relacionar"
+        android:title="Relacionar" />
+    <item
+        android:id="@+id/nav_caphum_personalobra"
+        android:icon="@drawable/ic_personal_obra"
+        android:title="Personal en Obra" />
+    <item
+        android:id="@+id/nav_caphum_registrohoras"
+        android:icon="@drawable/ic_registro_horas"
+        android:title="Reg. Horas" />
+    <item
+        android:id="@+id/nav_caphum_avanceobra"
+        android:icon="@drawable/ic_avance_obra"
+        android:title="Avance Obra" />
+    <item
+        android:id="@+id/nav_caphum_reportes"
+        android:icon="@drawable/ic_reportes"
+        android:title="Reportes" />
+</menu>
