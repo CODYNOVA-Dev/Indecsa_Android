@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_caphum_relacionar"
+        android:icon="@drawable/relacionar"
+        android:title="Relacionar" />
+    <item
+        android:id="@+id/nav_caphum_personalobra"
+        android:icon="@drawable/ic_personal_obra"
+        android:title="Personal en Obra" />
+    <item
+        android:id="@+id/nav_caphum_registrohoras"
+        android:icon="@drawable/ic_registro_horas"
+        android:title="Reg. Horas" />
+    <item
+        android:id="@+id/nav_caphum_avanceobra"
+        android:icon="@drawable/ic_avance_obra"
+        android:title="Avance Obra" />
+</menu>

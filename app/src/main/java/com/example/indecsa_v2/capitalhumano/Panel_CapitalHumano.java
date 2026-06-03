@@ -2,9 +2,11 @@ package com.example.indecsa_v2.capitalhumano;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -18,13 +20,28 @@ import com.example.indecsa_v2.capitalhumano.registrohoras.Tab_CapitalHumano_Regi
 import com.example.indecsa_v2.capitalhumano.relacionar.Tab_CapitalHumano_Relacionar;
 import com.example.indecsa_v2.capitalhumano.reportes.Tab_CapitalHumano_Reportes;
 import com.example.indecsa_v2.capitalhumano.trabajador.Tab_CapitalHumano_Trabajador;
-import com.google.android.material.navigationrail.NavigationRailView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Panel_CapitalHumano extends AppCompatActivity {
 
     public static final String EXTRA_TAB_INDEX = "extra_tab_index";
 
-    private NavigationRailView navRailCapitalHumano;
+    /**
+     * Orden estable de categorías (compatibilidad con el antiguo EXTRA_TAB_INDEX
+     * usado por Panel_Inicial_CapitalHumano).
+     */
+    private static final int[] TAB_ORDER = new int[] {
+            R.id.nav_caphum_contratista,    // 0
+            R.id.nav_caphum_proyecto,        // 1
+            R.id.nav_caphum_trabajador,      // 2
+            R.id.nav_caphum_relacionar,      // 3
+            R.id.nav_caphum_personalobra,    // 4
+            R.id.nav_caphum_registrohoras,   // 5
+            R.id.nav_caphum_avanceobra,      // 6
+            R.id.nav_caphum_reportes         // 7
+    };
+
+    private BottomNavigationView bottomNavCapitalHumano;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -34,29 +51,51 @@ public class Panel_CapitalHumano extends AppCompatActivity {
         setContentView(R.layout.activity_panel_capital_humano);
 
         initViews();
-        setupNavigationRail();
+        setupBottomNav();
 
-        // Seleccionar la categoría indicada por el Intent (default: 0) por su
-        // posición en el menú, conservando la semántica del antiguo EXTRA_TAB_INDEX.
         if (savedInstanceState == null) {
             int tabIndex = getIntent().getIntExtra(EXTRA_TAB_INDEX, 0);
-            if (tabIndex < 0 || tabIndex >= navRailCapitalHumano.getMenu().size()) {
+            if (tabIndex < 0 || tabIndex >= TAB_ORDER.length) {
                 tabIndex = 0;
             }
-            navRailCapitalHumano.setSelectedItemId(
-                    navRailCapitalHumano.getMenu().getItem(tabIndex).getItemId());
+            selectCategory(TAB_ORDER[tabIndex]);
         }
     }
 
     private void initViews() {
-        navRailCapitalHumano = findViewById(R.id.navRailCapitalHumano);
+        bottomNavCapitalHumano = findViewById(R.id.bottomNavCapitalHumano);
     }
 
-    private void setupNavigationRail() {
-        navRailCapitalHumano.setOnItemSelectedListener(item -> {
+    private void setupBottomNav() {
+        bottomNavCapitalHumano.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_caphum_mas) {
+                showMasPopup();
+                return false;
+            }
             showFragment(item.getItemId());
             return true;
         });
+    }
+
+    private void showMasPopup() {
+        View anchor = bottomNavCapitalHumano.findViewById(R.id.nav_caphum_mas);
+        if (anchor == null) anchor = bottomNavCapitalHumano;
+        PopupMenu popup = new PopupMenu(this, anchor);
+        popup.getMenuInflater().inflate(R.menu.menu_caphum_mas, popup.getMenu());
+        popup.setOnMenuItemClickListener(it -> {
+            selectCategory(it.getItemId());
+            return true;
+        });
+        popup.show();
+    }
+
+    private void selectCategory(int itemId) {
+        if (bottomNavCapitalHumano.getMenu().findItem(itemId) != null
+                && itemId != R.id.nav_caphum_mas) {
+            bottomNavCapitalHumano.setSelectedItemId(itemId);
+        } else {
+            showFragment(itemId);
+        }
     }
 
     /** Muestra el fragmento de la categoría, reutilizándolo si ya fue creado. */

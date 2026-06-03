@@ -33,25 +33,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="575dp"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:background="@color/spinner_border">
 
-            <com.google.android.material.navigationrail.NavigationRailView
-                android:id="@+id/navRailAdmin"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+            <FrameLayout
+                android:id="@+id/containerAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@drawable/tarjeta"
                 android:elevation="4dp"
                 app:itemIconTint="@color/nav_rail_item_color"
                 app:itemTextColor="@color/nav_rail_item_color"
                 app:labelVisibilityMode="labeled"
-                app:menu="@menu/menu_admin_rail" />
-
-            <FrameLayout
-                android:id="@+id/containerAdmin"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                app:menu="@menu/menu_admin_bottom" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

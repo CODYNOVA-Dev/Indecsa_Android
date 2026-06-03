@@ -1,21 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_admin_contratista"
-        android:icon="@drawable/contratistas"
-        android:title="Contratista" />
-    <item
-        android:id="@+id/nav_admin_proyecto"
-        android:icon="@drawable/proyectos"
-        android:title="Proyecto" />
-    <item
         android:id="@+id/nav_admin_contratos"
         android:icon="@drawable/ic_contratos"
         android:title="Contratos" />
-    <item
-        android:id="@+id/nav_admin_trabajador"
-        android:icon="@drawable/trabajadores"
-        android:title="Trabajadores" />
     <item
         android:id="@+id/nav_admin_caphum"
         android:icon="@drawable/caphum"
@@ -32,8 +20,4 @@
         android:id="@+id/nav_admin_avanceobra"
         android:icon="@drawable/ic_avance_obra"
         android:title="Avance Obra" />
-    <item
-        android:id="@+id/nav_admin_reportes"
-        android:icon="@drawable/ic_reportes"
-        android:title="Reportes" />
 </menu>
