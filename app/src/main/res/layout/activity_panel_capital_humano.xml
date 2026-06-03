@@ -36,26 +36,22 @@
             android:orientation="vertical"
             android:background="@color/spinner_border">
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayoutCapitalHumano"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/tarjeta"
-                android:elevation="4dp"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@color/raya_amarilla"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/raya_amarilla"
-                app:tabTextColor="@color/text_secondary"/>
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPagerCapitalHumano"
+            <FrameLayout
+                android:id="@+id/containerCapitalHumano"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavCapitalHumano"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tarjeta"
+                android:elevation="4dp"
+                app:itemIconTint="@color/nav_rail_item_color"
+                app:itemTextColor="@color/nav_rail_item_color"
+                app:labelVisibilityMode="labeled"
+                app:menu="@menu/menu_caphum_bottom" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
