@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:maxHeight="560dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Nuevo empleado de Capital Humano"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Nombre -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre completo *"
+            android:textColor="#A0AEC0"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/editNombre"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_dark_bg"
+            android:hint="Ej: Juan Pérez López"
+            android:inputType="textPersonName"
+            android:maxLength="100"
+            android:paddingHorizontal="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#5A6A7A"
+            android:textSize="14sp" />
+
+        <!-- Correo -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Correo electrónico *"
+            android:textColor="#A0AEC0"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/editCorreo"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_dark_bg"
+            android:hint="correo@indecsa.com"
+            android:inputType="textEmailAddress"
+            android:maxLength="100"
+            android:paddingHorizontal="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#5A6A7A"
+            android:textSize="14sp" />
+
+        <!-- CURP -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CURP * (18 caracteres)"
+            android:textColor="#A0AEC0"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/editCurp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_dark_bg"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz"
+            android:hint="18 caracteres"
+            android:inputType="textCapCharacters"
+            android:maxLength="18"
+            android:paddingHorizontal="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#5A6A7A"
+            android:textSize="14sp" />
+
+        <!-- Contraseña -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contraseña"
+            android:textColor="#A0AEC0"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/editContrasena"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_dark_bg"
+            android:hint="Mínimo 8 caracteres"
+            android:inputType="textPassword"
+            android:paddingHorizontal="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#5A6A7A"
+            android:textSize="14sp" />
+
+        <!-- Foto -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Foto de perfil (URL, opcional)"
+            android:textColor="#A0AEC0"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/editFoto"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_dark_bg"
+            android:hint="https://..."
+            android:inputType="textUri"
+            android:maxLength="255"
+            android:paddingHorizontal="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#5A6A7A"
+            android:textSize="14sp" />
+
+        <!-- Rol fijo -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rol asignado"
+            android:textColor="#A0AEC0"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_dark_bg"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp"
+            android:text="CAPITAL_HUMANO"
+            android:textColor="#D4AF37"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Botones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnCancelar"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_dark_bg"
+                android:text="Cancelar"
+                android:textAllCaps="false"
+                android:textColor="#A0AEC0"
+                android:textSize="15sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnGuardar"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_azul_bg"
+                android:text="Guardar"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -22,6 +22,7 @@ public class Panel_Inicial_CapitalHumano extends AppCompatActivity {
     public static final int TAB_REGISTRO_HORAS = 5;
     public static final int TAB_AVANCE_OBRA    = 6;
     public static final int TAB_REPORTES       = 7;
+    public static final int TAB_CUADRILLA      = 8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class Panel_Inicial_CapitalHumano extends AppCompatActivity {
         View cardRegistroHoras = findViewById(R.id.card_caphum_registro_horas);
         View cardAvanceObra    = findViewById(R.id.card_caphum_avance_obra);
         View cardReportes      = findViewById(R.id.card_caphum_reportes);
+        View cardCuadrilla     = findViewById(R.id.card_caphum_cuadrilla);
 
         if (cardContratista != null)
             cardContratista.setOnClickListener(v -> openPanelCapitalHumano(TAB_CONTRATISTA));
@@ -80,6 +82,8 @@ public class Panel_Inicial_CapitalHumano extends AppCompatActivity {
             cardAvanceObra.setOnClickListener(v -> openPanelCapitalHumano(TAB_AVANCE_OBRA));
         if (cardReportes != null)
             cardReportes.setOnClickListener(v -> openPanelCapitalHumano(TAB_REPORTES));
+        if (cardCuadrilla != null)
+            cardCuadrilla.setOnClickListener(v -> openPanelCapitalHumano(TAB_CUADRILLA));
     }
 
     private void openPanelCapitalHumano(int tabIndex) {
