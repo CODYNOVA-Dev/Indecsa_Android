@@ -33,6 +33,7 @@ public class Tab_Admin_CapHum extends Fragment {
     private RecyclerView            recyclerViewAreas;
     private EditText                editBuscarArea;
     private AppCompatButton         btnBuscar;
+    private AppCompatButton         btnNuevoEmpleado;
 
     private EmpleadoCapHumAdapter   adapter;
     private final List<EmpleadoDto> lista         = new ArrayList<>();
@@ -50,12 +51,20 @@ public class Tab_Admin_CapHum extends Fragment {
         recyclerViewAreas = vista.findViewById(R.id.recyclerViewAreas);
         editBuscarArea    = vista.findViewById(R.id.editBuscarArea);
         btnBuscar         = vista.findViewById(R.id.btnBuscar);
+        btnNuevoEmpleado  = vista.findViewById(R.id.btnNuevoEmpleado);
 
         adapter = new EmpleadoCapHumAdapter(listaFiltrada);
         recyclerViewAreas.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewAreas.setAdapter(adapter);
 
         btnBuscar.setOnClickListener(v -> filtrar(editBuscarArea.getText().toString()));
+
+        if (btnNuevoEmpleado != null)
+            btnNuevoEmpleado.setOnClickListener(v -> {
+                EmpleadoCapHumFormDialog dialog = EmpleadoCapHumFormDialog.paraCrear();
+                dialog.setOnGuardadoListener(this::cargar);
+                dialog.show(getParentFragmentManager(), "crear_empleado_caphum");
+            });
 
         cargar();
         return vista;
@@ -187,9 +196,11 @@ public class Tab_Admin_CapHum extends Fragment {
                 }
 
                 if (btnEditar != null)
-                    btnEditar.setOnClickListener(v ->
-                            Toast.makeText(v.getContext(),
-                                    "Editar: " + nombre, Toast.LENGTH_SHORT).show());
+                    btnEditar.setOnClickListener(v -> {
+                        EmpleadoCapHumFormDialog dialog = EmpleadoCapHumFormDialog.paraEditar(e);
+                        dialog.setOnGuardadoListener(Tab_Admin_CapHum.this::cargar);
+                        dialog.show(getParentFragmentManager(), "editar_empleado_caphum");
+                    });
 
                 if (btnEliminar != null)
                     btnEliminar.setOnClickListener(v -> {

@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,14 +22,20 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.admin.contratista.ConfirmEliminarDialog;
+import com.example.indecsa_v2.models.Domicilio;
+import com.example.indecsa_v2.models.Estado;
 import com.example.indecsa_v2.models.ProyectoDto;
 import com.example.indecsa_v2.network.RetrofitClient;
 import com.example.indecsa_v2.util.ApiErrorMessages;
 import com.example.indecsa_v2.util.PdfHelper;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -65,6 +73,12 @@ public class DetalleProyectoDialog extends DialogFragment {
     public interface OnCambioListener { void onCambio(); }
     private OnCambioListener onCambioListener;
     public void setOnCambioListener(OnCambioListener l) { this.onCambioListener = l; }
+
+    // ─── Estado de edición ───────────────────────────────────────────────────
+    private final List<Estado> listaEstados = new ArrayList<>();
+    private ProyectoDto proyectoCompleto; // recargado del backend para merge
+    private String fechaIniSel = null;
+    private String fechaFinSel = null;
 
     // ─── Factory ─────────────────────────────────────────────────────────────
     public static DetalleProyectoDialog newInstance(ProyectoDto p) {
@@ -153,6 +167,8 @@ public class DetalleProyectoDialog extends DialogFragment {
                 .setOnClickListener(v -> mostrarEditar(view));
         view.<AppCompatButton>findViewById(R.id.btnEliminar)
                 .setOnClickListener(v -> mostrarConfirmEliminar());
+        AppCompatButton btnEstatus = view.findViewById(R.id.btnEstatus);
+        if (btnEstatus != null) btnEstatus.setOnClickListener(v -> mostrarCambiarEstatus(view));
 
         // Botones de reporte
         view.findViewById(R.id.btnReporteHoras)
@@ -248,6 +264,68 @@ public class DetalleProyectoDialog extends DialogFragment {
         if (btnA != null) btnA.setEnabled(!loading);
     }
 
+    // ─── CAMBIAR ESTATUS ─────────────────────────────────────────────────────
+
+    private static final String[] ESTATUS_PROYECTO =
+            {"PLANEACION", "EN_CURSO", "PENDIENTE", "FINALIZADO", "CANCELADO"};
+
+    private void mostrarCambiarEstatus(View view) {
+        Bundle a = getArguments();
+        if (a == null) return;
+        final int id = a.getInt(ARG_ID, -1);
+        if (id <= 0) {
+            Toast.makeText(getContext(), "ID de proyecto inválido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String actual = a.getString(ARG_ESTATUS, "");
+        int seleccion = 0;
+        for (int i = 0; i < ESTATUS_PROYECTO.length; i++) {
+            if (ESTATUS_PROYECTO[i].equals(actual)) { seleccion = i; break; }
+        }
+        final int[] elegido = { seleccion };
+
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Cambiar estatus del proyecto")
+                .setSingleChoiceItems(ESTATUS_PROYECTO, seleccion, (d, which) -> elegido[0] = which)
+                .setPositiveButton("Aplicar", (d, w) ->
+                        aplicarEstatus(view, id, ESTATUS_PROYECTO[elegido[0]]))
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void aplicarEstatus(View view, int id, String nuevoEstatus) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("estatus", nuevoEstatus);
+        RetrofitClient.getApiService().patchProyectoEstatus(id, body)
+                .enqueue(new Callback<ProyectoDto>() {
+                    @Override
+                    public void onResponse(Call<ProyectoDto> call, Response<ProyectoDto> response) {
+                        if (!isAdded()) return;
+                        if (response.isSuccessful()) {
+                            Bundle a = getArguments();
+                            if (a != null) a.putString(ARG_ESTATUS, nuevoEstatus);
+                            TextView tvEstatus = view.findViewById(R.id.dialogTvEstatus);
+                            if (tvEstatus != null) {
+                                boolean activo = "EN_CURSO".equals(nuevoEstatus) || "ACTIVO".equals(nuevoEstatus);
+                                tvEstatus.setText("● " + capitalizar(nuevoEstatus));
+                                tvEstatus.setBackgroundResource(activo
+                                        ? R.drawable.item_disp_verde : R.drawable.item_disp_rojo);
+                            }
+                            Toast.makeText(getContext(), "Estatus actualizado", Toast.LENGTH_SHORT).show();
+                            if (onCambioListener != null) onCambioListener.onCambio();
+                        } else {
+                            Toast.makeText(getContext(),
+                                    ApiErrorMessages.forCode(response.code()), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<ProyectoDto> call, Throwable t) {
+                        if (!isAdded()) return;
+                        Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     // ─── MODO EDITAR ─────────────────────────────────────────────────────────
 
     private void mostrarEditar(View view) {
@@ -257,33 +335,170 @@ public class DetalleProyectoDialog extends DialogFragment {
         Bundle a = getArguments();
         if (a == null) return;
 
-        setEditText(view, R.id.editNombre,    a.getString(ARG_NOMBRE));
-        setEditText(view, R.id.editTipo,      a.getString(ARG_TIPO));
-        setEditText(view, R.id.editLugar,     a.getString(ARG_LUGAR));
-        setEditText(view, R.id.editMunicipio, a.getString(ARG_MUNICIPIO));
-        // Fechas — cuando el DTO las exponga:
-        setEditText(view, R.id.editFechaIni,  a.getString(ARG_FECHA_INI));
-        setEditText(view, R.id.editFechaFin,  a.getString(ARG_FECHA_FIN));
+        // Relleno rápido con lo que ya tenemos
+        setEditText(view, R.id.editNombre, a.getString(ARG_NOMBRE));
+        setEditText(view, R.id.editTipo,   a.getString(ARG_TIPO));
+
+        AppCompatButton btnFi = view.findViewById(R.id.btnFechaIni);
+        AppCompatButton btnFf = view.findViewById(R.id.btnFechaFin);
+        if (btnFi != null) btnFi.setOnClickListener(v -> pickFecha(true, btnFi));
+        if (btnFf != null) btnFf.setOnClickListener(v -> pickFecha(false, btnFf));
+
+        cargarEstadosYProyecto(view, a.getInt(ARG_ID, -1));
 
         view.<AppCompatButton>findViewById(R.id.btnCancelarEdicion)
                 .setOnClickListener(v -> mostrarDetalle(view));
-
         view.<AppCompatButton>findViewById(R.id.btnGuardar)
-                .setOnClickListener(v -> {
-                    ProyectoDto dto = new ProyectoDto(
-                            getEditText(view, R.id.editNombre),
-                            getEditText(view, R.id.editTipo),
-                            getEditText(view, R.id.editLugar)
-                    );
-                    guardarProyecto(a.getInt(ARG_ID, -1), dto);
-                });
+                .setOnClickListener(v -> guardarProyecto(view, a.getInt(ARG_ID, -1)));
     }
 
-    private void guardarProyecto(int id, ProyectoDto dto) {
-        RetrofitClient.getApiService().updateProyecto(id, dto)
+    private void pickFecha(boolean inicio, AppCompatButton btn) {
+        String actual = inicio ? fechaIniSel : fechaFinSel;
+        Calendar cal = Calendar.getInstance();
+        if (actual != null && actual.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            String[] p = actual.split("-");
+            cal.set(Integer.parseInt(p[0]), Integer.parseInt(p[1]) - 1, Integer.parseInt(p[2]));
+        }
+        new DatePickerDialog(requireContext(), (dp, y, m, d) -> {
+            String f = String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d);
+            if (inicio) fechaIniSel = f; else fechaFinSel = f;
+            btn.setText(f);
+        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void cargarEstadosYProyecto(View view, int id) {
+        RetrofitClient.getApiService().getAllEstados().enqueue(new Callback<List<Estado>>() {
+            @Override public void onResponse(Call<List<Estado>> call, Response<List<Estado>> response) {
+                if (!isAdded()) return;
+                listaEstados.clear();
+                if (response.isSuccessful() && response.body() != null) listaEstados.addAll(response.body());
+                poblarSpinnerEstadoDom(view);
+                if (id > 0) cargarProyectoCompleto(view, id);
+            }
+            @Override public void onFailure(Call<List<Estado>> call, Throwable t) {
+                if (!isAdded()) return;
+                poblarSpinnerEstadoDom(view);
+                if (id > 0) cargarProyectoCompleto(view, id);
+            }
+        });
+    }
+
+    private void cargarProyectoCompleto(View view, int id) {
+        RetrofitClient.getApiService().getProyectoById(id).enqueue(new Callback<ProyectoDto>() {
+            @Override public void onResponse(Call<ProyectoDto> call, Response<ProyectoDto> response) {
+                if (!isAdded()) return;
+                if (response.isSuccessful() && response.body() != null) {
+                    proyectoCompleto = response.body();
+                    llenarFormCompleto(view, proyectoCompleto);
+                }
+            }
+            @Override public void onFailure(Call<ProyectoDto> call, Throwable t) { }
+        });
+    }
+
+    private void llenarFormCompleto(View view, ProyectoDto p) {
+        setEditText(view, R.id.editNombre,      p.getNombreProyecto());
+        setEditText(view, R.id.editTipo,        p.getTipoProyecto());
+        setEditText(view, R.id.editCliente,     p.getCliente());
+        setEditText(view, R.id.editOferta,      p.getOfertaTrabajo());
+        setEditText(view, R.id.editDescripcion, p.getDescripcionProyecto());
+        setEditText(view, R.id.editImagen,      p.getImagenProyectoUrl());
+
+        RatingBar rb = view.findViewById(R.id.editRating);
+        if (rb != null && p.getCalificacionProyecto() != null) rb.setRating(p.getCalificacionProyecto());
+
+        fechaIniSel = p.getFechaEstimadaInicio();
+        fechaFinSel = p.getFechaEstimadaFin();
+        AppCompatButton btnFi = view.findViewById(R.id.btnFechaIni);
+        AppCompatButton btnFf = view.findViewById(R.id.btnFechaFin);
+        if (btnFi != null && fechaIniSel != null && !fechaIniSel.isEmpty()) btnFi.setText(fechaIniSel);
+        if (btnFf != null && fechaFinSel != null && !fechaFinSel.isEmpty()) btnFf.setText(fechaFinSel);
+
+        Domicilio dom = p.getDomicilio();
+        if (dom != null) {
+            setEditText(view, R.id.editCalle,   dom.getCalle());
+            setEditText(view, R.id.editNumExt,  dom.getNumExt());
+            setEditText(view, R.id.editNumInt,  dom.getNumInt());
+            setEditText(view, R.id.editColonia, dom.getColonia());
+            setEditText(view, R.id.editCodPost, dom.getCodPost() != null ? String.valueOf(dom.getCodPost()) : "");
+            setEditText(view, R.id.editMunAlc,  dom.getMunAlc());
+            if (dom.getEstado() != null) seleccionarEstadoDom(view, dom.getEstado().getIdEstado());
+        }
+    }
+
+    private void poblarSpinnerEstadoDom(View view) {
+        Spinner sp = view.findViewById(R.id.spinnerEstadoDom);
+        if (sp == null) return;
+        List<String> nombres = new ArrayList<>();
+        nombres.add("— Selecciona estado —");
+        for (Estado e : listaEstados) nombres.add(e.getNombreEst() != null ? e.getNombreEst() : ("Estado " + e.getIdEstado()));
+        ArrayAdapter<String> ad = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_item, nombres);
+        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp.setAdapter(ad);
+    }
+
+    private void seleccionarEstadoDom(View view, Integer idEstado) {
+        if (idEstado == null) return;
+        Spinner sp = view.findViewById(R.id.spinnerEstadoDom);
+        if (sp == null) return;
+        for (int i = 0; i < listaEstados.size(); i++) {
+            if (idEstado.equals(listaEstados.get(i).getIdEstado())) { sp.setSelection(i + 1); return; }
+        }
+    }
+
+    private Integer estadoDomSeleccionado(View view) {
+        Spinner sp = view.findViewById(R.id.spinnerEstadoDom);
+        if (sp == null) return null;
+        int pos = sp.getSelectedItemPosition();
+        if (pos <= 0 || pos - 1 >= listaEstados.size()) return null;
+        return listaEstados.get(pos - 1).getIdEstado();
+    }
+
+    private void guardarProyecto(View view, int id) {
+        // Merge sobre el objeto completo recargado para conservar campos NOT NULL
+        ProyectoDto p = proyectoCompleto != null ? proyectoCompleto : new ProyectoDto();
+        p.setNombreProyecto    (getEditText(view, R.id.editNombre));
+        p.setTipoProyecto      (getEditText(view, R.id.editTipo));
+        p.setCliente           (getEditText(view, R.id.editCliente));
+        p.setOfertaTrabajo     (emptyToNull(getEditText(view, R.id.editOferta)));
+        p.setDescripcionProyecto(emptyToNull(getEditText(view, R.id.editDescripcion)));
+        p.setImagenProyectoUrl (emptyToNull(getEditText(view, R.id.editImagen)));
+
+        RatingBar rb = view.findViewById(R.id.editRating);
+        if (rb != null) p.setCalificacionProyecto((int) rb.getRating());
+
+        if (fechaIniSel != null && !fechaIniSel.isEmpty()) p.setFechaEstimadaInicio(fechaIniSel);
+        if (fechaFinSel != null && !fechaFinSel.isEmpty()) p.setFechaEstimadaFin(fechaFinSel);
+
+        // Domicilio (merge para conservar idDomicilio)
+        Domicilio dom = p.getDomicilio() != null ? p.getDomicilio() : new Domicilio();
+        dom.setCalle  (getEditText(view, R.id.editCalle));
+        dom.setNumExt (getEditText(view, R.id.editNumExt));
+        dom.setNumInt (emptyToNull(getEditText(view, R.id.editNumInt)));
+        dom.setColonia(getEditText(view, R.id.editColonia));
+        String cp = getEditText(view, R.id.editCodPost);
+        if (!cp.isEmpty()) { try { dom.setCodPost(Integer.parseInt(cp)); } catch (NumberFormatException ignored) {} }
+        dom.setMunAlc (getEditText(view, R.id.editMunAlc));
+        Integer idEstadoDom = estadoDomSeleccionado(view);
+        if (idEstadoDom != null) { Estado est = new Estado(); est.setIdEstado(idEstadoDom); dom.setEstado(est); }
+        p.setDomicilio(dom);
+
+        // El estatus se cambia con el botón "Estatus"; aquí se preserva.
+        if (p.getEstatusProyecto() == null) {
+            Bundle a = getArguments();
+            if (a != null) p.setEstatusProyecto(a.getString(ARG_ESTATUS));
+        }
+
+        AppCompatButton btnGuardar = view.findViewById(R.id.btnGuardar);
+        if (btnGuardar != null) btnGuardar.setEnabled(false);
+
+        RetrofitClient.getApiService().updateProyecto(id, p)
                 .enqueue(new Callback<ProyectoDto>() {
                     @Override
                     public void onResponse(Call<ProyectoDto> call, Response<ProyectoDto> response) {
+                        if (!isAdded()) return;
+                        if (btnGuardar != null) btnGuardar.setEnabled(true);
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "Proyecto actualizado", Toast.LENGTH_SHORT).show();
                             if (onCambioListener != null) onCambioListener.onCambio();
@@ -296,12 +511,16 @@ public class DetalleProyectoDialog extends DialogFragment {
                     }
                     @Override
                     public void onFailure(Call<ProyectoDto> call, Throwable t) {
+                        if (!isAdded()) return;
+                        if (btnGuardar != null) btnGuardar.setEnabled(true);
                         Toast.makeText(getContext(),
                                 ApiErrorMessages.forThrowable(t),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
+    private String emptyToNull(String s) { return s == null || s.isEmpty() ? null : s; }
 
     // ─── CONFIRMAR ELIMINAR ──────────────────────────────────────────────────
 

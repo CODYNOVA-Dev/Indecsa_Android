@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.indecsa_v2.R;
 import com.example.indecsa_v2.capitalhumano.avanceobra.Tab_CapitalHumano_AvanceObra;
 import com.example.indecsa_v2.capitalhumano.contratista.Tab_CapitalHumano_Contratista;
+import com.example.indecsa_v2.capitalhumano.cuadrilla.Tab_CapitalHumano_Cuadrilla;
 import com.example.indecsa_v2.capitalhumano.personalobra.Tab_CapitalHumano_PersonalObra;
 import com.example.indecsa_v2.capitalhumano.proyecto.Tab_CapitalHumano_Proyecto;
 import com.example.indecsa_v2.capitalhumano.registrohoras.Tab_CapitalHumano_RegistroHoras;
@@ -38,7 +39,8 @@ public class Panel_CapitalHumano extends AppCompatActivity {
             R.id.nav_caphum_personalobra,    // 4
             R.id.nav_caphum_registrohoras,   // 5
             R.id.nav_caphum_avanceobra,      // 6
-            R.id.nav_caphum_reportes         // 7
+            R.id.nav_caphum_reportes,        // 7
+            R.id.nav_caphum_cuadrilla        // 8
     };
 
     private BottomNavigationView bottomNavCapitalHumano;
@@ -126,6 +128,7 @@ public class Panel_CapitalHumano extends AppCompatActivity {
         if (itemId == R.id.nav_caphum_registrohoras)  return new Tab_CapitalHumano_RegistroHoras();
         if (itemId == R.id.nav_caphum_avanceobra)     return new Tab_CapitalHumano_AvanceObra();
         if (itemId == R.id.nav_caphum_reportes)       return new Tab_CapitalHumano_Reportes();
+        if (itemId == R.id.nav_caphum_cuadrilla)      return new Tab_CapitalHumano_Cuadrilla();
         return new Tab_CapitalHumano_Contratista();
     }
 }

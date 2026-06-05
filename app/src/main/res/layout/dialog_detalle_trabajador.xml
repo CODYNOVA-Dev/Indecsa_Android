@@ -212,6 +212,19 @@
                         android:gravity="end">
 
                         <Button
+                            android:id="@+id/btnEstado"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:background="@drawable/button_dark_bg"
+                            android:text="Estado"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:layout_marginEnd="10dp"/>
+
+                        <Button
                             android:id="@+id/btnEliminar"
                             android:layout_width="wrap_content"
                             android:layout_height="40dp"
@@ -270,6 +283,11 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <!-- ── Datos personales ── -->
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Datos personales" android:textColor="@color/primary_orange"
+                        android:textSize="13sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="Nombre" android:textColor="@color/label_color" android:textSize="12sp"/>
                     <EditText android:id="@+id/editNombre"
@@ -279,28 +297,22 @@
                         android:inputType="textPersonName" android:layout_marginBottom="12dp"/>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Especialidad" android:textColor="@color/label_color" android:textSize="12sp"/>
-                    <EditText android:id="@+id/editEspecialidad"
+                        android:text="CURP" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editCurp"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:background="@drawable/spinner_bg" android:padding="10dp"
                         android:textSize="15sp" android:textColor="@color/white"
-                        android:inputType="text" android:layout_marginBottom="12dp"/>
+                        android:inputType="textCapCharacters" android:maxLength="18"
+                        android:layout_marginBottom="12dp"/>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Correo" android:textColor="@color/label_color" android:textSize="12sp"/>
-                    <EditText android:id="@+id/editCorreo"
+                        android:text="RFC" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editRfc"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:background="@drawable/spinner_bg" android:padding="10dp"
                         android:textSize="15sp" android:textColor="@color/white"
-                        android:inputType="textEmailAddress" android:layout_marginBottom="12dp"/>
-
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Teléfono" android:textColor="@color/label_color" android:textSize="12sp"/>
-                    <EditText android:id="@+id/editTelefono"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:background="@drawable/spinner_bg" android:padding="10dp"
-                        android:textSize="15sp" android:textColor="@color/white"
-                        android:inputType="phone" android:layout_marginBottom="12dp"/>
+                        android:inputType="textCapCharacters" android:maxLength="13"
+                        android:layout_marginBottom="12dp"/>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="NSS" android:textColor="@color/label_color" android:textSize="12sp"/>
@@ -311,8 +323,84 @@
                         android:inputType="number" android:layout_marginBottom="12dp"/>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Ubicación" android:textColor="@color/label_color" android:textSize="12sp"/>
-                    <EditText android:id="@+id/editUbicacion"
+                        android:text="Nacionalidad" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editNacionalidad"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Sexo" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <Spinner android:id="@+id/spinnerSexo"
+                        android:layout_width="match_parent" android:layout_height="48dp"
+                        android:background="@drawable/spinner_bg" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Estado civil" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editEstadoCivil"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Teléfono" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editTelefono"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="phone" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Correo" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editCorreo"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="textEmailAddress" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Foto de perfil (URL)" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editFoto"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="textUri" android:maxLength="255" android:layout_marginBottom="16dp"/>
+
+                    <!-- ── Datos laborales ── -->
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Datos laborales" android:textColor="@color/primary_orange"
+                        android:textSize="13sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Puesto" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editPuesto"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Especialidad" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editEspecialidad"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Descripción del puesto" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editDescripcion"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="textMultiLine" android:minLines="2"
+                        android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Escolaridad" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editEscolaridad"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:background="@drawable/spinner_bg" android:padding="10dp"
                         android:textSize="15sp" android:textColor="@color/white"
@@ -328,13 +416,141 @@
                         android:layout_marginBottom="12dp"/>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Descripción" android:textColor="@color/label_color" android:textSize="12sp"/>
-                    <EditText android:id="@+id/editDescripcion"
+                        android:text="Contratación" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editContratacion"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:background="@drawable/spinner_bg" android:padding="10dp"
                         android:textSize="15sp" android:textColor="@color/white"
-                        android:inputType="textMultiLine" android:minLines="3"
-                        android:layout_marginBottom="20dp"/>
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Jornada" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editJornada"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Fecha de ingreso" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <androidx.appcompat.widget.AppCompatButton android:id="@+id/btnFechaIngreso"
+                        android:layout_width="match_parent" android:layout_height="48dp"
+                        android:background="@drawable/spinner_bg" android:gravity="center_vertical|start"
+                        android:paddingStart="10dp" android:text="Seleccionar fecha"
+                        android:textAllCaps="false" android:textColor="@color/white"
+                        android:textSize="15sp" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Calificación" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <RatingBar android:id="@+id/editRating"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:numStars="5" android:stepSize="1"
+                        android:layout_marginTop="4dp" android:layout_marginBottom="16dp"/>
+
+                    <!-- ── Domicilio ── -->
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Domicilio" android:textColor="@color/primary_orange"
+                        android:textSize="13sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Calle" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editCalle"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Número exterior" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editNumExt"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Número interior" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editNumInt"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Colonia" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editColonia"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Código postal" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editCodPost"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="number" android:maxLength="5" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Municipio / Alcaldía" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editMunAlc"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Estado" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <Spinner android:id="@+id/spinnerEstadoDom"
+                        android:layout_width="match_parent" android:layout_height="48dp"
+                        android:background="@drawable/spinner_bg" android:layout_marginBottom="16dp"/>
+
+                    <!-- ── Datos adicionales ── -->
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Datos adicionales" android:textColor="@color/primary_orange"
+                        android:textSize="13sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Idiomas" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editIdiomas"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Lengua indígena" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editLenguaIndigena"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Antecedentes penales" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editAntPenal"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Deudor alimentario" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editDeudorAlim"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Folio licencia de conducir" android:textColor="@color/label_color" android:textSize="12sp"/>
+                    <EditText android:id="@+id/editFolioLic"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_bg" android:padding="10dp"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:inputType="text" android:layout_marginBottom="20dp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -16,4 +16,8 @@
         android:id="@+id/nav_caphum_avanceobra"
         android:icon="@drawable/ic_avance_obra"
         android:title="Avance Obra" />
+    <item
+        android:id="@+id/nav_caphum_cuadrilla"
+        android:icon="@drawable/ic_personal_obra"
+        android:title="Cuadrillas" />
 </menu>
