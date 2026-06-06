@@ -40,7 +40,7 @@ import retrofit2.http.Streaming;
  * <h3>Convención del backend para filtros</h3>
  * El backend usa SUBRUTAS por atributo, no query params:
  *   GET /cuadrillas/proyecto/{idProyecto}        (no ?idProyecto=)
- *   GET /asignaciones/trabajador-proyecto/proyecto/{idProyecto}
+ *   GET /asignaciones-trabajador-proyecto/proyecto/{idProyecto}
  *   GET /registros-horas/asignacion/{idAsignacionTp}
  *   etc.
  *
@@ -111,7 +111,7 @@ public interface ApiService {
      * 200: LoginResponseDto
      * 401: credenciales incorrectas
      */
-    @POST("empleados/login")
+    @POST("auth/login")
     Call<LoginResponseDto> login(@Body LoginRequestDto request);
 
     // ==================== EMPLEADOS ====================
@@ -224,77 +224,65 @@ public interface ApiService {
 
     // ==================== ASIGNACIONES TRABAJADOR-PROYECTO ====================
 
-    @GET("asignaciones/trabajador-proyecto")
+    @GET("asignaciones-trabajador-proyecto")
     Call<List<AsignacionTrabajadorProyectoDto>> getAllAsignacionesTrabajadorProyecto();
 
-    @GET("asignaciones/trabajador-proyecto/{id}")
+    @GET("asignaciones-trabajador-proyecto/{id}")
     Call<AsignacionTrabajadorProyectoDto> getAsignacionTrabajadorById(@Path("id") Integer id);
 
-    @POST("asignaciones/trabajador-proyecto")
+    @POST("asignaciones-trabajador-proyecto")
     Call<AsignacionTrabajadorProyectoDto> createAsignacionTrabajador(@Body AsignacionTrabajadorProyectoDto dto);
 
-    @PUT("asignaciones/trabajador-proyecto/{id}")
+    @PUT("asignaciones-trabajador-proyecto/{id}")
     Call<AsignacionTrabajadorProyectoDto> updateAsignacionTrabajador(@Path("id") Integer id,
                                                                     @Body AsignacionTrabajadorProyectoDto dto);
 
     /** Body: {@code Map.of("estatus", "ACTIVO|SUSPENDIDO|INCAPACIDAD|CANCELADO|VACACIONES|FINALIZADO")}. */
-    @PATCH("asignaciones/trabajador-proyecto/{id}/estatus")
+    @PATCH("asignaciones-trabajador-proyecto/{id}/estatus")
     Call<AsignacionTrabajadorProyectoDto> patchAsignacionTrabajadorEstatus(@Path("id") Integer id,
                                                                           @Body Map<String, Object> body);
 
-    @DELETE("asignaciones/trabajador-proyecto/{id}")
+    @DELETE("asignaciones-trabajador-proyecto/{id}")
     Call<Void> deleteAsignacionTrabajador(@Path("id") Integer id);
 
-    /** Asignaciones de un proyecto. Backend: /proyecto/{idProyecto}. */
-    @GET("asignaciones/trabajador-proyecto/proyecto/{idProyecto}")
-    Call<List<AsignacionTrabajadorProyectoDto>> getAsignacionesByProyecto(@Path("idProyecto") Integer idProyecto);
+    /** Asignaciones de un proyecto. Backend: ?idProyecto= */
+    @GET("asignaciones-trabajador-proyecto")
+    Call<List<AsignacionTrabajadorProyectoDto>> getAsignacionesByProyecto(@Query("idProyecto") Integer idProyecto);
 
-    /** Asignaciones de un trabajador. Backend: /trabajador/{idTrabajador}. */
-    @GET("asignaciones/trabajador-proyecto/trabajador/{idTrabajador}")
-    Call<List<AsignacionTrabajadorProyectoDto>> getAsignacionesByTrabajador(@Path("idTrabajador") Integer idTrabajador);
-
-    /** Asignaciones de un contrato (idAsignacionPc). Backend: /contrato/{id}. */
-    @GET("asignaciones/trabajador-proyecto/contrato/{idAsignacionPc}")
-    Call<List<AsignacionTrabajadorProyectoDto>> getAsignacionesByContrato(@Path("idAsignacionPc") Integer idAsignacionPc);
-
-    /** Asignaciones por estatus (ACTIVO, SUSPENDIDO, FINALIZADO, ...). */
-    @GET("asignaciones/trabajador-proyecto/estatus/{estatus}")
-    Call<List<AsignacionTrabajadorProyectoDto>> getAsignacionesByEstatus(@Path("estatus") String estatus);
+    /** Asignaciones de un trabajador. Backend: ?idTrabajador= */
+    @GET("asignaciones-trabajador-proyecto")
+    Call<List<AsignacionTrabajadorProyectoDto>> getAsignacionesByTrabajador(@Query("idTrabajador") Integer idTrabajador);
 
     // ==================== ASIGNACIONES PROYECTO-CONTRATISTA ====================
 
-    @GET("asignaciones/proyecto-contratista")
+    @GET("asignaciones-proyecto-contratista")
     Call<List<AsignacionProyectoContratistaDto>> getAllAsignacionesProyectoContratista();
 
-    @GET("asignaciones/proyecto-contratista/{id}")
+    @GET("asignaciones-proyecto-contratista/{id}")
     Call<AsignacionProyectoContratistaDto> getAsignacionPcById(@Path("id") Integer id);
 
-    @POST("asignaciones/proyecto-contratista")
+    @POST("asignaciones-proyecto-contratista")
     Call<AsignacionProyectoContratistaDto> createAsignacionPc(@Body AsignacionProyectoContratistaDto dto);
 
-    @PUT("asignaciones/proyecto-contratista/{id}")
+    @PUT("asignaciones-proyecto-contratista/{id}")
     Call<AsignacionProyectoContratistaDto> updateAsignacionPc(@Path("id") Integer id,
                                                               @Body AsignacionProyectoContratistaDto dto);
 
     /** Body: {@code Map.of("estatus", "ACTIVO|VIGENTE|SUSPENDIDO|FINALIZADO|CANCELADO")}. */
-    @PATCH("asignaciones/proyecto-contratista/{id}/estatus")
+    @PATCH("asignaciones-proyecto-contratista/{id}/estatus")
     Call<AsignacionProyectoContratistaDto> patchAsignacionPcEstatus(@Path("id") Integer id,
                                                                    @Body Map<String, Object> body);
 
-    @DELETE("asignaciones/proyecto-contratista/{id}")
+    @DELETE("asignaciones-proyecto-contratista/{id}")
     Call<Void> deleteAsignacionPc(@Path("id") Integer id);
 
-    /** Asignaciones PC por proyecto. Backend: /proyecto/{idProyecto}. */
-    @GET("asignaciones/proyecto-contratista/proyecto/{idProyecto}")
-    Call<List<AsignacionProyectoContratistaDto>> getAsignacionesPcByProyecto(@Path("idProyecto") Integer idProyecto);
+    /** Asignaciones PC por proyecto. Backend: ?idProyecto= */
+    @GET("asignaciones-proyecto-contratista")
+    Call<List<AsignacionProyectoContratistaDto>> getAsignacionesPcByProyecto(@Query("idProyecto") Integer idProyecto);
 
-    /** Asignaciones PC por contratista. Backend: /contratista/{idContratista}. */
-    @GET("asignaciones/proyecto-contratista/contratista/{idContratista}")
-    Call<List<AsignacionProyectoContratistaDto>> getAsignacionesPcByContratista(@Path("idContratista") Integer idContratista);
-
-    /** Asignaciones PC por estatus (ACTIVO, VIGENTE, SUSPENDIDO, ...). */
-    @GET("asignaciones/proyecto-contratista/estatus/{estatus}")
-    Call<List<AsignacionProyectoContratistaDto>> getAsignacionesPcByEstatus(@Path("estatus") String estatus);
+    /** Asignaciones PC por contratista. Backend: ?idContratista= */
+    @GET("asignaciones-proyecto-contratista")
+    Call<List<AsignacionProyectoContratistaDto>> getAsignacionesPcByContratista(@Query("idContratista") Integer idContratista);
 
     // ==================== CUADRILLAS ====================
 
@@ -317,9 +305,9 @@ public interface ApiService {
     @DELETE("cuadrillas/{id}")
     Call<Void> deleteCuadrilla(@Path("id") Integer id);
 
-    /** Cuadrillas de un proyecto. Backend: /proyecto/{idProyecto}. */
-    @GET("cuadrillas/proyecto/{idProyecto}")
-    Call<List<CuadrillaDto>> getCuadrillasByProyecto(@Path("idProyecto") Integer idProyecto);
+    /** Cuadrillas de un proyecto. Backend: ?idProyecto= */
+    @GET("cuadrillas")
+    Call<List<CuadrillaDto>> getCuadrillasByProyecto(@Query("idProyecto") Integer idProyecto);
 
     /** Cuadrillas por estatus (ACTIVO, INACTIVO). */
     @GET("cuadrillas/estatus/{estatus}")
@@ -342,9 +330,9 @@ public interface ApiService {
     @DELETE("registros-horas/{id}")
     Call<Void> deleteRegistroHoras(@Path("id") Integer id);
 
-    /** Registros por asignación trabajador-proyecto. Backend: /asignacion/{id}. */
-    @GET("registros-horas/asignacion/{idAsignacionTp}")
-    Call<List<RegistroHorasDto>> getRegistrosHorasByAsignacion(@Path("idAsignacionTp") Integer idAsignacionTp);
+    /** Registros por asignación trabajador-proyecto. Backend: ?idAsignacionTp= */
+    @GET("registros-horas")
+    Call<List<RegistroHorasDto>> getRegistrosHorasByAsignacion(@Query("idAsignacionTp") Integer idAsignacionTp);
 
     /** Registros por cuadrilla. Backend: /cuadrilla/{id}. */
     @GET("registros-horas/cuadrilla/{idCuadrilla}")
@@ -377,9 +365,9 @@ public interface ApiService {
     @DELETE("avances-partida/{id}")
     Call<Void> deleteAvancePartida(@Path("id") Integer id);
 
-    /** Avances de un proyecto. Backend: /proyecto/{idProyecto}. */
-    @GET("avances-partida/proyecto/{idProyecto}")
-    Call<List<AvancePartidaDto>> getAvancesByProyecto(@Path("idProyecto") Integer idProyecto);
+    /** Avances de un proyecto. Backend: ?idProyecto= */
+    @GET("avances-partida")
+    Call<List<AvancePartidaDto>> getAvancesByProyecto(@Query("idProyecto") Integer idProyecto);
 
     /** Avances de una cuadrilla. Backend: /cuadrilla/{idCuadrilla}. */
     @GET("avances-partida/cuadrilla/{idCuadrilla}")

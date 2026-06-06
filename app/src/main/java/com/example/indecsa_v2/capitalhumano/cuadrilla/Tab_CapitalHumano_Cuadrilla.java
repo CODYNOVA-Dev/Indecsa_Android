@@ -215,11 +215,11 @@ public class Tab_CapitalHumano_Cuadrilla extends Fragment {
     private void togglarEstatus(CuadrillaDto c) {
         if (c == null || c.getIdCuadrilla() == null) return;
         final String nuevoEstatus = "ACTIVO".equals(c.getEstatusCuadrilla()) ? "INACTIVO" : "ACTIVO";
+        final String anterior = c.getEstatusCuadrilla();
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("estatus", nuevoEstatus);
-
-        RetrofitClient.getApiService().patchCuadrillaEstatus(c.getIdCuadrilla(), body)
+        // El backend no expone PATCH: se actualiza con PUT enviando el objeto completo.
+        c.setEstatusCuadrilla(nuevoEstatus);
+        RetrofitClient.getApiService().updateCuadrilla(c.getIdCuadrilla(), c)
                 .enqueue(new Callback<CuadrillaDto>() {
             @Override
             public void onResponse(Call<CuadrillaDto> call, Response<CuadrillaDto> response) {
@@ -231,6 +231,7 @@ public class Tab_CapitalHumano_Cuadrilla extends Fragment {
                     ProyectoDto p = proyectoActual();
                     if (p != null) cargarCuadrillas(p.getIdProyecto());
                 } else {
+                    c.setEstatusCuadrilla(anterior);
                     Toast.makeText(getContext(),
                             ApiErrorMessages.forCode(response.code()), Toast.LENGTH_SHORT).show();
                 }
@@ -238,6 +239,7 @@ public class Tab_CapitalHumano_Cuadrilla extends Fragment {
             @Override
             public void onFailure(Call<CuadrillaDto> call, Throwable t) {
                 if (!isAdded()) return;
+                c.setEstatusCuadrilla(anterior);
                 Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
             }
         });

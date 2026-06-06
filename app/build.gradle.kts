@@ -18,7 +18,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/api/\"")
+            buildConfigField("String", "BASE_URL", "\"https://springbootindecsa-production.up.railway.app/api/\"")
         }
         release {
             isMinifyEnabled = true
@@ -27,7 +27,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"https://springbootindecsa-production-e42a.up.railway.app/api/\"")
+            buildConfigField("String", "BASE_URL", "\"https://springbootindecsa-production.up.railway.app/api/\"")
         }
     }
     compileOptions {

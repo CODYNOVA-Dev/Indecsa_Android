@@ -97,15 +97,13 @@ public class IngresarContrasenaFragment extends Fragment {
                     return;
                 }
 
+                // El backend NO emite JWT (no hay Spring Security): el login solo
+                // devuelve los datos del empleado. El token es opcional; si algún
+                // día el backend lo emite, se persiste para AuthInterceptor.
                 String token = empleado.getToken();
-                if (token == null || token.isEmpty()) {
-                    mostrarError(getString(R.string.login_error_sin_token));
-                    return;
+                if (token != null && !token.isEmpty()) {
+                    RetrofitClient.getTokenManager().saveToken(token);
                 }
-
-                // Persistir sesión ANTES de navegar para que el primer request
-                // del panel ya tenga el Bearer adjuntado por AuthInterceptor.
-                RetrofitClient.getTokenManager().saveToken(token);
                 RetrofitClient.getTokenManager().saveRole(rol);
 
                 if ("CAPITAL_HUMANO".equals(rol)) {

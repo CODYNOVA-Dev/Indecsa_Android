@@ -326,14 +326,23 @@ public class DetalleTrabajadorDialog extends DialogFragment {
     }
 
     private void aplicarEstado(View view, int idT, String nuevoEstado) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("estado", nuevoEstado);
-        RetrofitClient.getApiService().patchTrabajadorEstado(idT, body)
-                .enqueue(new Callback<TrabajadorDto>() {
+        // El backend no expone PATCH: recargamos el trabajador completo,
+        // cambiamos el estado y hacemos PUT (preserva campos NOT NULL).
+        RetrofitClient.getApiService().getTrabajadorById(idT).enqueue(new Callback<TrabajadorDto>() {
+            @Override
+            public void onResponse(Call<TrabajadorDto> call, Response<TrabajadorDto> response) {
+                if (!isAdded()) return;
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(getContext(), ApiErrorMessages.forCode(response.code()), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                TrabajadorDto full = response.body();
+                full.setEstadoTrabajador(nuevoEstado);
+                RetrofitClient.getApiService().updateTrabajador(idT, full).enqueue(new Callback<TrabajadorDto>() {
                     @Override
-                    public void onResponse(Call<TrabajadorDto> call, Response<TrabajadorDto> response) {
+                    public void onResponse(Call<TrabajadorDto> c2, Response<TrabajadorDto> r2) {
                         if (!isAdded()) return;
-                        if (response.isSuccessful()) {
+                        if (r2.isSuccessful()) {
                             Bundle a = getArguments();
                             if (a != null) a.putString(ARG_ESTADO, nuevoEstado);
                             TextView tvEstado = view.findViewById(R.id.dialogTvEstado);
@@ -347,16 +356,22 @@ public class DetalleTrabajadorDialog extends DialogFragment {
                             Toast.makeText(getContext(), "Estado actualizado", Toast.LENGTH_SHORT).show();
                             if (onCambioListener != null) onCambioListener.onCambio();
                         } else {
-                            Toast.makeText(getContext(),
-                                    ApiErrorMessages.forCode(response.code()), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), ApiErrorMessages.forCode(r2.code()), Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
-                    public void onFailure(Call<TrabajadorDto> call, Throwable t) {
+                    public void onFailure(Call<TrabajadorDto> c2, Throwable t) {
                         if (!isAdded()) return;
                         Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+            @Override
+            public void onFailure(Call<TrabajadorDto> call, Throwable t) {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), ApiErrorMessages.forThrowable(t), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // ─── MODO EDITAR ─────────────────────────────────────────────────────────
